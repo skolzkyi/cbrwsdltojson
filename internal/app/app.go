@@ -1,18 +1,25 @@
 package app
 
 import (
+	"bytes"
 	"context"
+	"encoding/xml"
+	"fmt"
+	"strings"
 	"time"
 
 	"go.uber.org/zap"
 
+	customsoap "github.com/skolzkyi/cbrwsdltojson/internal/customsoap"
 	datastructures "github.com/skolzkyi/cbrwsdltojson/internal/datastructures"
 )
 
+const cbrNamespace = "http://web.cbr.ru/"
+
 type App struct {
-	logger        Logger
-	config        Config
-	soapReqSender SoapRequestSender
+	logger     Logger
+	config     Config
+	soapSender customsoap.CBRSOAPSender
 }
 
 type Logger interface {
@@ -38,23 +45,56 @@ type Config interface {
 }
 
 type SoapRequestSender interface {
-	GetCursOnDate(ctx context.Context, input datastructures.RequestOnDate) (error, datastructures.ResponseValuteCursDynamic)
+	GetCursOnDate(ctx context.Context, input datastructures.GetCursOnDateXML) (error, datastructures.GetCursOnDateXMLResult)
 }
 
-func New(logger Logger, config Config, soapReqSender SoapRequestSender) *App {
+func New(logger Logger, config Config, sender customsoap.CBRSOAPSender) *App {
 	app := App{
-		logger:        logger,
-		config:        config,
-		soapReqSender: soapReqSender,
+		logger:     logger,
+		config:     config,
+		soapSender: sender,
 	}
 	return &app
 }
 
-func (a *App) GetCursOnDate(ctx context.Context, input datastructures.RequestOnDate) (error, datastructures.ResponseValuteCursDynamic) {
-	var response datastructures.ResponseValuteCursDynamic
-	err, response := a.soapReqSender.GetCursOnDate(ctx, input)
+func (a *App) GetCursOnDate(ctx context.Context, input datastructures.GetCursOnDateXML) (error, datastructures.GetCursOnDateXMLResult) {
+	SOAPMethod := "GetCursOnDateXML"
+	var response datastructures.GetCursOnDateXMLResult
+
+	input.XMLNs = cbrNamespace
+
+	response.ValuteCursOnDate = make([]datastructures.GetCursOnDateXMLResultElem, 0)
+
+	//res, err := customsoap.SoapCall("http://www.cbr.ru/DailyInfoWebServ/DailyInfo.asmx", "GetCursOnDateXML", input)
+	res, err := a.soapSender.SoapCall(SOAPMethod, input)
+
 	if err != nil {
+		a.logger.Error(err.Error())
 		return err, response
 	}
+
+	xmlData := bytes.NewBuffer(res)
+
+	d := xml.NewDecoder(xmlData)
+
+	for t, _ := d.Token(); t != nil; t, _ = d.Token() {
+		switch se := t.(type) {
+		case xml.StartElement:
+			fmt.Println("curElement: ", se.Name.Local)
+			if se.Name.Local == "ValuteData" {
+				err = d.DecodeElement(&response, &se)
+				if err != nil {
+					fmt.Println("d.DecodeElement err: ", err.Error())
+					return err, response
+				}
+			}
+		}
+	}
+
+	for i, _ := range response.ValuteCursOnDate {
+		response.ValuteCursOnDate[i].Vname = strings.TrimSpace(response.ValuteCursOnDate[i].Vname)
+		response.ValuteCursOnDate[i].Vname = strings.Trim(response.ValuteCursOnDate[i].Vname, "\r\n")
+	}
 	return nil, response
+
 }

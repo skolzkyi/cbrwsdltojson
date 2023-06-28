@@ -15,8 +15,8 @@ import (
 	"github.com/skolzkyi/cbrwsdltojson/internal/app"
 	"github.com/skolzkyi/cbrwsdltojson/internal/logger"
 
+	customsoap "github.com/skolzkyi/cbrwsdltojson/internal/customsoap"
 	internalhttp "github.com/skolzkyi/cbrwsdltojson/internal/server/http"
-	soapreq "github.com/skolzkyi/cbrwsdltojson/internal/soapreq"
 )
 
 var configFilePath string
@@ -44,11 +44,8 @@ func main() {
 		fmt.Println(err)
 	}
 	log.Info("servAddr: " + config.GetAddress())
-
-	soapReqSender := soapreq.NewSoapRequestSender()
-	soapReqSender.Init(&config)
-
-	cbrwsdltojson := app.New(log, &config, &soapReqSender)
+	soapSender := customsoap.New(log, &config)
+	cbrwsdltojson := app.New(log, &config, *soapSender)
 
 	server := internalhttp.NewServer(log, cbrwsdltojson, &config)
 

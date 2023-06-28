@@ -35,7 +35,7 @@ func (s *Server) GetCursOnDate(w http.ResponseWriter, r *http.Request) {
 
 	switch r.Method {
 	case http.MethodPost:
-		newRequest := datastructures.RequestOnDate{}
+		newRequest := datastructures.GetCursOnDateXML{}
 		jsonstring1, err := json.Marshal(newRequest)
 		fmt.Println("jsonstring1: ", string(jsonstring1))
 

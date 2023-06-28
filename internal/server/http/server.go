@@ -40,7 +40,7 @@ type Logger interface {
 }
 
 type Application interface {
-	GetCursOnDate(ctx context.Context, input datastructures.RequestOnDate) (error, datastructures.ResponseValuteCursDynamic)
+	GetCursOnDate(ctx context.Context, input datastructures.GetCursOnDateXML) (error, datastructures.GetCursOnDateXMLResult)
 }
 
 func NewServer(logger Logger, app Application, config Config) *Server {
