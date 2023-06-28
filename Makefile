@@ -8,7 +8,7 @@ build:
 	go build -v -o $(BIN) -ldflags "$(LDFLAGS)" ./cmd/cbrwsdltojson
 
 run: build
-	$(BIN) -config ./configs/config.env > cbrwsdltojsonCLog.txt 
+	$(BIN) -config ./configs/config.env > cbrwsdltojsonCLog.log
 
 build-img:
 	docker build \
@@ -35,13 +35,13 @@ lint: install-lint-deps
 	golangci-lint run ./...
 
 up:
-	docker-compose -f ./deployments/docker-compose.yaml up --build > deployLog.txt
+	docker-compose -f ./deployments/docker-compose.yaml up --build > deployLog.log
 
 down:
 	docker-compose -f ./deployments/docker-compose.yaml down
 
 integration-tests:
 	docker-compose -f ./deployments/docker-compose.yaml -f ./deployments/docker-compose.test.yaml up --build --exit-code-from integration_tests && \
-	docker-compose -f ./deployments/docker-compose.yaml -f ./deployments/docker-compose.test.yaml down > deployIntegrationTestsLog.txt
+	docker-compose -f ./deployments/docker-compose.yaml -f ./deployments/docker-compose.test.yaml down > deployIntegrationTestsLog.log
 
 .PHONY:  build run build-img run-img stop-img version test lint up down integration-tests 
