@@ -9,7 +9,7 @@ import (
 )
 
 type Config struct {
-	permittedRequest       map[struct{}]string `mapstructure:"PERMITTED_REQUESTS"`
+	permittedRequest       map[string]struct{} `mapstructure:"PERMITTED_REQUESTS"`
 	Logger                 LoggerConf          `mapstructure:"Logger"`
 	ServerShutdownTimeout  time.Duration       `mapstructure:"SERVER_SHUTDOWN_TIMEOUT"`
 	CBRWSDLTimeout         time.Duration       `mapstructure:"CBR_WSDL_TIMEOUT"`
@@ -68,13 +68,14 @@ func (config *Config) Init(path string) error {
 	config.dateTimeResponseLayout = viper.GetString("DATE_TIME_RESPONSE_LAYOUT")
 	config.dateTimeRequestLayout = viper.GetString("DATE_TIME_REQUEST_LAYOUT")
 	tempPermReq := viper.GetString("PERMITTED_REQUESTS")
-	tempPermReqSl := strings.Split(tempPermReq, " ")
-	permittedRequests := make(map[struct{}]string)
-	for _, curPR := range tempPermReqSl {
-		permittedRequests[struct{}{}] = strings.TrimSpace(curPR)
+	permittedRequests := make(map[string]struct{})
+	if tempPermReq != "" {
+		tempPermReqSl := strings.Split(tempPermReq, " ")
+		for _, curPR := range tempPermReqSl {
+			permittedRequests[strings.TrimSpace(curPR)] = struct{}{}
+		}
 	}
 	config.permittedRequest = permittedRequests
-
 	return nil
 }
 
@@ -114,6 +115,6 @@ func (config *Config) GetDateTimeRequestLayout() string {
 	return config.dateTimeRequestLayout
 }
 
-func (config *Config) GetPermittedRequests() map[struct{}]string {
+func (config *Config) GetPermittedRequests() map[string]struct{} {
 	return config.permittedRequest
 }

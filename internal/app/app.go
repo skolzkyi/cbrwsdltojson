@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"strings"
+	"sync"
 	"time"
 
 	"go.uber.org/zap"
@@ -18,14 +19,18 @@ import (
 
 const cbrNamespace = "http://web.cbr.ru/"
 
-var ErrAssertionAfterXMLDecoding = errors.New("assertion error after XML decoding")
-var ErrAssertionAfterGetCacheData = errors.New("assertion error after get cached data")
+var (
+	ErrAssertionAfterXMLDecoding  = errors.New("assertion error after XML decoding")
+	ErrAssertionAfterGetCacheData = errors.New("assertion error after get cached data")
+	ErrMethodProhibited           = errors.New("method prohibited")
+)
 
 type App struct {
-	logger      Logger
-	config      Config
-	soapSender  SoapRequestSender
-	appmemcache AppMemCache
+	logger            Logger
+	config            Config
+	soapSender        SoapRequestSender
+	appmemcache       AppMemCache
+	permittedRequests PermittedReqSyncMap
 }
 
 type Logger interface {
@@ -47,7 +52,7 @@ type Config interface {
 	GetLoggingOn() bool
 	GetDateTimeResponseLayout() string
 	GetDateTimeRequestLayout() string
-	GetPermittedRequests() map[struct{}]string
+	GetPermittedRequests() map[string]struct{}
 }
 
 type SoapRequestSender interface {
@@ -61,13 +66,54 @@ type AppMemCache interface {
 	GetPayloadInCache(tag string) (interface{}, bool)
 }
 
-func New(logger Logger, config Config, sender SoapRequestSender, memcache AppMemCache) *App {
-	app := App{
-		logger:      logger,
-		config:      config,
-		soapSender:  sender,
-		appmemcache: memcache,
+type PermittedReqSyncMap struct {
+	mu                sync.RWMutex
+	permittedRequests map[string]struct{}
+}
+
+func NewPermittedReqSyncMap() PermittedReqSyncMap {
+	return PermittedReqSyncMap{}
+}
+
+func (prsm *PermittedReqSyncMap) Init(initMap map[string]struct{}) {
+	prsm.mu.Lock()
+	defer prsm.mu.Unlock()
+	prsm.permittedRequests = make(map[string]struct{})
+	if len(initMap) > 0 {
+		prsm.permittedRequests = initMap
+		fmt.Println("prsm.permittedRequests: ", prsm.permittedRequests)
 	}
+}
+
+func (prsm *PermittedReqSyncMap) AddPermittedRequest(permittedRequest string) {
+	prsm.mu.Lock()
+	defer prsm.mu.Unlock()
+	prsm.permittedRequests[permittedRequest] = struct{}{}
+}
+
+func (prsm *PermittedReqSyncMap) IsPermittedRequestInMap(permittedRequest string) bool {
+	prsm.mu.RLock()
+	defer prsm.mu.RUnlock()
+	_, ok := prsm.permittedRequests[permittedRequest]
+	return !ok
+}
+
+func (prsm *PermittedReqSyncMap) PermittedRequestMapLength() int {
+	prsm.mu.RLock()
+	defer prsm.mu.RUnlock()
+	length := len(prsm.permittedRequests)
+	return length
+}
+
+func New(logger Logger, config Config, sender SoapRequestSender, memcache AppMemCache, permReqMap map[string]struct{}) *App {
+	app := App{
+		logger:            logger,
+		config:            config,
+		soapSender:        sender,
+		appmemcache:       memcache,
+		permittedRequests: NewPermittedReqSyncMap(),
+	}
+	app.permittedRequests.Init(permReqMap)
 	return &app
 }
 
@@ -77,6 +123,13 @@ func (a *App) RemoveDataInMemCacheBySOAPAction(SOAPAction string) {
 
 func (a *App) GetCursOnDate(ctx context.Context, input datastructures.GetCursOnDateXML) (error, datastructures.GetCursOnDateXMLResult) {
 	SOAPMethod := "GetCursOnDateXML"
+	if a.permittedRequests.PermittedRequestMapLength() > 0 {
+		fmt.Println("111")
+		if !a.permittedRequests.IsPermittedRequestInMap(SOAPMethod) {
+			fmt.Println("222")
+			return ErrMethodProhibited, datastructures.GetCursOnDateXMLResult{}
+		}
+	}
 	startNodeName := "ValuteData"
 	var response datastructures.GetCursOnDateXMLResult
 	var err error

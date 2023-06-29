@@ -5,11 +5,12 @@ import (
 )
 
 type LogWrap struct {
-	config zap.Config
-	logger *zap.SugaredLogger
+	config    zap.Config
+	logger    *zap.SugaredLogger
+	loggingOn bool
 }
 
-func New(level string) (*LogWrap, error) {
+func New(level string, loggingOn bool) (*LogWrap, error) {
 	logWrap := LogWrap{}
 	zlevel, err := zap.ParseAtomicLevel(level)
 	if err != nil {
@@ -25,6 +26,7 @@ func New(level string) (*LogWrap, error) {
 		EncoderConfig:    zap.NewDevelopmentEncoderConfig(),
 	}
 	logWrap.logger = zap.Must(logWrap.config.Build()).Sugar()
+	logWrap.loggingOn = loggingOn
 	return &logWrap, nil
 }
 
@@ -33,17 +35,25 @@ func (l LogWrap) GetZapLogger() *zap.SugaredLogger {
 }
 
 func (l LogWrap) Info(msg string) {
-	l.logger.Info(msg)
+	if l.loggingOn {
+		l.logger.Info(msg)
+	}
 }
 
 func (l LogWrap) Warning(msg string) {
-	l.logger.Warn(msg)
+	if l.loggingOn {
+		l.logger.Warn(msg)
+	}
 }
 
 func (l LogWrap) Error(msg string) {
-	l.logger.Error(msg)
+	if l.loggingOn {
+		l.logger.Error(msg)
+	}
 }
 
 func (l LogWrap) Fatal(msg string) {
-	l.logger.Fatal(msg)
+	if l.loggingOn {
+		l.logger.Fatal(msg)
+	}
 }

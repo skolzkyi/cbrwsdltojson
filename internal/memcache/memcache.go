@@ -4,8 +4,6 @@ import (
 	"sync"
 )
 
-//var ErrMemCacheElemNotExist = errors.New("element with this tag not exist in memcache")
-
 type MemCache struct {
 	mu    sync.RWMutex
 	cache map[string]interface{}

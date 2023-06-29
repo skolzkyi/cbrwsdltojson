@@ -40,7 +40,7 @@ func main() {
 		fmt.Println(err)
 	}
 	fmt.Println("config: ", config)
-	log, err := logger.New(config.Logger.Level)
+	log, err := logger.New(config.Logger.Level, config.GetLoggingOn())
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -48,7 +48,7 @@ func main() {
 	soapSender := customsoap.New(log, &config)
 	appMemcache := memcache.New()
 	appMemcache.Init()
-	cbrwsdltojson := app.New(log, &config, soapSender, appMemcache)
+	cbrwsdltojson := app.New(log, &config, soapSender, appMemcache, config.GetPermittedRequests())
 
 	server := internalhttp.NewServer(log, cbrwsdltojson, &config)
 

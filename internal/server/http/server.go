@@ -28,7 +28,7 @@ type Config interface {
 	GetLoggingOn() bool
 	GetDateTimeResponseLayout() string
 	GetDateTimeRequestLayout() string
-	GetPermittedRequests() map[struct{}]string
+	GetPermittedRequests() map[string]struct{}
 }
 
 type Logger interface {
