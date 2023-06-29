@@ -16,6 +16,7 @@ import (
 	"github.com/skolzkyi/cbrwsdltojson/internal/logger"
 
 	customsoap "github.com/skolzkyi/cbrwsdltojson/internal/customsoap"
+	memcache "github.com/skolzkyi/cbrwsdltojson/internal/memcache"
 	internalhttp "github.com/skolzkyi/cbrwsdltojson/internal/server/http"
 )
 
@@ -45,7 +46,9 @@ func main() {
 	}
 	log.Info("servAddr: " + config.GetAddress())
 	soapSender := customsoap.New(log, &config)
-	cbrwsdltojson := app.New(log, &config, *soapSender)
+	appMemcache := memcache.New()
+	appMemcache.Init()
+	cbrwsdltojson := app.New(log, &config, soapSender, appMemcache)
 
 	server := internalhttp.NewServer(log, cbrwsdltojson, &config)
 

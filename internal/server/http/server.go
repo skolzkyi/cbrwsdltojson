@@ -40,6 +40,7 @@ type Logger interface {
 }
 
 type Application interface {
+	RemoveDataInMemCacheBySOAPAction(SOAPAction string)
 	GetCursOnDate(ctx context.Context, input datastructures.GetCursOnDateXML) (error, datastructures.GetCursOnDateXMLResult)
 }
 
