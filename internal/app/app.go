@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/xml"
+	"errors"
 	"fmt"
 	"strings"
 	"time"
@@ -15,6 +16,8 @@ import (
 )
 
 const cbrNamespace = "http://web.cbr.ru/"
+
+var ErrAssertionAfterXMLDecoding = errors.New("assertion error after XML decoding")
 
 type App struct {
 	logger     Logger
@@ -59,19 +62,20 @@ func New(logger Logger, config Config, sender customsoap.CBRSOAPSender) *App {
 
 func (a *App) GetCursOnDate(ctx context.Context, input datastructures.GetCursOnDateXML) (error, datastructures.GetCursOnDateXMLResult) {
 	SOAPMethod := "GetCursOnDateXML"
+	startNodeName := "ValuteData"
 	var response datastructures.GetCursOnDateXMLResult
 
 	input.XMLNs = cbrNamespace
 
 	response.ValuteCursOnDate = make([]datastructures.GetCursOnDateXMLResultElem, 0)
 
-	//res, err := customsoap.SoapCall("http://www.cbr.ru/DailyInfoWebServ/DailyInfo.asmx", "GetCursOnDateXML", input)
 	res, err := a.soapSender.SoapCall(SOAPMethod, input)
 
 	if err != nil {
 		a.logger.Error(err.Error())
 		return err, response
 	}
+	fmt.Println("res: ", string(res))
 
 	xmlData := bytes.NewBuffer(res)
 
@@ -81,7 +85,7 @@ func (a *App) GetCursOnDate(ctx context.Context, input datastructures.GetCursOnD
 		switch se := t.(type) {
 		case xml.StartElement:
 			fmt.Println("curElement: ", se.Name.Local)
-			if se.Name.Local == "ValuteData" {
+			if se.Name.Local == startNodeName {
 				err = d.DecodeElement(&response, &se)
 				if err != nil {
 					fmt.Println("d.DecodeElement err: ", err.Error())
