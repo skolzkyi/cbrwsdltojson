@@ -78,6 +78,14 @@ func (soapSender *CBRSOAPSender) SoapCall(action string, payload interface{}) ([
 		soapSender.InclLogger.Error(err.Error())
 		return nil, err
 	}
+	/*
+		bodyInForTest, err := xml.Marshal(payload)
+		fmt.Println("body in for test: ", string(bodyInForTest))
+		if err != nil {
+			soapSender.InclLogger.Error(err.Error())
+			return nil, err
+		}
+	*/
 	fmt.Println("bodyInnXML: ", string(bodyInnXML))
 	v := soapRQ{
 		XMLNsXsi:  "http://www.w3.org/2001/XMLSchema-instance",

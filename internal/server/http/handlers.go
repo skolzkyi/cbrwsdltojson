@@ -48,6 +48,7 @@ func (s *Server) GetMethodDataWithoutCache(w http.ResponseWriter, r *http.Reques
 
 		s.app.RemoveDataInMemCacheBySOAPAction(SOAPAction)
 
+		// 307, not 303: on 307 not lost body and not change verb to GET
 		http.Redirect(w, r, "/"+SOAPAction, http.StatusTemporaryRedirect)
 
 	default:

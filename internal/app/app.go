@@ -154,7 +154,7 @@ func (a *App) GetCursOnDate(ctx context.Context, input datastructures.GetCursOnD
 		a.logger.Error(err.Error())
 		return err, response
 	}
-	//fmt.Println("res: ", string(res))
+	fmt.Println("res: ", string(res))
 
 	xmlData := bytes.NewBuffer(res)
 
@@ -180,7 +180,34 @@ func (a *App) GetCursOnDate(ctx context.Context, input datastructures.GetCursOnD
 	}
 
 	a.appmemcache.AddOrUpdatePayloadInCache(SOAPMethod, response)
-
+	/*
+		testGetCursOnDateXMLResult := datastructures.GetCursOnDateXMLResult{
+			OnDate:           "20230622",
+			ValuteCursOnDate: make([]datastructures.GetCursOnDateXMLResultElem, 2),
+		}
+		testGetCursOnDateXMLResultElem := datastructures.GetCursOnDateXMLResultElem{
+			Vname:   "Австралийский доллар",
+			Vnom:    1,
+			Vcurs:   "57.1445",
+			Vcode:   "36",
+			VchCode: "AUD",
+		}
+		testGetCursOnDateXMLResult.ValuteCursOnDate[0] = testGetCursOnDateXMLResultElem
+		testGetCursOnDateXMLResultElem = datastructures.GetCursOnDateXMLResultElem{
+			Vname:   "Азербайджанский манат",
+			Vnom:    1,
+			Vcurs:   "49.5569",
+			Vcode:   "944",
+			VchCode: "AZN",
+		}
+		testGetCursOnDateXMLResult.ValuteCursOnDate[1] = testGetCursOnDateXMLResultElem
+		testDataXMLMarsh, err := xml.Marshal(testGetCursOnDateXMLResult)
+		if err != nil {
+			a.logger.Error(err.Error())
+			return err, response
+		}
+		fmt.Println("testDataXMLMarsh: ", string(testDataXMLMarsh))
+	*/
 	return nil, response
 
 }

@@ -8,6 +8,7 @@ import (
 
 var (
 	ErrBadInputDateData = errors.New("fromDate after toDate")
+	ErrBadRawData       = errors.New("parse raw date error")
 )
 
 type GetCursOnDateXML struct {
@@ -19,7 +20,7 @@ type GetCursOnDateXML struct {
 func (data *GetCursOnDateXML) Validate(inputDTLayout string) error {
 	_, err := time.Parse(inputDTLayout, data.OnDate)
 	if err != nil {
-		return err
+		return ErrBadRawData
 	}
 	return nil
 }
@@ -32,11 +33,11 @@ type RequestBetweenDate struct {
 func (data *RequestBetweenDate) Validate(inputDTLayout string) error {
 	fromDateDate, err := time.Parse(inputDTLayout, data.FromDate)
 	if err != nil {
-		return err
+		return ErrBadRawData
 	}
 	toDateDate, err := time.Parse(inputDTLayout, data.ToDate)
 	if err != nil {
-		return err
+		return ErrBadRawData
 	}
 	if fromDateDate.After(toDateDate) {
 		return ErrBadInputDateData
