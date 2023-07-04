@@ -4,6 +4,7 @@ package customsoap
 
 import (
 	"bytes"
+	"context"
 	"encoding/xml"
 	"errors"
 	"fmt"
@@ -15,7 +16,8 @@ import (
 	"go.uber.org/zap"
 )
 
-var ErrBadLenEnvelopeSlice = errors.New("Bad length of slice with element of envelope string")
+var ErrBadLenEnvelopeSlice = errors.New("bad length of slice with element of envelope string")
+var ErrContextWSReqExpired = errors.New("context of request to CBR WS expired")
 
 type CBRSOAPSender struct {
 	InclLogger Logger
@@ -64,71 +66,72 @@ func New(logger Logger, config Config) *CBRSOAPSender {
 		InclLogger: logger,
 		InclConfig: config,
 		HTTPClient: http.Client{
-			Timeout: config.GetCBRWSDLTimeout(),
+			//	Timeout: config.GetCBRWSDLTimeout(),
 		},
 		WSAddress: config.GetCBRWSDLAddress(),
 	}
 	return &CBRSOAPSender
 }
 
-func (soapSender *CBRSOAPSender) SoapCall(action string, payload interface{}) ([]byte, error) {
-	bodyRequest := make([]byte, 0)
-	bodyInnXML, err := xml.MarshalIndent(payload, "", "  ")
-	if err != nil {
+func (soapSender *CBRSOAPSender) SoapCall(ctx context.Context, action string, payload interface{}) ([]byte, error) {
+	var err error
+	select {
+	case <-ctx.Done():
+		err = ErrContextWSReqExpired
 		soapSender.InclLogger.Error(err.Error())
 		return nil, err
-	}
-	/*
-		bodyInForTest, err := xml.Marshal(payload)
-		fmt.Println("body in for test: ", string(bodyInForTest))
+	default:
+		bodyRequest := make([]byte, 0)
+		bodyInnXML, err := xml.MarshalIndent(payload, "", "  ")
 		if err != nil {
 			soapSender.InclLogger.Error(err.Error())
 			return nil, err
 		}
-	*/
-	fmt.Println("bodyInnXML: ", string(bodyInnXML))
-	v := soapRQ{
-		XMLNsXsi:  "http://www.w3.org/2001/XMLSchema-instance",
-		XMLNsXsd:  "http://www.w3.org/2001/XMLSchema",
-		XMLNsSoap: "http://schemas.xmlsoap.org/soap/envelope/",
+
+		fmt.Println("bodyInnXML: ", string(bodyInnXML))
+		v := soapRQ{
+			XMLNsXsi:  "http://www.w3.org/2001/XMLSchema-instance",
+			XMLNsXsd:  "http://www.w3.org/2001/XMLSchema",
+			XMLNsSoap: "http://schemas.xmlsoap.org/soap/envelope/",
+		}
+		payloadBase, err := xml.MarshalIndent(v, "", "  ")
+		if err != nil {
+			soapSender.InclLogger.Error(err.Error())
+			return nil, err
+		}
+
+		payloadBaseSl := strings.Split(string(payloadBase), "<BODY_DESCRIPTOR></BODY_DESCRIPTOR>")
+		if len(payloadBaseSl) != 2 {
+			soapSender.InclLogger.Error(err.Error())
+			return nil, ErrBadLenEnvelopeSlice
+		}
+		bodyRequest = append(bodyRequest, []byte(payloadBaseSl[0])...)
+		bodyRequest = append(bodyRequest, bodyInnXML...)
+		bodyRequest = append(bodyRequest, []byte(payloadBaseSl[1])...)
+
+		req, err := http.NewRequestWithContext(ctx, "POST", soapSender.InclConfig.GetCBRWSDLAddress(), bytes.NewBuffer(bodyRequest))
+		if err != nil {
+			soapSender.InclLogger.Error(err.Error())
+			return nil, err
+		}
+
+		req.Header.Set("SOAPAction", `"`+`http://web.cbr.ru/`+action+`"`)
+		req.Header.Set("Content-Type", "text/xml; charset=utf-8")
+
+		response, err := soapSender.HTTPClient.Do(req)
+		if err != nil {
+			soapSender.InclLogger.Error(err.Error())
+			return nil, err
+		}
+
+		defer response.Body.Close()
+
+		bodyBytes, err := ioutil.ReadAll(response.Body)
+		if err != nil {
+			soapSender.InclLogger.Error(err.Error())
+			return nil, err
+		}
+
+		return bodyBytes, nil
 	}
-	payloadBase, err := xml.MarshalIndent(v, "", "  ")
-	if err != nil {
-		soapSender.InclLogger.Error(err.Error())
-		return nil, err
-	}
-
-	payloadBaseSl := strings.Split(string(payloadBase), "<BODY_DESCRIPTOR></BODY_DESCRIPTOR>")
-	if len(payloadBaseSl) != 2 {
-		soapSender.InclLogger.Error(err.Error())
-		return nil, ErrBadLenEnvelopeSlice
-	}
-	bodyRequest = append(bodyRequest, []byte(payloadBaseSl[0])...)
-	bodyRequest = append(bodyRequest, bodyInnXML...)
-	bodyRequest = append(bodyRequest, []byte(payloadBaseSl[1])...)
-
-	req, err := http.NewRequest("POST", soapSender.InclConfig.GetCBRWSDLAddress(), bytes.NewBuffer(bodyRequest))
-	if err != nil {
-		soapSender.InclLogger.Error(err.Error())
-		return nil, err
-	}
-
-	req.Header.Set("SOAPAction", `"`+`http://web.cbr.ru/`+action+`"`)
-	req.Header.Set("Content-Type", "text/xml; charset=utf-8")
-
-	response, err := soapSender.HTTPClient.Do(req)
-	if err != nil {
-		soapSender.InclLogger.Error(err.Error())
-		return nil, err
-	}
-
-	defer response.Body.Close()
-
-	bodyBytes, err := ioutil.ReadAll(response.Body)
-	if err != nil {
-		soapSender.InclLogger.Error(err.Error())
-		return nil, err
-	}
-
-	return bodyBytes, nil
 }

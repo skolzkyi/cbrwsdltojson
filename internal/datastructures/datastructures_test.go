@@ -63,6 +63,7 @@ func initTestCasesGetCursOnDateXML(t *testing.T) DatastructuresTestTable {
 		DataStructureType: "GetCursOnDateXML",
 		Datastructure: datastructures.GetCursOnDateXML{
 			OnDate: "2023-06-22",
+			XMLNs:  "http://web.cbr.ru/",
 		},
 		NeedXMLMarshal:    true,
 		XMLMarshalControl: `<GetCursOnDateXML xmlns="http://web.cbr.ru/"><On_date>2023-06-22</On_date></GetCursOnDateXML>`,
@@ -74,7 +75,7 @@ func initTestCasesGetCursOnDateXML(t *testing.T) DatastructuresTestTable {
 		}
 		marshXMLres, err := xml.Marshal(DSAssert)
 		require.NoError(t, err)
-		require.Equal(t, string(marshXMLres), XMLMarshalControl)
+		require.Equal(t, XMLMarshalControl, string(marshXMLres))
 	}
 	newCase.ValidateControlTestFunc = func(_ *testing.T, _ interface{}, _ error) {}
 	DatastructuresTest.InputDataCases[0] = newCase
@@ -83,6 +84,7 @@ func initTestCasesGetCursOnDateXML(t *testing.T) DatastructuresTestTable {
 		DataStructureType: "GetCursOnDateXML",
 		Datastructure: datastructures.GetCursOnDateXML{
 			OnDate: "022-14-22",
+			XMLNs:  "http://web.cbr.ru/",
 		},
 		NeedValidate:    true,
 		ValidateControl: datastructures.ErrBadRawData,
@@ -94,7 +96,7 @@ func initTestCasesGetCursOnDateXML(t *testing.T) DatastructuresTestTable {
 			require.Fail(t, "fail type assertion in MarshalXMLTestFunc")
 		}
 		err := DSAssert.Validate("2006-01-02")
-		require.Equal(t, err, ValidateControl)
+		require.Equal(t, ValidateControl, err)
 	}
 	DatastructuresTest.InputDataCases[1] = newCase
 	newCase = DatastructuresTestCase{
@@ -102,6 +104,7 @@ func initTestCasesGetCursOnDateXML(t *testing.T) DatastructuresTestTable {
 		DataStructureType: "GetCursOnDateXML",
 		Datastructure: datastructures.GetCursOnDateXML{
 			OnDate: "2023-06-22",
+			XMLNs:  "http://web.cbr.ru/",
 		},
 		NeedValidate:    true,
 		ValidateControl: nil,
@@ -113,7 +116,7 @@ func initTestCasesGetCursOnDateXML(t *testing.T) DatastructuresTestTable {
 			require.Fail(t, "fail type assertion in MarshalXMLTestFunc")
 		}
 		err := DSAssert.Validate("2006-01-02")
-		require.Equal(t, err, ValidateControl)
+		require.Equal(t, ValidateControl, err)
 	}
 	DatastructuresTest.InputDataCases[2] = newCase
 	testGetCursOnDateXMLResult := datastructures.GetCursOnDateXMLResult{
@@ -150,7 +153,7 @@ func initTestCasesGetCursOnDateXML(t *testing.T) DatastructuresTestTable {
 		}
 		marshXMLres, err := xml.Marshal(DSAssert)
 		require.NoError(t, err)
-		require.Equal(t, string(marshXMLres), XMLMarshalControl)
+		require.Equal(t, XMLMarshalControl, string(marshXMLres))
 	}
 	newCase.ValidateControlTestFunc = func(_ *testing.T, _ interface{}, _ error) {}
 	DatastructuresTest.OutputDataCases[0] = newCase
@@ -161,6 +164,7 @@ func TestAllDatastructuresTableCases(t *testing.T) {
 	AllDTTable := initAllDatastructuresTestTable(t)
 	for _, curTestTable := range AllDTTable {
 		for _, curInputDataCase := range curTestTable.InputDataCases {
+			curInputDataCase := curInputDataCase
 			t.Run(curTestTable.MethodName+":"+curInputDataCase.Name, func(t *testing.T) {
 				t.Parallel()
 				curInputDataCase.MarshalXMLTest(t)
@@ -168,6 +172,7 @@ func TestAllDatastructuresTableCases(t *testing.T) {
 			})
 		}
 		for _, curOutputDataCase := range curTestTable.OutputDataCases {
+			curOutputDataCase := curOutputDataCase
 			t.Run(curTestTable.MethodName+":"+curOutputDataCase.Name, func(t *testing.T) {
 				t.Parallel()
 				curOutputDataCase.MarshalXMLTest(t)
