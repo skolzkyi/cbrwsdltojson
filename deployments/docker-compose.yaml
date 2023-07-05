@@ -15,5 +15,5 @@ services:
     - default_network
 networks:
   default_network:
-    driver: host
+    driver: bridge
   

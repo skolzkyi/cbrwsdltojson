@@ -72,19 +72,14 @@ func (s *Server) GetCursOnDate(w http.ResponseWriter, r *http.Request) {
 			apiErrHandler(err, &w)
 			return
 		}
-		fmt.Println("io.ReadAll: ", string(body))
 		err = json.Unmarshal(body, &newRequest)
 		if err != nil {
-			fmt.Println("err json.Unmarshal")
 			apiErrHandler(err, &w)
 			return
 		}
 
-		fmt.Println("newRequest: ", newRequest)
-
 		err = newRequest.Validate(s.Config.GetDateTimeRequestLayout())
 		if err != nil {
-			fmt.Println("newRequest.Validate(): ", err.Error())
 			apiErrHandler(err, &w)
 			return
 		}

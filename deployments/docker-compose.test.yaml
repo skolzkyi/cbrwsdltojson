@@ -1,0 +1,17 @@
+version: '3.9'
+
+services:
+  integration_tests:
+    container_name: integration_tests
+    build:
+      context: ../
+      dockerfile: ./build/integrationTests/Dockerfile
+    env_file:
+    - ../configs/config.env
+    depends_on:
+       cbrwsdltojson:
+        condition: service_started
+    volumes:
+      - "./configs:/app/configs"
+    networks:
+    - default_network
