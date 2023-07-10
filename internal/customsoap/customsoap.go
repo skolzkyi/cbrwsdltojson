@@ -67,10 +67,8 @@ func New(logger Logger, config Config) *CBRSOAPSender {
 	CBRSOAPSender := CBRSOAPSender{
 		InclLogger: logger,
 		InclConfig: config,
-		HTTPClient: http.Client{
-			//	Timeout: config.GetCBRWSDLTimeout(),
-		},
-		WSAddress: config.GetCBRWSDLAddress(),
+		HTTPClient: http.Client{},
+		WSAddress:  config.GetCBRWSDLAddress(),
 	}
 	return &CBRSOAPSender
 }
