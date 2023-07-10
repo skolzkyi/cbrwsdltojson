@@ -35,7 +35,7 @@ func (config *Config) Init(path string) error {
 		return err
 	}
 
-	viper.SetDefault("ADDRESS", "127.0.0.1")
+	viper.SetDefault("ADDRESS", "cbrwsdltojson")
 	viper.SetDefault("PORT", "4000")
 	viper.SetDefault("SERVER_SHUTDOWN_TIMEOUT", 30*time.Second)
 	viper.SetDefault("CBR_WSDL_TIMEOUT", 5*time.Second)

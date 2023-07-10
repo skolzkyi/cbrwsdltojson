@@ -5,9 +5,10 @@ services:
     container_name: integration_tests
     build:
       context: ../
-      dockerfile: ./build/integrationTests/Dockerfile
+      dockerfile: ./build/integrationtests/Dockerfile
     env_file:
     - ../configs/config.env
+    restart: always
     depends_on:
        cbrwsdltojson:
         condition: service_started
