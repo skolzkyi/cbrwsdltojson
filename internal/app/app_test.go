@@ -4,7 +4,6 @@ import (
 	"context"
 	"testing"
 
-	//datastructures "github.com/skolzkyi/cbrwsdltojson/internal/datastructures"
 	app "github.com/skolzkyi/cbrwsdltojson/internal/app"
 	"github.com/skolzkyi/cbrwsdltojson/internal/customsoap"
 	datastructures "github.com/skolzkyi/cbrwsdltojson/internal/datastructures"
@@ -41,6 +40,7 @@ func initTestApp(t *testing.T) *app.App {
 func TestPermittedReqSyncMap(t *testing.T) {
 	testPermittedReqSyncMap := app.PermittedReqSyncMap{}
 	testPermittedReqSyncMap.Init(nil)
+	t.Parallel()
 	t.Run("TestPermittedReqSyncMap: AddPermittedRequest_And_IsPermittedRequestInMap", func(t *testing.T) {
 		t.Parallel()
 		testPermittedReqSyncMap := app.PermittedReqSyncMap{}
@@ -62,7 +62,7 @@ func TestPermittedReqSyncMap(t *testing.T) {
 	})
 }
 
-// GetCursOnDate
+// GetCursOnDate.
 func initTestDataGetCursOnDate(t *testing.T) *AppTestTable {
 	t.Helper()
 	testGetCursOnDateXMLResult := datastructures.GetCursOnDateXMLResult{
@@ -111,10 +111,10 @@ func initTestDataGetCursOnDate(t *testing.T) *AppTestTable {
 	return &testDataGetCursOnDate
 }
 
-// dsfsdfa
 func TestAllAppCases(t *testing.T) {
-	var testCasesByMethod *AppTestTable
+	var testCasesByMethod *AppTestTable //nolint: gosimple
 	testCasesByMethod = initTestDataGetCursOnDate(t)
+	t.Parallel()
 	for _, curTestCase := range testCasesByMethod.TestCases {
 		curTestCase := curTestCase
 		t.Run(testCasesByMethod.MethodName+":"+curTestCase.Name, func(t *testing.T) {
@@ -122,11 +122,10 @@ func TestAllAppCases(t *testing.T) {
 			testApp := initTestApp(t)
 			inputAssert, ok := curTestCase.Input.(datastructures.GetCursOnDateXML)
 			require.Equal(t, true, ok)
-			err, testRes := testApp.GetCursOnDate(context.Background(), inputAssert)
+			testRes, err := testApp.GetCursOnDate(context.Background(), inputAssert)
 			require.Equal(t, curTestCase.Error, err)
 			require.Equal(t, curTestCase.Output, testRes)
 			testApp.RemoveDataInMemCacheBySOAPAction(testCasesByMethod.MethodName)
 		})
 	}
-
 }

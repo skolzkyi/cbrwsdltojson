@@ -10,8 +10,6 @@ import (
 	"os/signal"
 	"syscall"
 
-	//"time"
-
 	"github.com/skolzkyi/cbrwsdltojson/internal/app"
 	"github.com/skolzkyi/cbrwsdltojson/internal/logger"
 

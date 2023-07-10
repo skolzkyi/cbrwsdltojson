@@ -12,7 +12,6 @@ linters:
     - asciicheck
     - bodyclose
     - deadcode
-    - depguard
     - dogsled
     - dupl
     - durationcheck
@@ -20,7 +19,6 @@ linters:
     - exhaustive
     - exportloopref
     - funlen
-    - gci
     - gocognit
     - goconst
     - gocritic

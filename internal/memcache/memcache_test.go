@@ -10,6 +10,7 @@ import (
 func TestAllMemCacheCases(t *testing.T) {
 	memcacheExempl := memcache.New()
 	memcacheExempl.Init()
+	t.Parallel()
 	t.Run("Test_AddOrUpdatePayloadInCache_And_GetPayloadInCache", func(t *testing.T) {
 		t.Parallel()
 		ok := memcacheExempl.AddOrUpdatePayloadInCache("testTag_TestAddOrUpdatePayloadInCache", "testPayload_TestAddOrUpdatePayloadInCache")
@@ -31,5 +32,4 @@ func TestAllMemCacheCases(t *testing.T) {
 		_, ok = memcacheExempl.GetPayloadInCache("testTag_RemovePayloadInCache")
 		require.Equal(t, false, ok)
 	})
-
 }

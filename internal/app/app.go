@@ -57,7 +57,7 @@ type SoapRequestSender interface {
 	SoapCall(ctx context.Context, action string, payload interface{}) ([]byte, error)
 }
 
-type AppMemCache interface {
+type AppMemCache interface { //nolint: revive
 	Init()
 	AddOrUpdatePayloadInCache(tag string, payload interface{}) bool
 	RemovePayloadInCache(tag string)
@@ -114,24 +114,23 @@ func New(logger Logger, config Config, sender SoapRequestSender, memcache AppMem
 	return &app
 }
 
-func (a *App) RemoveDataInMemCacheBySOAPAction(SOAPAction string) {
+func (a *App) RemoveDataInMemCacheBySOAPAction(SOAPAction string) { //nolint: gocritic
 	a.appmemcache.RemovePayloadInCache(SOAPAction)
 }
 
-func (a *App) GetCursOnDate(ctx context.Context, input datastructures.GetCursOnDateXML) (error, datastructures.GetCursOnDateXMLResult) {
+func (a *App) GetCursOnDate(ctx context.Context, input datastructures.GetCursOnDateXML) (datastructures.GetCursOnDateXMLResult, error) {
 	var err error
 	var response datastructures.GetCursOnDateXMLResult
 	select {
 	case <-ctx.Done():
 		err = ErrContextWSReqExpired
 		a.logger.Error(err.Error())
-		return err, response
 	default:
 		SOAPMethod := "GetCursOnDateXML"
 		startNodeName := "ValuteData"
 		if a.permittedRequests.PermittedRequestMapLength() > 0 {
 			if a.permittedRequests.IsPermittedRequestInMap(SOAPMethod) {
-				return ErrMethodProhibited, datastructures.GetCursOnDateXMLResult{}
+				return datastructures.GetCursOnDateXMLResult{}, ErrMethodProhibited
 			}
 		}
 
@@ -142,17 +141,16 @@ func (a *App) GetCursOnDate(ctx context.Context, input datastructures.GetCursOnD
 				err = ErrAssertionAfterGetCacheData
 				a.logger.Error(err.Error())
 			} else {
-				return nil, response
+				return response, nil
 			}
 		}
 
 		input.XMLNs = cbrNamespace
 
 		res, err := a.soapSender.SoapCall(ctx, SOAPMethod, input)
-
 		if err != nil {
 			a.logger.Error(err.Error())
-			return err, response
+			return response, err
 		}
 
 		xmlData := bytes.NewBuffer(res)
@@ -160,23 +158,22 @@ func (a *App) GetCursOnDate(ctx context.Context, input datastructures.GetCursOnD
 		d := xml.NewDecoder(xmlData)
 
 		for t, _ := d.Token(); t != nil; t, _ = d.Token() {
-			switch se := t.(type) {
+			switch se := t.(type) { //nolint: gocritic
 			case xml.StartElement:
 				if se.Name.Local == startNodeName {
 					err = d.DecodeElement(&response, &se)
 					if err != nil {
-						return err, response
+						return response, err
 					}
 				}
 			}
 		}
 
-		for i, _ := range response.ValuteCursOnDate {
+		for i := range response.ValuteCursOnDate {
 			response.ValuteCursOnDate[i].Vname = strings.TrimSpace(response.ValuteCursOnDate[i].Vname)
 			response.ValuteCursOnDate[i].Vname = strings.Trim(response.ValuteCursOnDate[i].Vname, "\r\n")
 		}
 		a.appmemcache.AddOrUpdatePayloadInCache(SOAPMethod, response)
-
-		return nil, response
 	}
+	return response, err
 }

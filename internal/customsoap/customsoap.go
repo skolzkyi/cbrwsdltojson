@@ -8,7 +8,7 @@ import (
 	"encoding/xml"
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"strings"
 	"time"
@@ -16,8 +16,10 @@ import (
 	"go.uber.org/zap"
 )
 
-var ErrBadLenEnvelopeSlice = errors.New("bad length of slice with element of envelope string")
-var ErrContextWSReqExpired = errors.New("context of request to CBR WS expired")
+var (
+	ErrBadLenEnvelopeSlice = errors.New("bad length of slice with element of envelope string")
+	ErrContextWSReqExpired = errors.New("context of request to CBR WS expired")
+)
 
 type CBRSOAPSender struct {
 	InclLogger Logger
@@ -126,7 +128,7 @@ func (soapSender *CBRSOAPSender) SoapCall(ctx context.Context, action string, pa
 
 		defer response.Body.Close()
 
-		bodyBytes, err := ioutil.ReadAll(response.Body)
+		bodyBytes, err := io.ReadAll(response.Body)
 		if err != nil {
 			soapSender.InclLogger.Error(err.Error())
 			return nil, err

@@ -67,6 +67,7 @@ func (l *LoggerMock) GetZapLogger() *zap.SugaredLogger {
 	voidSugLogger := zap.SugaredLogger{}
 	return &voidSugLogger
 }
+
 func NewLoggerMock(loggingOn bool) (*LoggerMock, error) {
 	logMock := LoggerMock{}
 	logMock.loggingOn = loggingOn
@@ -108,9 +109,9 @@ func (srsm *SoapRequestSenderMock) SoapCall(_ context.Context, action string, in
 		}
 		if inputData.OnDate == "2023-06-22" {
 			return []byte(`<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><soap:Body><GetCursOnDateXMLResponse xmlns="http://web.cbr.ru/"><GetCursOnDateXMLResult><ValuteData OnDate="20230622" xmlns=""><ValuteCursOnDate><Vname>Австралийский доллар      </Vname><Vnom>1</Vnom><Vcurs>57.1445</Vcurs><Vcode>36</Vcode><VchCode>AUD</VchCode></ValuteCursOnDate><ValuteCursOnDate><Vname>Азербайджанский манат         </Vname><Vnom>1</Vnom><Vcurs>49.5569</Vcurs><Vcode>944</Vcode><VchCode>AZN</VchCode></ValuteCursOnDate></ValuteData></GetCursOnDateXMLResult></GetCursOnDateXMLResponse></soap:Body></soap:Envelope>`), nil
-		} else {
-			return nil, customsoap.ErrContextWSReqExpired
 		}
+
+		return nil, customsoap.ErrContextWSReqExpired
 	default:
 		return nil, errors.New("SoapRequestSenderMock: unsupported action")
 	}

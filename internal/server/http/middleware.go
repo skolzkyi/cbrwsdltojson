@@ -7,7 +7,6 @@ import (
 	zap "go.uber.org/zap"
 )
 
-
 func loggingMiddleware(next http.HandlerFunc, log Logger) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		t := time.Now()
@@ -22,10 +21,10 @@ func loggingMiddleware(next http.HandlerFunc, log Logger) http.HandlerFunc {
 			zap.String("Time of request work", time.Since(t).String()),
 			zap.String("Request User-Agent", r.Header.Get("User-Agent")),
 		).Info("http middleware log")
-		
-		errHeader:= w.Header().Get("ErrCustom")
+
+		errHeader := w.Header().Get("ErrCustom")
 		if errHeader != "" {
-			log.Error("Error middleware logging: "+errHeader)
+			log.Error("Error middleware logging: " + errHeader)
 		}
 	}
 }

@@ -41,7 +41,7 @@ type Logger interface {
 
 type Application interface {
 	RemoveDataInMemCacheBySOAPAction(SOAPAction string)
-	GetCursOnDate(ctx context.Context, input datastructures.GetCursOnDateXML) (error, datastructures.GetCursOnDateXMLResult)
+	GetCursOnDate(ctx context.Context, input datastructures.GetCursOnDateXML) (datastructures.GetCursOnDateXMLResult, error)
 }
 
 func NewServer(logger Logger, app Application, config Config) *Server {

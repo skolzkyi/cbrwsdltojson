@@ -69,6 +69,7 @@ func initTestCasesGetCursOnDateXML(t *testing.T) DatastructuresTestTable {
 		XMLMarshalControl: `<GetCursOnDateXML xmlns="http://web.cbr.ru/"><On_date>2023-06-22</On_date></GetCursOnDateXML>`,
 	}
 	newCase.MarshalXMLTestFunc = func(t *testing.T, Datastructure interface{}, XMLMarshalControl string) {
+		t.Helper()
 		DSAssert, ok := Datastructure.(datastructures.GetCursOnDateXML)
 		if !ok {
 			require.Fail(t, "fail type assertion in MarshalXMLTestFunc")
@@ -91,6 +92,7 @@ func initTestCasesGetCursOnDateXML(t *testing.T) DatastructuresTestTable {
 	}
 	newCase.MarshalXMLTestFunc = func(_ *testing.T, _ interface{}, _ string) {}
 	newCase.ValidateControlTestFunc = func(t *testing.T, Datastructure interface{}, ValidateControl error) {
+		t.Helper()
 		DSAssert, ok := Datastructure.(datastructures.GetCursOnDateXML)
 		if !ok {
 			require.Fail(t, "fail type assertion in MarshalXMLTestFunc")
@@ -111,6 +113,7 @@ func initTestCasesGetCursOnDateXML(t *testing.T) DatastructuresTestTable {
 	}
 	newCase.MarshalXMLTestFunc = func(_ *testing.T, _ interface{}, _ string) {}
 	newCase.ValidateControlTestFunc = func(t *testing.T, Datastructure interface{}, ValidateControl error) {
+		t.Helper()
 		DSAssert, ok := Datastructure.(datastructures.GetCursOnDateXML)
 		if !ok {
 			require.Fail(t, "fail type assertion in MarshalXMLTestFunc")
@@ -147,6 +150,7 @@ func initTestCasesGetCursOnDateXML(t *testing.T) DatastructuresTestTable {
 		XMLMarshalControl: `<GetCursOnDateXMLResult OnDate="20230622"><ValuteCursOnDate><Vname>Австралийский доллар</Vname><Vnom>1</Vnom><Vcurs>57.1445</Vcurs><Vcode>36</Vcode><VchCode>AUD</VchCode></ValuteCursOnDate><ValuteCursOnDate><Vname>Азербайджанский манат</Vname><Vnom>1</Vnom><Vcurs>49.5569</Vcurs><Vcode>944</Vcode><VchCode>AZN</VchCode></ValuteCursOnDate></GetCursOnDateXMLResult>`,
 	}
 	newCase.MarshalXMLTestFunc = func(t *testing.T, Datastructure interface{}, XMLMarshalControl string) {
+		t.Helper()
 		DSAssert, ok := Datastructure.(datastructures.GetCursOnDateXMLResult)
 		if !ok {
 			require.Fail(t, "fail type assertion in MarshalXMLTestFunc")
@@ -162,6 +166,7 @@ func initTestCasesGetCursOnDateXML(t *testing.T) DatastructuresTestTable {
 
 func TestAllDatastructuresTableCases(t *testing.T) {
 	AllDTTable := initAllDatastructuresTestTable(t)
+	t.Parallel()
 	for _, curTestTable := range AllDTTable {
 		for _, curInputDataCase := range curTestTable.InputDataCases {
 			curInputDataCase := curInputDataCase

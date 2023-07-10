@@ -9,8 +9,6 @@ import (
 	"net/http"
 	"strings"
 
-	//"strconv"
-
 	helpers "github.com/skolzkyi/cbrwsdltojson/helpers"
 	datastructures "github.com/skolzkyi/cbrwsdltojson/internal/datastructures"
 )
@@ -23,8 +21,8 @@ var (
 )
 
 func apiErrHandler(err error, w *http.ResponseWriter) {
-	W := *w
 	if err != nil {
+		W := *w
 		errMessage := helpers.StringBuild(http.StatusText(http.StatusInternalServerError), " (", err.Error(), ")")
 		http.Error(W, errMessage, http.StatusInternalServerError)
 	}
@@ -84,7 +82,7 @@ func (s *Server) GetCursOnDate(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		err, answer := s.app.GetCursOnDate(ctx, newRequest)
+		answer, err := s.app.GetCursOnDate(ctx, newRequest)
 		if err != nil {
 			apiErrHandler(err, &w)
 			return
