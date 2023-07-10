@@ -10,18 +10,6 @@ build:
 run: build
 	$(BIN) -config ./configs/config.env > cbrwsdltojsonCLog.log
 
-build-img:
-	docker build \
-		--build-arg=LDFLAGS="$(LDFLAGS)" \
-		-t $(DOCKER_IMG) \
-		-f build/Dockerfile .
-
-run-img: build-img
-	docker run $(DOCKER_IMG)
-
-stop-img: 
-	docker stop $(DOCKER_IMG)
-
 version: build
 	$(BIN) version
 
@@ -44,4 +32,4 @@ integration-tests:
 	docker-compose -f ./deployments/docker-compose.yaml -f ./deployments/docker-compose.test.yaml up --build --exit-code-from integration_tests && \
 	docker-compose -f ./deployments/docker-compose.yaml -f ./deployments/docker-compose.test.yaml down > deployIntegrationTestsLog.log
 
-.PHONY:  build run build-img run-img stop-img version test lint up down integration-tests 
+.PHONY:  build run version test lint up down integration-tests 
