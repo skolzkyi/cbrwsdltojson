@@ -28,7 +28,7 @@ type App struct {
 	logger            Logger
 	config            Config
 	soapSender        SoapRequestSender
-	appmemcache       AppMemCache
+	Appmemcache       AppMemCache
 	permittedRequests PermittedReqSyncMap
 }
 
@@ -109,7 +109,7 @@ func New(logger Logger, config Config, sender SoapRequestSender, memcache AppMem
 		logger:            logger,
 		config:            config,
 		soapSender:        sender,
-		appmemcache:       memcache,
+		Appmemcache:       memcache,
 		permittedRequests: NewPermittedReqSyncMap(),
 	}
 	app.permittedRequests.Init(permReqMap)
@@ -117,7 +117,7 @@ func New(logger Logger, config Config, sender SoapRequestSender, memcache AppMem
 }
 
 func (a *App) RemoveDataInMemCacheBySOAPAction(SOAPAction string) { //nolint: gocritic
-	a.appmemcache.RemovePayloadInCache(SOAPAction)
+	a.Appmemcache.RemovePayloadInCache(SOAPAction)
 }
 
 func (a *App) GetCursOnDate(ctx context.Context, input datastructures.GetCursOnDateXML) (datastructures.GetCursOnDateXMLResult, error) {
@@ -136,7 +136,7 @@ func (a *App) GetCursOnDate(ctx context.Context, input datastructures.GetCursOnD
 			}
 		}
 
-		cachedData, ok := a.appmemcache.GetPayloadInCache(SOAPMethod)
+		cachedData, ok := a.Appmemcache.GetPayloadInCache(SOAPMethod)
 		if ok {
 			response, ok = cachedData.(datastructures.GetCursOnDateXMLResult)
 			if response.InfoDTStamp.Add(a.config.GetInfoExpirTime()).After(time.Now()) {
@@ -179,7 +179,7 @@ func (a *App) GetCursOnDate(ctx context.Context, input datastructures.GetCursOnD
 			response.ValuteCursOnDate[i].Vname = strings.Trim(response.ValuteCursOnDate[i].Vname, "\r\n")
 		}
 		response.InfoDTStamp = time.Now()
-		a.appmemcache.AddOrUpdatePayloadInCache(SOAPMethod, response)
+		a.Appmemcache.AddOrUpdatePayloadInCache(SOAPMethod, response)
 	}
 	fmt.Println("from WS")
 	return response, err

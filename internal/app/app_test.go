@@ -3,6 +3,7 @@ package app_test
 import (
 	"context"
 	"testing"
+	"time"
 
 	app "github.com/skolzkyi/cbrwsdltojson/internal/app"
 	"github.com/skolzkyi/cbrwsdltojson/internal/customsoap"
@@ -18,10 +19,12 @@ type AppTestTable struct {
 }
 
 type AppTestCase struct {
-	Name   string
-	Input  interface{}
-	Output interface{}
-	Error  error
+	Input       interface{}
+	Output      interface{}
+	Name        string
+	Error       error
+	IsCacheTest bool
+	IsCacheData bool
 }
 
 func initTestApp(t *testing.T) *app.App {
@@ -60,6 +63,28 @@ func TestPermittedReqSyncMap(t *testing.T) {
 		testData := testPermittedReqSyncMap.PermittedRequestMapLength()
 		require.Equal(t, 2, testData)
 	})
+}
+
+func createStandartTestCacheCases(t *testing.T, input interface{}, output interface{}) []AppTestCase {
+	t.Helper()
+	standartTestCacheCases := make([]AppTestCase, 2)
+
+	standartTestCacheCases[0] = AppTestCase{
+		Name:        "InCacheTest",
+		IsCacheTest: true,
+		IsCacheData: true,
+		Input:       input,
+		Output:      output,
+	}
+
+	standartTestCacheCases[1] = AppTestCase{
+		Name:        "NotInCacheTest",
+		IsCacheTest: true,
+		IsCacheData: false,
+		Input:       input,
+		Output:      output,
+	}
+	return standartTestCacheCases
 }
 
 // GetCursOnDate.
@@ -106,7 +131,10 @@ func initTestDataGetCursOnDate(t *testing.T) *AppTestTable {
 		Output: datastructures.GetCursOnDateXMLResult{},
 		Error:  customsoap.ErrContextWSReqExpired,
 	}
-
+	standartTestCacheCases := createStandartTestCacheCases(t, datastructures.GetCursOnDateXML{
+		OnDate: "2023-06-22",
+	}, testGetCursOnDateXMLResult)
+	testDataGetCursOnDate.TestCases = append(testDataGetCursOnDate.TestCases, standartTestCacheCases...)
 	testDataGetCursOnDate.TestCases = testCases
 	return &testDataGetCursOnDate
 }
@@ -123,8 +151,22 @@ func TestAllAppCases(t *testing.T) {
 			inputAssert, ok := curTestCase.Input.(datastructures.GetCursOnDateXML)
 			require.Equal(t, true, ok)
 			testRes, err := testApp.GetCursOnDate(context.Background(), inputAssert)
-			require.Equal(t, curTestCase.Error, err)
-			require.Equal(t, curTestCase.Output, testRes)
+			if !curTestCase.IsCacheTest {
+				testRes.InfoDTStamp = time.Time{}
+				require.Equal(t, curTestCase.Error, err)
+				require.Equal(t, curTestCase.Output, testRes)
+			} else {
+				if !curTestCase.IsCacheData {
+					time.Sleep(3 * time.Second)
+				}
+				testRes2, err := testApp.GetCursOnDate(context.Background(), inputAssert)
+				require.Equal(t, nil, err)
+				if curTestCase.IsCacheData {
+					require.Equal(t, testRes, testRes2)
+				} else {
+					require.NotEqual(t, testRes, testRes2)
+				}
+			}
 			testApp.RemoveDataInMemCacheBySOAPAction(testCasesByMethod.MethodName)
 		})
 	}
