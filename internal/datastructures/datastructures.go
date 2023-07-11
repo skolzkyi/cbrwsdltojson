@@ -74,6 +74,7 @@ type GetCursOnDateXMLResult struct {
 	// ValuteData node
 	OnDate           string                       `xml:"OnDate,attr"`
 	ValuteCursOnDate []GetCursOnDateXMLResultElem `xml:"ValuteCursOnDate"`
+	InfoDTStamp      time.Time                    `json:"-"`
 }
 
 type GetCursOnDateXMLResultElem struct {

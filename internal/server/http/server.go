@@ -24,6 +24,7 @@ type Config interface {
 	GetPort() string
 	GetServerShutdownTimeout() time.Duration
 	GetCBRWSDLTimeout() time.Duration
+	GetInfoExpirTime() time.Duration
 	GetCBRWSDLAddress() string
 	GetLoggingOn() bool
 	GetDateTimeResponseLayout() string

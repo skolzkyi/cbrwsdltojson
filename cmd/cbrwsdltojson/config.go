@@ -13,6 +13,7 @@ type Config struct {
 	Logger                 LoggerConf          `mapstructure:"Logger"`
 	ServerShutdownTimeout  time.Duration       `mapstructure:"SERVER_SHUTDOWN_TIMEOUT"`
 	CBRWSDLTimeout         time.Duration       `mapstructure:"CBR_WSDL_TIMEOUT"`
+	InfoExpirTime          time.Duration       `mapstructure:"INFO_EXPIR_TIME"`
 	address                string              `mapstructure:"ADDRESS"`
 	port                   string              `mapstructure:"PORT"`
 	cbrWSDLAddress         string              `mapstructure:"CBR_WSDL_ADDRESS"`
@@ -39,6 +40,7 @@ func (config *Config) Init(path string) error {
 	viper.SetDefault("PORT", "4000")
 	viper.SetDefault("SERVER_SHUTDOWN_TIMEOUT", 30*time.Second)
 	viper.SetDefault("CBR_WSDL_TIMEOUT", 5*time.Second)
+	viper.SetDefault("INFO_EXPIR_TIME", 12*time.Hour)
 	viper.SetDefault("LOGGING_ON", true)
 	viper.SetDefault("CBR_WSDL_ADDRESS", "http://www.cbr.ru/DailyInfoWebServ/DailyInfo.asmx")
 	viper.SetDefault("DATE_TIME_RESPONSE_LAYOUT", "2006-01-02 15:04:05")
@@ -63,6 +65,7 @@ func (config *Config) Init(path string) error {
 	config.port = viper.GetString("PORT")
 	config.ServerShutdownTimeout = viper.GetDuration("SERVER_SHUTDOWN_TIMEOUT")
 	config.CBRWSDLTimeout = viper.GetDuration("CBR_WSDL_TIMEOUT")
+	config.InfoExpirTime = viper.GetDuration("INFO_EXPIR_TIME")
 	config.loggingOn = viper.GetBool("LOGGING_ON")
 	config.cbrWSDLAddress = viper.GetString("CBR_WSDL_ADDRESS")
 	config.dateTimeResponseLayout = viper.GetString("DATE_TIME_RESPONSE_LAYOUT")
@@ -97,6 +100,10 @@ func (config *Config) GetServerShutdownTimeout() time.Duration {
 
 func (config *Config) GetCBRWSDLTimeout() time.Duration {
 	return config.CBRWSDLTimeout
+}
+
+func (config *Config) GetInfoExpirTime() time.Duration {
+	return config.InfoExpirTime
 }
 
 func (config *Config) GetCBRWSDLAddress() string {

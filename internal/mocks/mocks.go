@@ -39,6 +39,10 @@ func (config *ConfigMock) GetCBRWSDLTimeout() time.Duration {
 	return 5 * time.Second
 }
 
+func (config *ConfigMock) GetInfoExpirTime() time.Duration {
+	return time.Nanosecond
+}
+
 func (config *ConfigMock) GetCBRWSDLAddress() string {
 	return ""
 }

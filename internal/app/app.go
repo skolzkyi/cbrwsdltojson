@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/xml"
 	"errors"
+	"fmt"
 	"strings"
 	"sync"
 	"time"
@@ -46,6 +47,7 @@ type Config interface {
 	GetPort() string
 	GetServerShutdownTimeout() time.Duration
 	GetCBRWSDLTimeout() time.Duration
+	GetInfoExpirTime() time.Duration
 	GetCBRWSDLAddress() string
 	GetLoggingOn() bool
 	GetDateTimeResponseLayout() string
@@ -137,11 +139,14 @@ func (a *App) GetCursOnDate(ctx context.Context, input datastructures.GetCursOnD
 		cachedData, ok := a.appmemcache.GetPayloadInCache(SOAPMethod)
 		if ok {
 			response, ok = cachedData.(datastructures.GetCursOnDateXMLResult)
-			if !ok {
-				err = ErrAssertionAfterGetCacheData
-				a.logger.Error(err.Error())
-			} else {
-				return response, nil
+			if response.InfoDTStamp.Add(a.config.GetInfoExpirTime()).After(time.Now()) {
+				if !ok {
+					err = ErrAssertionAfterGetCacheData
+					a.logger.Error(err.Error())
+				} else {
+					fmt.Println("from cache")
+					return response, nil
+				}
 			}
 		}
 
@@ -173,7 +178,9 @@ func (a *App) GetCursOnDate(ctx context.Context, input datastructures.GetCursOnD
 			response.ValuteCursOnDate[i].Vname = strings.TrimSpace(response.ValuteCursOnDate[i].Vname)
 			response.ValuteCursOnDate[i].Vname = strings.Trim(response.ValuteCursOnDate[i].Vname, "\r\n")
 		}
+		response.InfoDTStamp = time.Now()
 		a.appmemcache.AddOrUpdatePayloadInCache(SOAPMethod, response)
 	}
+	fmt.Println("from WS")
 	return response, err
 }
