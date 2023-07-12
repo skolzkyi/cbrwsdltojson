@@ -29,7 +29,7 @@ func (data *BiCurBaseXML) Validate(inputDTLayout string) error {
 
 type BiCurBaseXMLResult struct {
 	// BiCurBase node
-	ValuteCursOnDate []BiCurBaseXMLResultElem `xml:"BCB"`
+	BCB []BiCurBaseXMLResultElem `xml:"BCB"`
 }
 
 type BiCurBaseXMLResultElem struct {
