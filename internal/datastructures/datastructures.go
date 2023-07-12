@@ -1,7 +1,6 @@
 package datastructures
 
 import (
-	//"encoding/xml"
 	"errors"
 	"time"
 )

@@ -154,7 +154,6 @@ func TestAllAppCases(t *testing.T) {
 			cachedData, ok := testApp.Appmemcache.GetCacheDataInCache(testCasesByMethod.MethodName)
 			require.Equal(t, false, ok)
 			if !curTestCase.IsCacheTest {
-				//testRes.InfoDTStamp = time.Time{}
 				require.Equal(t, curTestCase.Error, err)
 				require.Equal(t, curTestCase.Output, testRes)
 			} else {

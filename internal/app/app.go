@@ -5,7 +5,6 @@ import (
 	"context"
 	"encoding/xml"
 	"errors"
-	"fmt"
 	"strings"
 	"sync"
 	"time"
@@ -117,7 +116,7 @@ func New(logger Logger, config Config, sender SoapRequestSender, memcache AppMem
 	return &app
 }
 
-func (a *App) GetDataInCacheIfExisting(SOAPMethod string) (interface{}, bool) {
+func (a *App) GetDataInCacheIfExisting(SOAPMethod string) (interface{}, bool) { //nolint: gocritic
 	cachedData, ok := a.Appmemcache.GetCacheDataInCache(SOAPMethod)
 	if ok {
 		if cachedData.InfoDTStamp.Add(a.config.GetInfoExpirTime()).After(time.Now()) {
@@ -146,22 +145,7 @@ func (a *App) GetCursOnDate(ctx context.Context, input datastructures.GetCursOnD
 				return datastructures.GetCursOnDateXMLResult{}, ErrMethodProhibited
 			}
 		}
-		/*
-		   cachedData, ok := a.Appmemcache.GetPayloadInCache(SOAPMethod)
 
-		   	if ok {
-		   		response, ok = cachedData.(datastructures.GetCursOnDateXMLResult)
-		   		if response.InfoDTStamp.Add(a.config.GetInfoExpirTime()).After(time.Now()) {
-		   			if !ok {
-		   				err = ErrAssertionAfterGetCacheData
-		   				a.logger.Error(err.Error())
-		   			} else {
-		   				fmt.Println("from cache")
-		   				return response, nil
-		   			}
-		   		}
-		   	}
-		*/
 		cachedData, ok := a.GetDataInCacheIfExisting(SOAPMethod)
 		if ok {
 			response, ok = cachedData.(datastructures.GetCursOnDateXMLResult)
@@ -169,7 +153,6 @@ func (a *App) GetCursOnDate(ctx context.Context, input datastructures.GetCursOnD
 				err = ErrAssertionAfterGetCacheData
 				a.logger.Error(err.Error())
 			} else {
-				fmt.Println("from cache")
 				return response, nil
 			}
 		}
@@ -202,9 +185,7 @@ func (a *App) GetCursOnDate(ctx context.Context, input datastructures.GetCursOnD
 			response.ValuteCursOnDate[i].Vname = strings.TrimSpace(response.ValuteCursOnDate[i].Vname)
 			response.ValuteCursOnDate[i].Vname = strings.Trim(response.ValuteCursOnDate[i].Vname, "\r\n")
 		}
-		//response.InfoDTStamp = time.Now()
 		a.Appmemcache.AddOrUpdatePayloadInCache(SOAPMethod, response)
 	}
-	fmt.Println("from WS")
 	return response, err
 }
