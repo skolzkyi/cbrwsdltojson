@@ -151,20 +151,24 @@ func TestAllAppCases(t *testing.T) {
 			inputAssert, ok := curTestCase.Input.(datastructures.GetCursOnDateXML)
 			require.Equal(t, true, ok)
 			testRes, err := testApp.GetCursOnDate(context.Background(), inputAssert)
+			cachedData, ok := testApp.Appmemcache.GetCacheDataInCache(testCasesByMethod.MethodName)
+			require.Equal(t, false, ok)
 			if !curTestCase.IsCacheTest {
-				testRes.InfoDTStamp = time.Time{}
+				//testRes.InfoDTStamp = time.Time{}
 				require.Equal(t, curTestCase.Error, err)
 				require.Equal(t, curTestCase.Output, testRes)
 			} else {
 				if !curTestCase.IsCacheData {
 					time.Sleep(3 * time.Second)
 				}
-				testRes2, err := testApp.GetCursOnDate(context.Background(), inputAssert)
+				_, err := testApp.GetCursOnDate(context.Background(), inputAssert)
 				require.Equal(t, nil, err)
+				cachedData2, ok := testApp.Appmemcache.GetCacheDataInCache(testCasesByMethod.MethodName)
+				require.Equal(t, true, ok)
 				if curTestCase.IsCacheData {
-					require.Equal(t, testRes, testRes2)
+					require.Equal(t, cachedData.InfoDTStamp, cachedData2.InfoDTStamp)
 				} else {
-					require.NotEqual(t, testRes, testRes2)
+					require.NotEqual(t, cachedData.InfoDTStamp, cachedData2.InfoDTStamp)
 				}
 			}
 			testApp.RemoveDataInMemCacheBySOAPAction(testCasesByMethod.MethodName)
