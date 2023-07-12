@@ -55,18 +55,16 @@ func (s *Server) GetMethodDataWithoutCache(w http.ResponseWriter, r *http.Reques
 	}
 }
 
-func (s *Server) GetCursOnDate(w http.ResponseWriter, r *http.Request) {
+func (s *Server) GetCursOnDateXML(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 	ctx, cancel := context.WithTimeout(r.Context(), s.Config.GetCBRWSDLTimeout())
 	defer cancel()
-	fmt.Println("GetCursOnDate method: ", r.Method)
 	switch r.Method {
 	case http.MethodPost:
 		newRequest := datastructures.GetCursOnDateXML{}
 
 		body, err := io.ReadAll(r.Body)
 		if err != nil {
-			fmt.Println("err io.ReadAll")
 			apiErrHandler(err, &w)
 			return
 		}
@@ -83,6 +81,55 @@ func (s *Server) GetCursOnDate(w http.ResponseWriter, r *http.Request) {
 		}
 
 		answer, err := s.app.GetCursOnDate(ctx, newRequest)
+		if err != nil {
+			apiErrHandler(err, &w)
+			return
+		}
+
+		jsonstring, err := json.Marshal(answer)
+		if err != nil {
+			apiErrHandler(err, &w)
+			return
+		}
+		_, err = w.Write(jsonstring)
+		if err != nil {
+			apiErrHandler(err, &w)
+			return
+		}
+		return
+
+	default:
+		apiErrHandler(ErrUnsupportedMethod, &w)
+		return
+	}
+}
+
+func (s *Server) BiCurBaseXML(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
+	ctx, cancel := context.WithTimeout(r.Context(), s.Config.GetCBRWSDLTimeout())
+	defer cancel()
+	switch r.Method {
+	case http.MethodPost:
+		newRequest := datastructures.BiCurBaseXML{}
+
+		body, err := io.ReadAll(r.Body)
+		if err != nil {
+			apiErrHandler(err, &w)
+			return
+		}
+		err = json.Unmarshal(body, &newRequest)
+		if err != nil {
+			apiErrHandler(err, &w)
+			return
+		}
+
+		err = newRequest.Validate(s.Config.GetDateTimeRequestLayout())
+		if err != nil {
+			apiErrHandler(err, &w)
+			return
+		}
+
+		answer, err := s.app.BiCurBaseXML(ctx, newRequest)
 		if err != nil {
 			apiErrHandler(err, &w)
 			return

@@ -189,3 +189,59 @@ func (a *App) GetCursOnDate(ctx context.Context, input datastructures.GetCursOnD
 	}
 	return response, err
 }
+
+func (a *App) BiCurBaseXML(ctx context.Context, input datastructures.BiCurBaseXML) (datastructures.BiCurBaseXMLResult, error) {
+	var err error
+	var response datastructures.BiCurBaseXMLResult
+	select {
+	case <-ctx.Done():
+		err = ErrContextWSReqExpired
+		a.logger.Error(err.Error())
+	default:
+		SOAPMethod := "BiCurBaseXML"
+		startNodeName := "BiCurBase"
+		if a.permittedRequests.PermittedRequestMapLength() > 0 {
+			if a.permittedRequests.IsPermittedRequestInMap(SOAPMethod) {
+				return datastructures.BiCurBaseXMLResult{}, ErrMethodProhibited
+			}
+		}
+
+		cachedData, ok := a.GetDataInCacheIfExisting(SOAPMethod)
+		if ok {
+			response, ok = cachedData.(datastructures.BiCurBaseXMLResult)
+			if !ok {
+				err = ErrAssertionAfterGetCacheData
+				a.logger.Error(err.Error())
+			} else {
+				return response, nil
+			}
+		}
+
+		input.XMLNs = cbrNamespace
+
+		res, err := a.soapSender.SoapCall(ctx, SOAPMethod, input)
+		if err != nil {
+			a.logger.Error(err.Error())
+			return response, err
+		}
+
+		xmlData := bytes.NewBuffer(res)
+
+		d := xml.NewDecoder(xmlData)
+
+		for t, _ := d.Token(); t != nil; t, _ = d.Token() {
+			switch se := t.(type) { //nolint: gocritic
+			case xml.StartElement:
+				if se.Name.Local == startNodeName {
+					err = d.DecodeElement(&response, &se)
+					if err != nil {
+						return response, err
+					}
+				}
+			}
+		}
+
+		a.Appmemcache.AddOrUpdatePayloadInCache(SOAPMethod, response)
+	}
+	return response, err
+}

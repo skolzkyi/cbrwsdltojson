@@ -43,6 +43,7 @@ type Logger interface {
 type Application interface {
 	RemoveDataInMemCacheBySOAPAction(SOAPAction string)
 	GetCursOnDate(ctx context.Context, input datastructures.GetCursOnDateXML) (datastructures.GetCursOnDateXMLResult, error)
+	BiCurBaseXML(ctx context.Context, input datastructures.BiCurBaseXML) (datastructures.BiCurBaseXMLResult, error)
 }
 
 func NewServer(logger Logger, app Application, config Config) *Server {
