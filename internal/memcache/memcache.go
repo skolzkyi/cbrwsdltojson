@@ -2,11 +2,17 @@ package memcache
 
 import (
 	"sync"
+	"time"
 )
+
+type CacheInfo struct {
+	Payload     interface{}
+	InfoDTStamp time.Time
+}
 
 type MemCache struct {
 	mu    sync.RWMutex
-	cache map[string]interface{}
+	cache map[string]CacheInfo
 }
 
 func New() *MemCache {
@@ -16,14 +22,16 @@ func New() *MemCache {
 func (mc *MemCache) Init() {
 	mc.mu.Lock()
 	defer mc.mu.Unlock()
-	mc.cache = make(map[string]interface{})
+	mc.cache = make(map[string]CacheInfo)
 }
 
 func (mc *MemCache) AddOrUpdatePayloadInCache(tag string, payload interface{}) bool {
 	mc.mu.Lock()
 	defer mc.mu.Unlock()
-	_, ok := mc.cache[tag]
-	mc.cache[tag] = payload
+	tempEl, ok := mc.cache[tag]
+	tempEl.Payload = payload
+	tempEl.InfoDTStamp = time.Now()
+	mc.cache[tag] = tempEl
 	// true is update
 	return ok
 }
@@ -34,12 +42,12 @@ func (mc *MemCache) RemovePayloadInCache(tag string) {
 	delete(mc.cache, tag)
 }
 
-func (mc *MemCache) GetPayloadInCache(tag string) (interface{}, bool) {
+func (mc *MemCache) GetCacheDataInCache(tag string) (CacheInfo, bool) {
 	mc.mu.RLock()
 	defer mc.mu.RUnlock()
 	_, ok := mc.cache[tag]
 	if !ok {
-		return nil, ok
+		return CacheInfo{}, ok
 	}
 	return mc.cache[tag], ok
 }

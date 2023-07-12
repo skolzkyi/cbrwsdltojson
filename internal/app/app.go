@@ -5,7 +5,6 @@ import (
 	"context"
 	"encoding/xml"
 	"errors"
-	"fmt"
 	"strings"
 	"sync"
 	"time"
@@ -13,6 +12,7 @@ import (
 	"go.uber.org/zap"
 
 	datastructures "github.com/skolzkyi/cbrwsdltojson/internal/datastructures"
+	memcache "github.com/skolzkyi/cbrwsdltojson/internal/memcache"
 )
 
 const cbrNamespace = "http://web.cbr.ru/"
@@ -63,7 +63,7 @@ type AppMemCache interface { //nolint: revive
 	Init()
 	AddOrUpdatePayloadInCache(tag string, payload interface{}) bool
 	RemovePayloadInCache(tag string)
-	GetPayloadInCache(tag string) (interface{}, bool)
+	GetCacheDataInCache(tag string) (memcache.CacheInfo, bool)
 }
 
 type PermittedReqSyncMap struct {
@@ -116,6 +116,16 @@ func New(logger Logger, config Config, sender SoapRequestSender, memcache AppMem
 	return &app
 }
 
+func (a *App) GetDataInCacheIfExisting(SOAPMethod string) (interface{}, bool) { //nolint: gocritic
+	cachedData, ok := a.Appmemcache.GetCacheDataInCache(SOAPMethod)
+	if ok {
+		if cachedData.InfoDTStamp.Add(a.config.GetInfoExpirTime()).After(time.Now()) {
+			return cachedData.Payload, true
+		}
+	}
+	return nil, false
+}
+
 func (a *App) RemoveDataInMemCacheBySOAPAction(SOAPAction string) { //nolint: gocritic
 	a.Appmemcache.RemovePayloadInCache(SOAPAction)
 }
@@ -136,17 +146,14 @@ func (a *App) GetCursOnDate(ctx context.Context, input datastructures.GetCursOnD
 			}
 		}
 
-		cachedData, ok := a.Appmemcache.GetPayloadInCache(SOAPMethod)
+		cachedData, ok := a.GetDataInCacheIfExisting(SOAPMethod)
 		if ok {
 			response, ok = cachedData.(datastructures.GetCursOnDateXMLResult)
-			if response.InfoDTStamp.Add(a.config.GetInfoExpirTime()).After(time.Now()) {
-				if !ok {
-					err = ErrAssertionAfterGetCacheData
-					a.logger.Error(err.Error())
-				} else {
-					fmt.Println("from cache")
-					return response, nil
-				}
+			if !ok {
+				err = ErrAssertionAfterGetCacheData
+				a.logger.Error(err.Error())
+			} else {
+				return response, nil
 			}
 		}
 
@@ -178,9 +185,7 @@ func (a *App) GetCursOnDate(ctx context.Context, input datastructures.GetCursOnD
 			response.ValuteCursOnDate[i].Vname = strings.TrimSpace(response.ValuteCursOnDate[i].Vname)
 			response.ValuteCursOnDate[i].Vname = strings.Trim(response.ValuteCursOnDate[i].Vname, "\r\n")
 		}
-		response.InfoDTStamp = time.Now()
 		a.Appmemcache.AddOrUpdatePayloadInCache(SOAPMethod, response)
 	}
-	fmt.Println("from WS")
 	return response, err
 }
