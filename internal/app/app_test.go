@@ -14,6 +14,12 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+type testStruct struct {
+	field1 string
+	field2 string
+	field3 int
+}
+
 type AppTestTable struct {
 	MethodName string
 	TestCases  []AppTestCase
@@ -64,6 +70,36 @@ func TestPermittedReqSyncMap(t *testing.T) {
 		testData := testPermittedReqSyncMap.PermittedRequestMapLength()
 		require.Equal(t, 2, testData)
 	})
+}
+
+func TestGenerateTagForMemCacheLogic(t *testing.T) {
+	testApp := initTestApp(t)
+	testStruct1 := testStruct{
+		field1: "abc",
+		field2: "def",
+		field3: 0,
+	}
+	testStruct2 := testStruct{
+		field1: "123",
+		field2: "456",
+		field3: 1,
+	}
+	err := testApp.AddOrUpdateDataInCache("ts1", testStruct1, testStruct1.field3)
+	require.NoError(t, err)
+	err = testApp.AddOrUpdateDataInCache("ts2", testStruct2, testStruct2.field3)
+	require.NoError(t, err)
+	payload1, ok, err := testApp.GetDataInCacheIfExisting("ts1", testStruct1)
+	require.Equal(t, true, ok)
+	require.NoError(t, err)
+	data1, ok := payload1.(int)
+	require.Equal(t, true, ok)
+	require.Equal(t, testStruct1.field3, data1)
+	payload2, ok, err := testApp.GetDataInCacheIfExisting("ts2", testStruct2)
+	require.Equal(t, true, ok)
+	require.NoError(t, err)
+	data2, ok := payload2.(int)
+	require.Equal(t, true, ok)
+	require.Equal(t, testStruct2.field3, data2)
 }
 
 func createStandartTestCacheCases(t *testing.T, input interface{}, output interface{}) []AppTestCase {
