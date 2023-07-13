@@ -15,9 +15,9 @@ import (
 )
 
 type testStruct struct {
-	field1 string
-	field2 string
-	field3 int
+	Field1 string
+	Field2 string
+	Field3 int
 }
 
 type AppTestTable struct {
@@ -75,31 +75,33 @@ func TestPermittedReqSyncMap(t *testing.T) {
 func TestGenerateTagForMemCacheLogic(t *testing.T) {
 	testApp := initTestApp(t)
 	testStruct1 := testStruct{
-		field1: "abc",
-		field2: "def",
-		field3: 0,
+		Field1: "abc",
+		Field2: "def",
+		Field3: 0,
 	}
 	testStruct2 := testStruct{
-		field1: "123",
-		field2: "456",
-		field3: 1,
+		Field1: "123",
+		Field2: "456",
+		Field3: 1,
 	}
-	err := testApp.AddOrUpdateDataInCache("ts1", testStruct1, testStruct1.field3)
+	err := testApp.AddOrUpdateDataInCache("ts1", testStruct1, testStruct1.Field3)
 	require.NoError(t, err)
-	err = testApp.AddOrUpdateDataInCache("ts2", testStruct2, testStruct2.field3)
+	err = testApp.AddOrUpdateDataInCache("ts2", testStruct2, testStruct2.Field3)
 	require.NoError(t, err)
-	payload1, ok, err := testApp.GetDataInCacheIfExisting("ts1", testStruct1)
+	rawBody, err := json.Marshal(testStruct1)
+	require.NoError(t, err)
+	payload1, ok := testApp.GetDataInCacheIfExisting("ts1", string(rawBody))
 	require.Equal(t, true, ok)
-	require.NoError(t, err)
 	data1, ok := payload1.(int)
 	require.Equal(t, true, ok)
-	require.Equal(t, testStruct1.field3, data1)
-	payload2, ok, err := testApp.GetDataInCacheIfExisting("ts2", testStruct2)
-	require.Equal(t, true, ok)
+	require.Equal(t, testStruct1.Field3, data1)
+	rawBody, err = json.Marshal(testStruct2)
 	require.NoError(t, err)
+	payload2, ok := testApp.GetDataInCacheIfExisting("ts2", string(rawBody))
+	require.Equal(t, true, ok)
 	data2, ok := payload2.(int)
 	require.Equal(t, true, ok)
-	require.Equal(t, testStruct2.field3, data2)
+	require.Equal(t, testStruct2.Field3, data2)
 }
 
 func createStandartTestCacheCases(t *testing.T, input interface{}, output interface{}) []AppTestCase {
@@ -124,7 +126,7 @@ func createStandartTestCacheCases(t *testing.T, input interface{}, output interf
 	return standartTestCacheCases
 }
 
-func getTagForCache(t *testing.T, SOAPMethod string, request interface{}) string {
+func getTagForCache(t *testing.T, SOAPMethod string, request interface{}) string { //nolint: gocritic
 	t.Helper()
 	jsonstring, err := json.Marshal(request)
 	require.NoError(t, err)
@@ -208,7 +210,6 @@ func initTestDataBiCurBaseXML(t *testing.T) *AppTestTable {
 		Input: datastructures.BiCurBaseXML{
 			FromDate: "2023-06-22",
 			ToDate:   "2023-06-23",
-			//	XMLNs:    "http://web.cbr.ru/",
 		},
 		Output: testBiCurBaseXMLResult,
 		Error:  nil,
@@ -219,7 +220,6 @@ func initTestDataBiCurBaseXML(t *testing.T) *AppTestTable {
 		Input: datastructures.BiCurBaseXML{
 			FromDate: "022-14-22",
 			ToDate:   "2023-06-23",
-			//	XMLNs:    "http://web.cbr.ru/",
 		},
 		Output: datastructures.BiCurBaseXMLResult{},
 		Error:  customsoap.ErrContextWSReqExpired,
@@ -227,7 +227,6 @@ func initTestDataBiCurBaseXML(t *testing.T) *AppTestTable {
 	standartTestCacheCases := createStandartTestCacheCases(t, datastructures.BiCurBaseXML{
 		FromDate: "022-14-22",
 		ToDate:   "2023-06-23",
-		//XMLNs:    "http://web.cbr.ru/",
 	}, testBiCurBaseXMLResult)
 	testDataBiCurBaseXML.TestCases = append(testDataBiCurBaseXML.TestCases, standartTestCacheCases...)
 	testDataBiCurBaseXML.TestCases = testCases
@@ -245,7 +244,9 @@ func TestCasesGetCursOnDateXML(t *testing.T) {
 			testApp := initTestApp(t)
 			inputAssert, ok := curTestCase.Input.(datastructures.GetCursOnDateXML)
 			require.Equal(t, true, ok)
-			testRes, err := testApp.GetCursOnDateXML(context.Background(), inputAssert)
+			rawBody, err := json.Marshal(inputAssert)
+			require.NoError(t, err)
+			testRes, err := testApp.GetCursOnDateXML(context.Background(), inputAssert, string(rawBody))
 			if err == nil {
 				testApp.Appmemcache.PrintAllCacheKeys()
 				cacheTag := getTagForCache(t, testCasesByMethod.MethodName, inputAssert)
@@ -259,7 +260,7 @@ func TestCasesGetCursOnDateXML(t *testing.T) {
 				if !curTestCase.IsCacheData {
 					time.Sleep(3 * time.Second)
 				}
-				_, err := testApp.GetCursOnDateXML(context.Background(), inputAssert)
+				_, err := testApp.GetCursOnDateXML(context.Background(), inputAssert, string(rawBody))
 				require.Equal(t, nil, err)
 				cachedData2, ok := testApp.Appmemcache.GetCacheDataInCache(testCasesByMethod.MethodName)
 				require.Equal(t, true, ok)
@@ -285,7 +286,9 @@ func TestCasesBiCurBaseXML(t *testing.T) {
 			testApp := initTestApp(t)
 			inputAssert, ok := curTestCase.Input.(datastructures.BiCurBaseXML)
 			require.Equal(t, true, ok)
-			testRes, err := testApp.BiCurBaseXML(context.Background(), inputAssert)
+			rawBody, err := json.Marshal(inputAssert)
+			require.NoError(t, err)
+			testRes, err := testApp.BiCurBaseXML(context.Background(), inputAssert, string(rawBody))
 			if err == nil {
 				testApp.Appmemcache.PrintAllCacheKeys()
 				cacheTag := getTagForCache(t, testCasesByMethod.MethodName, inputAssert)
@@ -299,7 +302,7 @@ func TestCasesBiCurBaseXML(t *testing.T) {
 				if !curTestCase.IsCacheData {
 					time.Sleep(3 * time.Second)
 				}
-				_, err := testApp.BiCurBaseXML(context.Background(), inputAssert)
+				_, err := testApp.BiCurBaseXML(context.Background(), inputAssert, string(rawBody))
 				require.Equal(t, nil, err)
 				cachedData2, ok := testApp.Appmemcache.GetCacheDataInCache(testCasesByMethod.MethodName)
 				require.Equal(t, true, ok)

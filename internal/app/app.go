@@ -6,13 +6,13 @@ import (
 	"encoding/json"
 	"encoding/xml"
 	"errors"
-	"fmt"
 	"strings"
 	"sync"
 	"time"
 
 	"go.uber.org/zap"
 
+	helpers "github.com/skolzkyi/cbrwsdltojson/helpers"
 	datastructures "github.com/skolzkyi/cbrwsdltojson/internal/datastructures"
 	memcache "github.com/skolzkyi/cbrwsdltojson/internal/memcache"
 )
@@ -119,38 +119,53 @@ func New(logger Logger, config Config, sender SoapRequestSender, memcache AppMem
 	return &app
 }
 
-func (a *App) GetDataInCacheIfExisting(SOAPMethod string, request interface{}) (interface{}, bool, error) { //nolint: gocritic
-	jsonstring, err := json.Marshal(request)
-	if err != nil {
-		a.logger.Error(err.Error())
-		return nil, false, err
-	}
-	cachedData, ok := a.Appmemcache.GetCacheDataInCache(SOAPMethod + string(jsonstring))
-	if ok {
-		if cachedData.InfoDTStamp.Add(a.config.GetInfoExpirTime()).After(time.Now()) {
-			fmt.Println("fromCache: ", SOAPMethod+string(jsonstring))
-			return cachedData.Payload, true, nil
+func (a *App) XMLToStructDecoder(data []byte, startNodeName string, pointerToStruct interface{}) error {
+	xmlData := bytes.NewBuffer(data)
+
+	d := xml.NewDecoder(xmlData)
+
+	for t, _ := d.Token(); t != nil; t, _ = d.Token() {
+		switch se := t.(type) { //nolint: gocritic
+		case xml.StartElement:
+			if se.Name.Local == startNodeName {
+				err := d.DecodeElement(pointerToStruct, &se)
+				if err != nil {
+					return err
+				}
+			}
 		}
 	}
-	fmt.Println("not fromCache: ", SOAPMethod+string(jsonstring))
-	return nil, false, nil
+	return nil
 }
 
-func (a *App) AddOrUpdateDataInCache(SOAPMethod string, request interface{}, response interface{}) error {
+func (a *App) GetDataInCacheIfExisting(SOAPMethod string, rawBodyIn string) (interface{}, bool) { //nolint: gocritic
+	rawBody := helpers.ClearStringByWhitespaceAndLinebreak(rawBodyIn)
+	cachedData, ok := a.Appmemcache.GetCacheDataInCache(SOAPMethod + rawBody)
+	if ok {
+		if cachedData.InfoDTStamp.Add(a.config.GetInfoExpirTime()).After(time.Now()) {
+			return cachedData.Payload, true
+		}
+	}
+	return nil, false
+}
+
+func (a *App) AddOrUpdateDataInCache(SOAPMethod string, request interface{}, response interface{}) error { //nolint: gocritic
 	jsonstring, err := json.Marshal(request)
 	if err != nil {
 		a.logger.Error(err.Error())
 		return err
 	}
-	a.Appmemcache.AddOrUpdatePayloadInCache(SOAPMethod+string(jsonstring), response)
+
+	rawBody := helpers.ClearStringByWhitespaceAndLinebreak(string(jsonstring))
+	a.Appmemcache.AddOrUpdatePayloadInCache(SOAPMethod+rawBody, response)
 	return nil
 }
 
-func (a *App) RemoveDataInMemCacheBySOAPAction(SOAPAction string) { //nolint: gocritic
-	a.Appmemcache.RemovePayloadInCache(SOAPAction)
+func (a *App) RemoveDataInMemCacheBySOAPAction(tag string) {
+	a.Appmemcache.RemovePayloadInCache(tag)
 }
 
-func (a *App) GetCursOnDateXML(ctx context.Context, input datastructures.GetCursOnDateXML) (datastructures.GetCursOnDateXMLResult, error) {
+func (a *App) GetCursOnDateXML(ctx context.Context, input datastructures.GetCursOnDateXML, rawBody string) (datastructures.GetCursOnDateXMLResult, error) {
 	var err error
 	var response datastructures.GetCursOnDateXMLResult
 	select {
@@ -166,7 +181,7 @@ func (a *App) GetCursOnDateXML(ctx context.Context, input datastructures.GetCurs
 			}
 		}
 
-		cachedData, ok, err := a.GetDataInCacheIfExisting(SOAPMethod, input)
+		cachedData, ok := a.GetDataInCacheIfExisting(SOAPMethod, rawBody)
 		if err != nil {
 			a.logger.Error(err.Error())
 			return response, err
@@ -189,20 +204,10 @@ func (a *App) GetCursOnDateXML(ctx context.Context, input datastructures.GetCurs
 			return response, err
 		}
 
-		xmlData := bytes.NewBuffer(res)
-
-		d := xml.NewDecoder(xmlData)
-
-		for t, _ := d.Token(); t != nil; t, _ = d.Token() {
-			switch se := t.(type) { //nolint: gocritic
-			case xml.StartElement:
-				if se.Name.Local == startNodeName {
-					err = d.DecodeElement(&response, &se)
-					if err != nil {
-						return response, err
-					}
-				}
-			}
+		err = a.XMLToStructDecoder(res, startNodeName, &response)
+		if err != nil {
+			a.logger.Error(err.Error())
+			return response, err
 		}
 
 		for i := range response.ValuteCursOnDate {
@@ -210,12 +215,15 @@ func (a *App) GetCursOnDateXML(ctx context.Context, input datastructures.GetCurs
 			response.ValuteCursOnDate[i].Vname = strings.Trim(response.ValuteCursOnDate[i].Vname, "\r\n")
 		}
 		err = a.AddOrUpdateDataInCache(SOAPMethod, input, response)
-		//a.Appmemcache.AddOrUpdatePayloadInCache(SOAPMethod, response)
+		if err != nil {
+			a.logger.Error(err.Error())
+			return response, err
+		}
 	}
 	return response, err
 }
 
-func (a *App) BiCurBaseXML(ctx context.Context, input datastructures.BiCurBaseXML) (datastructures.BiCurBaseXMLResult, error) {
+func (a *App) BiCurBaseXML(ctx context.Context, input datastructures.BiCurBaseXML, rawBody string) (datastructures.BiCurBaseXMLResult, error) {
 	var err error
 	var response datastructures.BiCurBaseXMLResult
 	select {
@@ -231,8 +239,7 @@ func (a *App) BiCurBaseXML(ctx context.Context, input datastructures.BiCurBaseXM
 			}
 		}
 
-		//cachedData, ok := a.GetDataInCacheIfExisting(SOAPMethod)
-		cachedData, ok, err := a.GetDataInCacheIfExisting(SOAPMethod, input)
+		cachedData, ok := a.GetDataInCacheIfExisting(SOAPMethod, rawBody)
 		if err != nil {
 			a.logger.Error(err.Error())
 			return response, err
@@ -254,24 +261,17 @@ func (a *App) BiCurBaseXML(ctx context.Context, input datastructures.BiCurBaseXM
 			a.logger.Error(err.Error())
 			return response, err
 		}
-
-		xmlData := bytes.NewBuffer(res)
-
-		d := xml.NewDecoder(xmlData)
-
-		for t, _ := d.Token(); t != nil; t, _ = d.Token() {
-			switch se := t.(type) { //nolint: gocritic
-			case xml.StartElement:
-				if se.Name.Local == startNodeName {
-					err = d.DecodeElement(&response, &se)
-					if err != nil {
-						return response, err
-					}
-				}
-			}
+		err = a.XMLToStructDecoder(res, startNodeName, &response)
+		if err != nil {
+			a.logger.Error(err.Error())
+			return response, err
 		}
+
 		err = a.AddOrUpdateDataInCache(SOAPMethod, input, response)
-		//a.Appmemcache.AddOrUpdatePayloadInCache(SOAPMethod, response)
+		if err != nil {
+			a.logger.Error(err.Error())
+			return response, err
+		}
 	}
 	return response, err
 }

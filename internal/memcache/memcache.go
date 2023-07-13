@@ -56,7 +56,7 @@ func (mc *MemCache) GetCacheDataInCache(tag string) (CacheInfo, bool) {
 func (mc *MemCache) PrintAllCacheKeys() {
 	mc.mu.RLock()
 	defer mc.mu.RUnlock()
-	for key, _ := range mc.cache {
+	for key := range mc.cache {
 		fmt.Println(key)
 	}
 }
