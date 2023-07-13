@@ -1,6 +1,7 @@
 package memcache
 
 import (
+	"fmt"
 	"sync"
 	"time"
 )
@@ -50,4 +51,12 @@ func (mc *MemCache) GetCacheDataInCache(tag string) (CacheInfo, bool) {
 		return CacheInfo{}, ok
 	}
 	return mc.cache[tag], ok
+}
+
+func (mc *MemCache) PrintAllCacheKeys() {
+	mc.mu.RLock()
+	defer mc.mu.RUnlock()
+	for key, _ := range mc.cache {
+		fmt.Println(key)
+	}
 }

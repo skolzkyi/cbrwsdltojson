@@ -3,8 +3,10 @@ package app
 import (
 	"bytes"
 	"context"
+	"encoding/json"
 	"encoding/xml"
 	"errors"
+	"fmt"
 	"strings"
 	"sync"
 	"time"
@@ -64,6 +66,7 @@ type AppMemCache interface { //nolint: revive
 	AddOrUpdatePayloadInCache(tag string, payload interface{}) bool
 	RemovePayloadInCache(tag string)
 	GetCacheDataInCache(tag string) (memcache.CacheInfo, bool)
+	PrintAllCacheKeys()
 }
 
 type PermittedReqSyncMap struct {
@@ -116,14 +119,31 @@ func New(logger Logger, config Config, sender SoapRequestSender, memcache AppMem
 	return &app
 }
 
-func (a *App) GetDataInCacheIfExisting(SOAPMethod string) (interface{}, bool) { //nolint: gocritic
-	cachedData, ok := a.Appmemcache.GetCacheDataInCache(SOAPMethod)
+func (a *App) GetDataInCacheIfExisting(SOAPMethod string, request interface{}) (interface{}, bool, error) { //nolint: gocritic
+	jsonstring, err := json.Marshal(request)
+	if err != nil {
+		a.logger.Error(err.Error())
+		return nil, false, err
+	}
+	cachedData, ok := a.Appmemcache.GetCacheDataInCache(SOAPMethod + string(jsonstring))
 	if ok {
 		if cachedData.InfoDTStamp.Add(a.config.GetInfoExpirTime()).After(time.Now()) {
-			return cachedData.Payload, true
+			fmt.Println("fromCache: ", SOAPMethod+string(jsonstring))
+			return cachedData.Payload, true, nil
 		}
 	}
-	return nil, false
+	fmt.Println("not fromCache: ", SOAPMethod+string(jsonstring))
+	return nil, false, nil
+}
+
+func (a *App) AddOrUpdateDataInCache(SOAPMethod string, request interface{}, response interface{}) error {
+	jsonstring, err := json.Marshal(request)
+	if err != nil {
+		a.logger.Error(err.Error())
+		return err
+	}
+	a.Appmemcache.AddOrUpdatePayloadInCache(SOAPMethod+string(jsonstring), response)
+	return nil
 }
 
 func (a *App) RemoveDataInMemCacheBySOAPAction(SOAPAction string) { //nolint: gocritic
@@ -146,7 +166,11 @@ func (a *App) GetCursOnDateXML(ctx context.Context, input datastructures.GetCurs
 			}
 		}
 
-		cachedData, ok := a.GetDataInCacheIfExisting(SOAPMethod)
+		cachedData, ok, err := a.GetDataInCacheIfExisting(SOAPMethod, input)
+		if err != nil {
+			a.logger.Error(err.Error())
+			return response, err
+		}
 		if ok {
 			response, ok = cachedData.(datastructures.GetCursOnDateXMLResult)
 			if !ok {
@@ -185,7 +209,8 @@ func (a *App) GetCursOnDateXML(ctx context.Context, input datastructures.GetCurs
 			response.ValuteCursOnDate[i].Vname = strings.TrimSpace(response.ValuteCursOnDate[i].Vname)
 			response.ValuteCursOnDate[i].Vname = strings.Trim(response.ValuteCursOnDate[i].Vname, "\r\n")
 		}
-		a.Appmemcache.AddOrUpdatePayloadInCache(SOAPMethod, response)
+		err = a.AddOrUpdateDataInCache(SOAPMethod, input, response)
+		//a.Appmemcache.AddOrUpdatePayloadInCache(SOAPMethod, response)
 	}
 	return response, err
 }
@@ -206,7 +231,12 @@ func (a *App) BiCurBaseXML(ctx context.Context, input datastructures.BiCurBaseXM
 			}
 		}
 
-		cachedData, ok := a.GetDataInCacheIfExisting(SOAPMethod)
+		//cachedData, ok := a.GetDataInCacheIfExisting(SOAPMethod)
+		cachedData, ok, err := a.GetDataInCacheIfExisting(SOAPMethod, input)
+		if err != nil {
+			a.logger.Error(err.Error())
+			return response, err
+		}
 		if ok {
 			response, ok = cachedData.(datastructures.BiCurBaseXMLResult)
 			if !ok {
@@ -240,8 +270,8 @@ func (a *App) BiCurBaseXML(ctx context.Context, input datastructures.BiCurBaseXM
 				}
 			}
 		}
-
-		a.Appmemcache.AddOrUpdatePayloadInCache(SOAPMethod, response)
+		err = a.AddOrUpdateDataInCache(SOAPMethod, input, response)
+		//a.Appmemcache.AddOrUpdatePayloadInCache(SOAPMethod, response)
 	}
 	return response, err
 }

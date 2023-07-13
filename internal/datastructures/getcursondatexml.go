@@ -6,8 +6,8 @@ import (
 )
 
 type GetCursOnDateXML struct {
-	XMLName xml.Name `xml:"GetCursOnDateXML"`
-	XMLNs   string   `xml:"xmlns,attr"`
+	XMLName xml.Name `xml:"GetCursOnDateXML" json:"-"`
+	XMLNs   string   `xml:"xmlns,attr" json:"-"`
 	OnDate  string   `xml:"On_date"`
 }
 

@@ -2,6 +2,7 @@ package app_test
 
 import (
 	"context"
+	"encoding/json"
 	"testing"
 	"time"
 
@@ -87,6 +88,13 @@ func createStandartTestCacheCases(t *testing.T, input interface{}, output interf
 	return standartTestCacheCases
 }
 
+func getTagForCache(t *testing.T, SOAPMethod string, request interface{}) string {
+	t.Helper()
+	jsonstring, err := json.Marshal(request)
+	require.NoError(t, err)
+	return SOAPMethod + string(jsonstring)
+}
+
 // GetCursOnDate.
 func initTestDataGetCursOnDateXML(t *testing.T) *AppTestTable {
 	t.Helper()
@@ -164,7 +172,7 @@ func initTestDataBiCurBaseXML(t *testing.T) *AppTestTable {
 		Input: datastructures.BiCurBaseXML{
 			FromDate: "2023-06-22",
 			ToDate:   "2023-06-23",
-			XMLNs:    "http://web.cbr.ru/",
+			//	XMLNs:    "http://web.cbr.ru/",
 		},
 		Output: testBiCurBaseXMLResult,
 		Error:  nil,
@@ -175,7 +183,7 @@ func initTestDataBiCurBaseXML(t *testing.T) *AppTestTable {
 		Input: datastructures.BiCurBaseXML{
 			FromDate: "022-14-22",
 			ToDate:   "2023-06-23",
-			XMLNs:    "http://web.cbr.ru/",
+			//	XMLNs:    "http://web.cbr.ru/",
 		},
 		Output: datastructures.BiCurBaseXMLResult{},
 		Error:  customsoap.ErrContextWSReqExpired,
@@ -183,7 +191,7 @@ func initTestDataBiCurBaseXML(t *testing.T) *AppTestTable {
 	standartTestCacheCases := createStandartTestCacheCases(t, datastructures.BiCurBaseXML{
 		FromDate: "022-14-22",
 		ToDate:   "2023-06-23",
-		XMLNs:    "http://web.cbr.ru/",
+		//XMLNs:    "http://web.cbr.ru/",
 	}, testBiCurBaseXMLResult)
 	testDataBiCurBaseXML.TestCases = append(testDataBiCurBaseXML.TestCases, standartTestCacheCases...)
 	testDataBiCurBaseXML.TestCases = testCases
@@ -203,7 +211,9 @@ func TestCasesGetCursOnDateXML(t *testing.T) {
 			require.Equal(t, true, ok)
 			testRes, err := testApp.GetCursOnDateXML(context.Background(), inputAssert)
 			if err == nil {
-				cachedData, ok = testApp.Appmemcache.GetCacheDataInCache(testCasesByMethod.MethodName)
+				testApp.Appmemcache.PrintAllCacheKeys()
+				cacheTag := getTagForCache(t, testCasesByMethod.MethodName, inputAssert)
+				cachedData, ok = testApp.Appmemcache.GetCacheDataInCache(cacheTag)
 				require.Equal(t, true, ok)
 			}
 			if !curTestCase.IsCacheTest {
@@ -241,7 +251,9 @@ func TestCasesBiCurBaseXML(t *testing.T) {
 			require.Equal(t, true, ok)
 			testRes, err := testApp.BiCurBaseXML(context.Background(), inputAssert)
 			if err == nil {
-				cachedData, ok = testApp.Appmemcache.GetCacheDataInCache(testCasesByMethod.MethodName)
+				testApp.Appmemcache.PrintAllCacheKeys()
+				cacheTag := getTagForCache(t, testCasesByMethod.MethodName, inputAssert)
+				cachedData, ok = testApp.Appmemcache.GetCacheDataInCache(cacheTag)
 				require.Equal(t, true, ok)
 			}
 			if !curTestCase.IsCacheTest {

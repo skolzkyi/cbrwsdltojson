@@ -6,8 +6,8 @@ import (
 )
 
 type BiCurBaseXML struct {
-	XMLName  xml.Name `xml:"BiCurBaseXML"`
-	XMLNs    string   `xml:"xmlns,attr"`
+	XMLName  xml.Name `xml:"BiCurBaseXML" json:"-"`
+	XMLNs    string   `xml:"xmlns,attr" json:"-"`
 	FromDate string   `xml:"fromDate"`
 	ToDate   string   `xml:"ToDate"`
 }
