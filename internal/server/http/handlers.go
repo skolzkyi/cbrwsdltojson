@@ -2,10 +2,8 @@ package internalhttp
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
 	"net/http"
 	"strings"
 
@@ -55,49 +53,73 @@ func (s *Server) GetMethodDataWithoutCache(w http.ResponseWriter, r *http.Reques
 	}
 }
 
-func (s *Server) GetCursOnDate(w http.ResponseWriter, r *http.Request) {
+func (s *Server) GetCursOnDateXML(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 	ctx, cancel := context.WithTimeout(r.Context(), s.Config.GetCBRWSDLTimeout())
 	defer cancel()
-	fmt.Println("GetCursOnDate method: ", r.Method)
 	switch r.Method {
 	case http.MethodPost:
 		newRequest := datastructures.GetCursOnDateXML{}
 
-		body, err := io.ReadAll(r.Body)
-		if err != nil {
-			fmt.Println("err io.ReadAll")
-			apiErrHandler(err, &w)
-			return
-		}
-		err = json.Unmarshal(body, &newRequest)
+		err := s.ReadDataFromInputJSON(&newRequest, r)
 		if err != nil {
 			apiErrHandler(err, &w)
 			return
 		}
-
 		err = newRequest.Validate(s.Config.GetDateTimeRequestLayout())
 		if err != nil {
 			apiErrHandler(err, &w)
 			return
 		}
 
-		answer, err := s.app.GetCursOnDate(ctx, newRequest)
+		answer, err := s.app.GetCursOnDateXML(ctx, newRequest)
+		if err != nil {
+			apiErrHandler(err, &w)
+			return
+		}
+		err = s.WriteDataToOutputJSON(answer, w)
+		if err != nil {
+			apiErrHandler(err, &w)
+			return
+		}
+		return
+
+	default:
+		apiErrHandler(ErrUnsupportedMethod, &w)
+		return
+	}
+}
+
+func (s *Server) BiCurBaseXML(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
+	ctx, cancel := context.WithTimeout(r.Context(), s.Config.GetCBRWSDLTimeout())
+	defer cancel()
+	switch r.Method {
+	case http.MethodPost:
+		newRequest := datastructures.BiCurBaseXML{}
+
+		err := s.ReadDataFromInputJSON(&newRequest, r)
+		if err != nil {
+			apiErrHandler(err, &w)
+			return
+		}
+		err = newRequest.Validate(s.Config.GetDateTimeRequestLayout())
 		if err != nil {
 			apiErrHandler(err, &w)
 			return
 		}
 
-		jsonstring, err := json.Marshal(answer)
+		answer, err := s.app.BiCurBaseXML(ctx, newRequest)
 		if err != nil {
 			apiErrHandler(err, &w)
 			return
 		}
-		_, err = w.Write(jsonstring)
+		err = s.WriteDataToOutputJSON(answer, w)
 		if err != nil {
 			apiErrHandler(err, &w)
 			return
 		}
+
 		return
 
 	default:

@@ -88,7 +88,7 @@ func createStandartTestCacheCases(t *testing.T, input interface{}, output interf
 }
 
 // GetCursOnDate.
-func initTestDataGetCursOnDate(t *testing.T) *AppTestTable {
+func initTestDataGetCursOnDateXML(t *testing.T) *AppTestTable {
 	t.Helper()
 	testGetCursOnDateXMLResult := datastructures.GetCursOnDateXMLResult{
 		OnDate:           "20230622",
@@ -111,7 +111,7 @@ func initTestDataGetCursOnDate(t *testing.T) *AppTestTable {
 	}
 	testGetCursOnDateXMLResult.ValuteCursOnDate[1] = testGetCursOnDateXMLResultElem
 	testDataGetCursOnDate := AppTestTable{
-		MethodName: "GetCursOnDate",
+		MethodName: "GetCursOnDateXML",
 	}
 	testCases := make([]AppTestCase, 2)
 	testCases[0] = AppTestCase{
@@ -139,20 +139,73 @@ func initTestDataGetCursOnDate(t *testing.T) *AppTestTable {
 	return &testDataGetCursOnDate
 }
 
-func TestAllAppCases(t *testing.T) {
-	var testCasesByMethod *AppTestTable //nolint: gosimple
-	testCasesByMethod = initTestDataGetCursOnDate(t)
+// BiCurBaseXML.
+func initTestDataBiCurBaseXML(t *testing.T) *AppTestTable {
+	t.Helper()
+	testBiCurBaseXMLResult := datastructures.BiCurBaseXMLResult{
+		BCB: make([]datastructures.BiCurBaseXMLResultElem, 2),
+	}
+	testBiCurBaseXMLResultElem := datastructures.BiCurBaseXMLResultElem{
+		D0:  time.Date(2023, time.June, 22, 0, 0, 0, 0, time.UTC),
+		VAL: "87.736315",
+	}
+	testBiCurBaseXMLResult.BCB[0] = testBiCurBaseXMLResultElem
+	testBiCurBaseXMLResultElem = datastructures.BiCurBaseXMLResultElem{
+		D0:  time.Date(2023, time.June, 23, 0, 0, 0, 0, time.UTC),
+		VAL: "87.358585",
+	}
+	testBiCurBaseXMLResult.BCB[1] = testBiCurBaseXMLResultElem
+	testDataBiCurBaseXML := AppTestTable{
+		MethodName: "BiCurBaseXML",
+	}
+	testCases := make([]AppTestCase, 2)
+	testCases[0] = AppTestCase{
+		Name: "Positive",
+		Input: datastructures.BiCurBaseXML{
+			FromDate: "2023-06-22",
+			ToDate:   "2023-06-23",
+			XMLNs:    "http://web.cbr.ru/",
+		},
+		Output: testBiCurBaseXMLResult,
+		Error:  nil,
+	}
+
+	testCases[1] = AppTestCase{
+		Name: "Negative",
+		Input: datastructures.BiCurBaseXML{
+			FromDate: "022-14-22",
+			ToDate:   "2023-06-23",
+			XMLNs:    "http://web.cbr.ru/",
+		},
+		Output: datastructures.BiCurBaseXMLResult{},
+		Error:  customsoap.ErrContextWSReqExpired,
+	}
+	standartTestCacheCases := createStandartTestCacheCases(t, datastructures.BiCurBaseXML{
+		FromDate: "022-14-22",
+		ToDate:   "2023-06-23",
+		XMLNs:    "http://web.cbr.ru/",
+	}, testBiCurBaseXMLResult)
+	testDataBiCurBaseXML.TestCases = append(testDataBiCurBaseXML.TestCases, standartTestCacheCases...)
+	testDataBiCurBaseXML.TestCases = testCases
+	return &testDataBiCurBaseXML
+}
+
+func TestCasesGetCursOnDateXML(t *testing.T) {
 	t.Parallel()
+	testCasesByMethod := initTestDataGetCursOnDateXML(t)
 	for _, curTestCase := range testCasesByMethod.TestCases {
 		curTestCase := curTestCase
 		t.Run(testCasesByMethod.MethodName+":"+curTestCase.Name, func(t *testing.T) {
 			t.Parallel()
+			var cachedData memcache.CacheInfo
 			testApp := initTestApp(t)
 			inputAssert, ok := curTestCase.Input.(datastructures.GetCursOnDateXML)
 			require.Equal(t, true, ok)
-			testRes, err := testApp.GetCursOnDate(context.Background(), inputAssert)
-			cachedData, ok := testApp.Appmemcache.GetCacheDataInCache(testCasesByMethod.MethodName)
-			require.Equal(t, false, ok)
+			testRes, err := testApp.GetCursOnDateXML(context.Background(), inputAssert)
+			if err == nil {
+				cachedData, ok = testApp.Appmemcache.GetCacheDataInCache(testCasesByMethod.MethodName)
+				require.Equal(t, true, ok)
+			}
 			if !curTestCase.IsCacheTest {
 				require.Equal(t, curTestCase.Error, err)
 				require.Equal(t, curTestCase.Output, testRes)
@@ -160,7 +213,45 @@ func TestAllAppCases(t *testing.T) {
 				if !curTestCase.IsCacheData {
 					time.Sleep(3 * time.Second)
 				}
-				_, err := testApp.GetCursOnDate(context.Background(), inputAssert)
+				_, err := testApp.GetCursOnDateXML(context.Background(), inputAssert)
+				require.Equal(t, nil, err)
+				cachedData2, ok := testApp.Appmemcache.GetCacheDataInCache(testCasesByMethod.MethodName)
+				require.Equal(t, true, ok)
+				if curTestCase.IsCacheData {
+					require.Equal(t, cachedData.InfoDTStamp, cachedData2.InfoDTStamp)
+				} else {
+					require.NotEqual(t, cachedData.InfoDTStamp, cachedData2.InfoDTStamp)
+				}
+			}
+			testApp.RemoveDataInMemCacheBySOAPAction(testCasesByMethod.MethodName)
+		})
+	}
+}
+
+func TestCasesBiCurBaseXML(t *testing.T) {
+	t.Parallel()
+	testCasesByMethod := initTestDataBiCurBaseXML(t)
+	for _, curTestCase := range testCasesByMethod.TestCases {
+		curTestCase := curTestCase
+		t.Run(testCasesByMethod.MethodName+":"+curTestCase.Name, func(t *testing.T) {
+			t.Parallel()
+			var cachedData memcache.CacheInfo
+			testApp := initTestApp(t)
+			inputAssert, ok := curTestCase.Input.(datastructures.BiCurBaseXML)
+			require.Equal(t, true, ok)
+			testRes, err := testApp.BiCurBaseXML(context.Background(), inputAssert)
+			if err == nil {
+				cachedData, ok = testApp.Appmemcache.GetCacheDataInCache(testCasesByMethod.MethodName)
+				require.Equal(t, true, ok)
+			}
+			if !curTestCase.IsCacheTest {
+				require.Equal(t, curTestCase.Error, err)
+				require.Equal(t, curTestCase.Output, testRes)
+			} else {
+				if !curTestCase.IsCacheData {
+					time.Sleep(3 * time.Second)
+				}
+				_, err := testApp.BiCurBaseXML(context.Background(), inputAssert)
 				require.Equal(t, nil, err)
 				cachedData2, ok := testApp.Appmemcache.GetCacheDataInCache(testCasesByMethod.MethodName)
 				require.Equal(t, true, ok)
