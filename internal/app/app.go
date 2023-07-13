@@ -130,7 +130,7 @@ func (a *App) RemoveDataInMemCacheBySOAPAction(SOAPAction string) { //nolint: go
 	a.Appmemcache.RemovePayloadInCache(SOAPAction)
 }
 
-func (a *App) GetCursOnDate(ctx context.Context, input datastructures.GetCursOnDateXML) (datastructures.GetCursOnDateXMLResult, error) {
+func (a *App) GetCursOnDateXML(ctx context.Context, input datastructures.GetCursOnDateXML) (datastructures.GetCursOnDateXMLResult, error) {
 	var err error
 	var response datastructures.GetCursOnDateXMLResult
 	select {

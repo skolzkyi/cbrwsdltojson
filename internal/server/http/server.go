@@ -2,7 +2,9 @@ package internalhttp
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
+	"io"
 	"net/http"
 	"time"
 
@@ -42,7 +44,7 @@ type Logger interface {
 
 type Application interface {
 	RemoveDataInMemCacheBySOAPAction(SOAPAction string)
-	GetCursOnDate(ctx context.Context, input datastructures.GetCursOnDateXML) (datastructures.GetCursOnDateXMLResult, error)
+	GetCursOnDateXML(ctx context.Context, input datastructures.GetCursOnDateXML) (datastructures.GetCursOnDateXMLResult, error)
 	BiCurBaseXML(ctx context.Context, input datastructures.BiCurBaseXML) (datastructures.BiCurBaseXMLResult, error)
 }
 
@@ -81,4 +83,35 @@ func (s *Server) Stop(ctx context.Context) error {
 	}
 	s.logg.Info("server graceful shutdown")
 	return err
+}
+
+func (s *Server) ReadDataFromInputJSON(pointerOnStruct interface{}, r *http.Request) error {
+	body, err := io.ReadAll(r.Body)
+	if err != nil {
+		s.logg.Error("server ReadDataFromInputJSON error: " + err.Error())
+		return err
+	}
+
+	err = json.Unmarshal(body, pointerOnStruct)
+	if err != nil {
+		s.logg.Error("server ReadDataFromInputJSON error: " + err.Error())
+		return err
+	}
+
+	return nil
+}
+
+func (s *Server) WriteDataToOutputJSON(marshallingObject interface{}, w http.ResponseWriter) error {
+	jsonstring, err := json.Marshal(marshallingObject)
+	if err != nil {
+		s.logg.Error("server WriteDataToOutputJSON error: " + err.Error())
+		return err
+	}
+
+	_, err = w.Write(jsonstring)
+	if err != nil {
+		s.logg.Error("server WriteDataToOutputJSON error: " + err.Error())
+		return err
+	}
+	return nil
 }

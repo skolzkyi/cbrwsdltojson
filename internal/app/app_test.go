@@ -111,7 +111,7 @@ func initTestDataGetCursOnDateXML(t *testing.T) *AppTestTable {
 	}
 	testGetCursOnDateXMLResult.ValuteCursOnDate[1] = testGetCursOnDateXMLResultElem
 	testDataGetCursOnDate := AppTestTable{
-		MethodName: "GetCursOnDate",
+		MethodName: "GetCursOnDateXML",
 	}
 	testCases := make([]AppTestCase, 2)
 	testCases[0] = AppTestCase{
@@ -190,20 +190,22 @@ func initTestDataBiCurBaseXML(t *testing.T) *AppTestTable {
 	return &testDataBiCurBaseXML
 }
 
-func TestAllAppCases(t *testing.T) {
-	var testCasesByMethod *AppTestTable //nolint: gosimple
+func TestCasesGetCursOnDateXML(t *testing.T) {
 	t.Parallel()
-	testCasesByMethod = initTestDataGetCursOnDateXML(t)
+	testCasesByMethod := initTestDataGetCursOnDateXML(t)
 	for _, curTestCase := range testCasesByMethod.TestCases {
 		curTestCase := curTestCase
 		t.Run(testCasesByMethod.MethodName+":"+curTestCase.Name, func(t *testing.T) {
 			t.Parallel()
+			var cachedData memcache.CacheInfo
 			testApp := initTestApp(t)
 			inputAssert, ok := curTestCase.Input.(datastructures.GetCursOnDateXML)
 			require.Equal(t, true, ok)
-			testRes, err := testApp.GetCursOnDate(context.Background(), inputAssert)
-			cachedData, ok := testApp.Appmemcache.GetCacheDataInCache(testCasesByMethod.MethodName)
-			require.Equal(t, false, ok)
+			testRes, err := testApp.GetCursOnDateXML(context.Background(), inputAssert)
+			if err == nil {
+				cachedData, ok = testApp.Appmemcache.GetCacheDataInCache(testCasesByMethod.MethodName)
+				require.Equal(t, true, ok)
+			}
 			if !curTestCase.IsCacheTest {
 				require.Equal(t, curTestCase.Error, err)
 				require.Equal(t, curTestCase.Output, testRes)
@@ -211,7 +213,7 @@ func TestAllAppCases(t *testing.T) {
 				if !curTestCase.IsCacheData {
 					time.Sleep(3 * time.Second)
 				}
-				_, err := testApp.GetCursOnDate(context.Background(), inputAssert)
+				_, err := testApp.GetCursOnDateXML(context.Background(), inputAssert)
 				require.Equal(t, nil, err)
 				cachedData2, ok := testApp.Appmemcache.GetCacheDataInCache(testCasesByMethod.MethodName)
 				require.Equal(t, true, ok)
@@ -224,17 +226,24 @@ func TestAllAppCases(t *testing.T) {
 			testApp.RemoveDataInMemCacheBySOAPAction(testCasesByMethod.MethodName)
 		})
 	}
-	testCasesByMethod = initTestDataBiCurBaseXML(t)
+}
+
+func TestCasesBiCurBaseXML(t *testing.T) {
+	t.Parallel()
+	testCasesByMethod := initTestDataBiCurBaseXML(t)
 	for _, curTestCase := range testCasesByMethod.TestCases {
 		curTestCase := curTestCase
 		t.Run(testCasesByMethod.MethodName+":"+curTestCase.Name, func(t *testing.T) {
 			t.Parallel()
+			var cachedData memcache.CacheInfo
 			testApp := initTestApp(t)
 			inputAssert, ok := curTestCase.Input.(datastructures.BiCurBaseXML)
 			require.Equal(t, true, ok)
 			testRes, err := testApp.BiCurBaseXML(context.Background(), inputAssert)
-			cachedData, ok := testApp.Appmemcache.GetCacheDataInCache(testCasesByMethod.MethodName)
-			//require.Equal(t, true, ok)
+			if err == nil {
+				cachedData, ok = testApp.Appmemcache.GetCacheDataInCache(testCasesByMethod.MethodName)
+				require.Equal(t, true, ok)
+			}
 			if !curTestCase.IsCacheTest {
 				require.Equal(t, curTestCase.Error, err)
 				require.Equal(t, curTestCase.Output, testRes)

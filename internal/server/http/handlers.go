@@ -2,10 +2,8 @@ package internalhttp
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
 	"net/http"
 	"strings"
 
@@ -63,35 +61,23 @@ func (s *Server) GetCursOnDateXML(w http.ResponseWriter, r *http.Request) {
 	case http.MethodPost:
 		newRequest := datastructures.GetCursOnDateXML{}
 
-		body, err := io.ReadAll(r.Body)
+		err := s.ReadDataFromInputJSON(&newRequest, r)
 		if err != nil {
 			apiErrHandler(err, &w)
 			return
 		}
-		err = json.Unmarshal(body, &newRequest)
-		if err != nil {
-			apiErrHandler(err, &w)
-			return
-		}
-
 		err = newRequest.Validate(s.Config.GetDateTimeRequestLayout())
 		if err != nil {
 			apiErrHandler(err, &w)
 			return
 		}
 
-		answer, err := s.app.GetCursOnDate(ctx, newRequest)
+		answer, err := s.app.GetCursOnDateXML(ctx, newRequest)
 		if err != nil {
 			apiErrHandler(err, &w)
 			return
 		}
-
-		jsonstring, err := json.Marshal(answer)
-		if err != nil {
-			apiErrHandler(err, &w)
-			return
-		}
-		_, err = w.Write(jsonstring)
+		err = s.WriteDataToOutputJSON(answer, w)
 		if err != nil {
 			apiErrHandler(err, &w)
 			return
@@ -112,17 +98,11 @@ func (s *Server) BiCurBaseXML(w http.ResponseWriter, r *http.Request) {
 	case http.MethodPost:
 		newRequest := datastructures.BiCurBaseXML{}
 
-		body, err := io.ReadAll(r.Body)
+		err := s.ReadDataFromInputJSON(&newRequest, r)
 		if err != nil {
 			apiErrHandler(err, &w)
 			return
 		}
-		err = json.Unmarshal(body, &newRequest)
-		if err != nil {
-			apiErrHandler(err, &w)
-			return
-		}
-
 		err = newRequest.Validate(s.Config.GetDateTimeRequestLayout())
 		if err != nil {
 			apiErrHandler(err, &w)
@@ -134,17 +114,12 @@ func (s *Server) BiCurBaseXML(w http.ResponseWriter, r *http.Request) {
 			apiErrHandler(err, &w)
 			return
 		}
+		err = s.WriteDataToOutputJSON(answer, w)
+		if err != nil {
+			apiErrHandler(err, &w)
+			return
+		}
 
-		jsonstring, err := json.Marshal(answer)
-		if err != nil {
-			apiErrHandler(err, &w)
-			return
-		}
-		_, err = w.Write(jsonstring)
-		if err != nil {
-			apiErrHandler(err, &w)
-			return
-		}
 		return
 
 	default:
