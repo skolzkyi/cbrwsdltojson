@@ -146,12 +146,12 @@ func initTestDataBiCurBaseXML(t *testing.T) *AppTestTable {
 		BCB: make([]datastructures.BiCurBaseXMLResultElem, 2),
 	}
 	testBiCurBaseXMLResultElem := datastructures.BiCurBaseXMLResultElem{
-		D0:  time.Date(2023, time.June, 22, 0, 0, 0, 0, time.Local),
+		D0:  time.Date(2023, time.June, 22, 0, 0, 0, 0, time.UTC),
 		VAL: "87.736315",
 	}
 	testBiCurBaseXMLResult.BCB[0] = testBiCurBaseXMLResultElem
 	testBiCurBaseXMLResultElem = datastructures.BiCurBaseXMLResultElem{
-		D0:  time.Date(2023, time.June, 23, 0, 0, 0, 0, time.Local),
+		D0:  time.Date(2023, time.June, 23, 0, 0, 0, 0, time.UTC),
 		VAL: "87.358585",
 	}
 	testBiCurBaseXMLResult.BCB[1] = testBiCurBaseXMLResultElem

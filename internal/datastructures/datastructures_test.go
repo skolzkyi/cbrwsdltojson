@@ -267,12 +267,12 @@ func initTestCasesBiCurBaseXML(t *testing.T) DatastructuresTestTable {
 		BCB: make([]datastructures.BiCurBaseXMLResultElem, 2),
 	}
 	testBiCurBaseXMLResultElem := datastructures.BiCurBaseXMLResultElem{
-		D0:  time.Date(2023, time.June, 22, 0, 0, 0, 0, time.Local),
+		D0:  time.Date(2023, time.June, 22, 0, 0, 0, 0, time.UTC),
 		VAL: "87.736315",
 	}
 	testBiCurBaseXMLResult.BCB[0] = testBiCurBaseXMLResultElem
 	testBiCurBaseXMLResultElem = datastructures.BiCurBaseXMLResultElem{
-		D0:  time.Date(2023, time.June, 23, 0, 0, 0, 0, time.Local),
+		D0:  time.Date(2023, time.June, 23, 0, 0, 0, 0, time.UTC),
 		VAL: "87.358585",
 	}
 	testBiCurBaseXMLResult.BCB[1] = testBiCurBaseXMLResultElem
@@ -281,7 +281,7 @@ func initTestCasesBiCurBaseXML(t *testing.T) DatastructuresTestTable {
 		DataStructureType: "BiCurBaseXMLResult",
 		Datastructure:     testBiCurBaseXMLResult,
 		NeedXMLMarshal:    true,
-		XMLMarshalControl: `<BiCurBaseXMLResult><BCB><D0>2023-06-22T00:00:00+03:00</D0><VAL>87.736315</VAL></BCB><BCB><D0>2023-06-23T00:00:00+03:00</D0><VAL>87.358585</VAL></BCB></BiCurBaseXMLResult>`,
+		XMLMarshalControl: `<BiCurBaseXMLResult><BCB><D0>2023-06-22T00:00:00Z</D0><VAL>87.736315</VAL></BCB><BCB><D0>2023-06-23T00:00:00Z</D0><VAL>87.358585</VAL></BCB></BiCurBaseXMLResult>`,
 	}
 	newCase.MarshalXMLTestFunc = func(t *testing.T, Datastructure interface{}, XMLMarshalControl string) {
 		t.Helper()
