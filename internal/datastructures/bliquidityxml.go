@@ -29,10 +29,10 @@ func (data *BliquidityXML) Validate(inputDTLayout string) error {
 
 type BliquidityXMLResult struct {
 	// Bliquidity node
-	BL []BliquidityXMLElem `xml:"BL"`
+	BL []BliquidityXMLResultElem `xml:"BL"`
 }
 
-type BliquidityXMLElem struct {
+type BliquidityXMLResultElem struct {
 	DT                            time.Time `xml:"DT" json:"DT"`
 	StrLiDef                      string    `xml:"StrLiDef" json:"StrLiDef"`
 	Claims                        string    `xml:"claims" json:"claims"`

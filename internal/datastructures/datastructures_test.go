@@ -51,6 +51,8 @@ func initAllDatastructuresTestTable(t *testing.T) AllDatastructuresTestTable {
 	AllDTTable = append(AllDTTable, curDatastructuresTestTable)
 	curDatastructuresTestTable = initTestCasesBiCurBaseXML(t)
 	AllDTTable = append(AllDTTable, curDatastructuresTestTable)
+	curDatastructuresTestTable = initTestCasesBliquidityXML(t)
+	AllDTTable = append(AllDTTable, curDatastructuresTestTable)
 	return AllDTTable
 }
 
@@ -255,7 +257,7 @@ func initTestCasesBiCurBaseXML(t *testing.T) DatastructuresTestTable {
 	newCase.MarshalXMLTestFunc = func(_ *testing.T, _ interface{}, _ string) {}
 	newCase.ValidateControlTestFunc = func(t *testing.T, Datastructure interface{}, ValidateControl error) {
 		t.Helper()
-		DSAssert, ok := Datastructure.(datastructures.GetCursOnDateXML)
+		DSAssert, ok := Datastructure.(datastructures.BiCurBaseXML)
 		if !ok {
 			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:BiCurBaseXML")
 		}
@@ -288,6 +290,157 @@ func initTestCasesBiCurBaseXML(t *testing.T) DatastructuresTestTable {
 		DSAssert, ok := Datastructure.(datastructures.BiCurBaseXMLResult)
 		if !ok {
 			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:BiCurBaseXMLResult")
+		}
+		marshXMLres, err := xml.Marshal(DSAssert)
+		require.NoError(t, err)
+		require.Equal(t, XMLMarshalControl, string(marshXMLres))
+	}
+	newCase.ValidateControlTestFunc = func(_ *testing.T, _ interface{}, _ error) {}
+	DatastructuresTest.OutputDataCases[0] = newCase
+	return DatastructuresTest
+}
+
+func initTestCasesBliquidityXML(t *testing.T) DatastructuresTestTable {
+	t.Helper()
+	DatastructuresTest := DatastructuresTestTable{}
+	DatastructuresTest.MethodName = "BliquidityXML"
+	DatastructuresTest.InputDataCases = make([]DatastructuresTestCase, 4)
+	DatastructuresTest.OutputDataCases = make([]DatastructuresTestCase, 1)
+	var newCase DatastructuresTestCase
+	newCase = DatastructuresTestCase{
+		Name:              "XMLMarshalControl",
+		DataStructureType: "BliquidityXML",
+		Datastructure: datastructures.BliquidityXML{
+			FromDate: "2023-06-22",
+			ToDate:   "2023-06-23",
+			XMLNs:    "http://web.cbr.ru/",
+		},
+		NeedXMLMarshal:    true,
+		XMLMarshalControl: `<BliquidityXML xmlns="http://web.cbr.ru/"><fromDate>2023-06-22</fromDate><ToDate>2023-06-23</ToDate></BliquidityXML>`,
+	}
+	newCase.MarshalXMLTestFunc = func(t *testing.T, Datastructure interface{}, XMLMarshalControl string) {
+		t.Helper()
+		DSAssert, ok := Datastructure.(datastructures.BliquidityXML)
+		if !ok {
+			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:BliquidityXML1")
+		}
+		marshXMLres, err := xml.Marshal(DSAssert)
+		require.NoError(t, err)
+		require.Equal(t, XMLMarshalControl, string(marshXMLres))
+	}
+	newCase.ValidateControlTestFunc = func(_ *testing.T, _ interface{}, _ error) {}
+	DatastructuresTest.InputDataCases[0] = newCase
+	newCase = DatastructuresTestCase{
+		Name:              "ValidateControlNegativeBadRawData",
+		DataStructureType: "BliquidityXML",
+		Datastructure: datastructures.BliquidityXML{
+			FromDate: "022-14-22",
+			ToDate:   "2023-06-23",
+			XMLNs:    "http://web.cbr.ru/",
+		},
+		NeedValidate:    true,
+		ValidateControl: datastructures.ErrBadRawData,
+	}
+	newCase.MarshalXMLTestFunc = func(_ *testing.T, _ interface{}, _ string) {}
+	newCase.ValidateControlTestFunc = func(t *testing.T, Datastructure interface{}, ValidateControl error) {
+		t.Helper()
+		DSAssert, ok := Datastructure.(datastructures.BliquidityXML)
+		if !ok {
+			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:BliquidityXML2")
+		}
+		err := DSAssert.Validate("2006-01-02")
+		require.Equal(t, ValidateControl, err)
+	}
+	DatastructuresTest.InputDataCases[1] = newCase
+	newCase = DatastructuresTestCase{
+		Name:              "ValidateControlNegativeFromDateAfterToDate",
+		DataStructureType: "BliquidityXML",
+		Datastructure: datastructures.BliquidityXML{
+			FromDate: "2023-06-23",
+			ToDate:   "2023-06-22",
+			XMLNs:    "http://web.cbr.ru/",
+		},
+		NeedValidate:    true,
+		ValidateControl: datastructures.ErrBadInputDateData,
+	}
+	newCase.MarshalXMLTestFunc = func(_ *testing.T, _ interface{}, _ string) {}
+	newCase.ValidateControlTestFunc = func(t *testing.T, Datastructure interface{}, ValidateControl error) {
+		t.Helper()
+		DSAssert, ok := Datastructure.(datastructures.BliquidityXML)
+		if !ok {
+			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:BliquidityXML3")
+		}
+		err := DSAssert.Validate("2006-01-02")
+		require.Equal(t, ValidateControl, err)
+	}
+	DatastructuresTest.InputDataCases[2] = newCase
+	newCase = DatastructuresTestCase{
+		Name:              "ValidateControlPositive",
+		DataStructureType: "BliquidityXML",
+		Datastructure: datastructures.BliquidityXML{
+			FromDate: "2023-06-22",
+			ToDate:   "2023-06-23",
+			XMLNs:    "http://web.cbr.ru/",
+		},
+		NeedValidate:    true,
+		ValidateControl: nil,
+	}
+	newCase.MarshalXMLTestFunc = func(_ *testing.T, _ interface{}, _ string) {}
+	newCase.ValidateControlTestFunc = func(t *testing.T, Datastructure interface{}, ValidateControl error) {
+		t.Helper()
+		DSAssert, ok := Datastructure.(datastructures.BliquidityXML)
+		if !ok {
+			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:BliquidityXML4")
+		}
+		err := DSAssert.Validate("2006-01-02")
+		require.Equal(t, ValidateControl, err)
+	}
+	DatastructuresTest.InputDataCases[3] = newCase
+	testBliquidityXML := datastructures.BliquidityXMLResult{
+		BL: make([]datastructures.BliquidityXMLResultElem, 2),
+	}
+	testBliquidityXMLElem := datastructures.BliquidityXMLResultElem{
+		DT:                            time.Date(2023, time.June, 22, 0, 0, 0, 0, time.UTC),
+		StrLiDef:                      "-1022.50",
+		Claims:                        "1533.70",
+		ActionBasedRepoFX:             "1378.40",
+		ActionBasedSecureLoans:        "0.00",
+		StandingFacilitiesRepoFX:      "0.00",
+		StandingFacilitiesSecureLoans: "155.30",
+		Liabilities:                   "-2890.20",
+		DepositAuctionBased:           "-1828.30",
+		DepositStandingFacilities:     "-1061.90",
+		CBRbonds:                      "0.00",
+		NetCBRclaims:                  "334.10",
+	}
+	testBliquidityXML.BL[0] = testBliquidityXMLElem
+	testBliquidityXMLElem = datastructures.BliquidityXMLResultElem{
+		DT:                            time.Date(2023, time.June, 23, 0, 0, 0, 0, time.UTC),
+		StrLiDef:                      "-980.70",
+		Claims:                        "1558.80",
+		ActionBasedRepoFX:             "1378.40",
+		ActionBasedSecureLoans:        "0.00",
+		StandingFacilitiesRepoFX:      "0.00",
+		StandingFacilitiesSecureLoans: "180.40",
+		Liabilities:                   "-2873.00",
+		DepositAuctionBased:           "-1828.30",
+		DepositStandingFacilities:     "-1044.60",
+		CBRbonds:                      "0.00",
+		NetCBRclaims:                  "333.40",
+	}
+	testBliquidityXML.BL[1] = testBliquidityXMLElem
+	newCase = DatastructuresTestCase{
+		Name:              "XMLMarshalControl",
+		DataStructureType: "BliquidityXML",
+		Datastructure:     testBliquidityXML,
+		NeedXMLMarshal:    true,
+		XMLMarshalControl: `<BliquidityXMLResult><BL><DT>2023-06-22T00:00:00Z</DT><StrLiDef>-1022.50</StrLiDef><claims>1533.70</claims><actionBasedRepoFX>1378.40</actionBasedRepoFX><actionBasedSecureLoans>0.00</actionBasedSecureLoans><standingFacilitiesRepoFX>0.00</standingFacilitiesRepoFX><standingFacilitiesSecureLoans>155.30</standingFacilitiesSecureLoans><liabilities>-2890.20</liabilities><depositAuctionBased>-1828.30</depositAuctionBased><depositStandingFacilities>-1061.90</depositStandingFacilities><CBRbonds>0.00</CBRbonds><netCBRclaims>334.10</netCBRclaims></BL><BL><DT>2023-06-23T00:00:00Z</DT><StrLiDef>-980.70</StrLiDef><claims>1558.80</claims><actionBasedRepoFX>1378.40</actionBasedRepoFX><actionBasedSecureLoans>0.00</actionBasedSecureLoans><standingFacilitiesRepoFX>0.00</standingFacilitiesRepoFX><standingFacilitiesSecureLoans>180.40</standingFacilitiesSecureLoans><liabilities>-2873.00</liabilities><depositAuctionBased>-1828.30</depositAuctionBased><depositStandingFacilities>-1044.60</depositStandingFacilities><CBRbonds>0.00</CBRbonds><netCBRclaims>333.40</netCBRclaims></BL></BliquidityXMLResult>`,
+	}
+	newCase.MarshalXMLTestFunc = func(t *testing.T, Datastructure interface{}, XMLMarshalControl string) {
+		t.Helper()
+		DSAssert, ok := Datastructure.(datastructures.BliquidityXMLResult)
+		if !ok {
+			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:BliquidityXMLResult")
 		}
 		marshXMLres, err := xml.Marshal(DSAssert)
 		require.NoError(t, err)
