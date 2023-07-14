@@ -3,7 +3,7 @@ package internalhttp
 import (
 	"context"
 	"errors"
-	"fmt"
+	"io"
 	"net/http"
 	"strings"
 
@@ -40,9 +40,13 @@ func (s *Server) GetMethodDataWithoutCache(w http.ResponseWriter, r *http.Reques
 
 		SOAPAction := pathParts[1]
 
-		fmt.Println("GetMethodDataWithoutCache SOAPAction: ", SOAPAction)
-
-		s.app.RemoveDataInMemCacheBySOAPAction(SOAPAction)
+		body, err := io.ReadAll(r.Body)
+		if err != nil {
+			apiErrHandler(err, &w)
+			return
+		}
+		rawBody := helpers.ClearStringByWhitespaceAndLinebreak(string(body))
+		s.app.RemoveDataInMemCacheBySOAPAction(SOAPAction + rawBody)
 
 		// 307, not 303: on 307 not lost body and not change verb to GET
 		http.Redirect(w, r, "/"+SOAPAction, http.StatusTemporaryRedirect)
@@ -61,7 +65,7 @@ func (s *Server) GetCursOnDateXML(w http.ResponseWriter, r *http.Request) {
 	case http.MethodPost:
 		newRequest := datastructures.GetCursOnDateXML{}
 
-		err := s.ReadDataFromInputJSON(&newRequest, r)
+		body, err := s.ReadDataFromInputJSON(&newRequest, r)
 		if err != nil {
 			apiErrHandler(err, &w)
 			return
@@ -72,7 +76,7 @@ func (s *Server) GetCursOnDateXML(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		answer, err := s.app.GetCursOnDateXML(ctx, newRequest)
+		answer, err := s.app.GetCursOnDateXML(ctx, newRequest, body)
 		if err != nil {
 			apiErrHandler(err, &w)
 			return
@@ -98,7 +102,7 @@ func (s *Server) BiCurBaseXML(w http.ResponseWriter, r *http.Request) {
 	case http.MethodPost:
 		newRequest := datastructures.BiCurBaseXML{}
 
-		err := s.ReadDataFromInputJSON(&newRequest, r)
+		body, err := s.ReadDataFromInputJSON(&newRequest, r)
 		if err != nil {
 			apiErrHandler(err, &w)
 			return
@@ -109,7 +113,7 @@ func (s *Server) BiCurBaseXML(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		answer, err := s.app.BiCurBaseXML(ctx, newRequest)
+		answer, err := s.app.BiCurBaseXML(ctx, newRequest, body)
 		if err != nil {
 			apiErrHandler(err, &w)
 			return

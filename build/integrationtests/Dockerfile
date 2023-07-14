@@ -35,4 +35,6 @@ RUN chmod 555 ${BIN_FILE}
 ENV CONFIG_FILE /etc/cbrwsdltojson/config.env
 COPY ./configs/config.env ${CONFIG_FILE}
 
-CMD  ${BIN_FILE} -config ${CONFIG_FILE} -test.v > integrationTestsCBRWSToJSONLog.txt
+RUN mkdir /deployLogs
+
+CMD  ${BIN_FILE} -config ${CONFIG_FILE} -test.v > /deployLogs/integrationTestsCBRWSToJSONLog.log

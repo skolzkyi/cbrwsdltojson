@@ -46,3 +46,11 @@ func StringBuild(input ...string) string {
 
 	return sb.String()
 }
+
+func ClearStringByWhitespaceAndLinebreak(str string) string {
+	result := strings.ReplaceAll(str, " ", "")
+	result = strings.ReplaceAll(result, "\r", "")
+	result = strings.ReplaceAll(result, "\n", "")
+
+	return result
+}

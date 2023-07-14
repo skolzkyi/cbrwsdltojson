@@ -44,8 +44,8 @@ type Logger interface {
 
 type Application interface {
 	RemoveDataInMemCacheBySOAPAction(SOAPAction string)
-	GetCursOnDateXML(ctx context.Context, input datastructures.GetCursOnDateXML) (datastructures.GetCursOnDateXMLResult, error)
-	BiCurBaseXML(ctx context.Context, input datastructures.BiCurBaseXML) (datastructures.BiCurBaseXMLResult, error)
+	GetCursOnDateXML(ctx context.Context, input datastructures.GetCursOnDateXML, rawBody string) (datastructures.GetCursOnDateXMLResult, error)
+	BiCurBaseXML(ctx context.Context, input datastructures.BiCurBaseXML, rawBody string) (datastructures.BiCurBaseXMLResult, error)
 }
 
 func NewServer(logger Logger, app Application, config Config) *Server {
@@ -85,20 +85,20 @@ func (s *Server) Stop(ctx context.Context) error {
 	return err
 }
 
-func (s *Server) ReadDataFromInputJSON(pointerOnStruct interface{}, r *http.Request) error {
+func (s *Server) ReadDataFromInputJSON(pointerOnStruct interface{}, r *http.Request) (string, error) {
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
 		s.logg.Error("server ReadDataFromInputJSON error: " + err.Error())
-		return err
+		return "", err
 	}
 
 	err = json.Unmarshal(body, pointerOnStruct)
 	if err != nil {
 		s.logg.Error("server ReadDataFromInputJSON error: " + err.Error())
-		return err
+		return "", err
 	}
 
-	return nil
+	return string(body), nil
 }
 
 func (s *Server) WriteDataToOutputJSON(marshallingObject interface{}, w http.ResponseWriter) error {
