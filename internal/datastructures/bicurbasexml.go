@@ -33,6 +33,6 @@ type BiCurBaseXMLResult struct {
 }
 
 type BiCurBaseXMLResultElem struct {
-	D0  time.Time `xml:"D0"`
-	VAL string    `xml:"VAL"`
+	D0  time.Time `xml:"D0" json:"D0"`
+	VAL string    `xml:"VAL" json:"VAL"`
 }

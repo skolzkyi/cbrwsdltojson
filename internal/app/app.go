@@ -300,3 +300,61 @@ func (a *App) BiCurBaseXML(ctx context.Context, input datastructures.BiCurBaseXM
 	}
 	return response, err
 }
+
+func (a *App) BliquidityXML(ctx context.Context, input datastructures.BliquidityXML, rawBody string) (datastructures.BliquidityXMLResult, error) {
+	var err error
+	var response datastructures.BliquidityXMLResult
+	select {
+	case <-ctx.Done():
+		err = ErrContextWSReqExpired
+		a.logger.Error(err.Error())
+	default:
+		SOAPMethod := "BliquidityXML"
+		startNodeName := "Bliquidity"
+		if a.permittedRequests.PermittedRequestMapLength() > 0 {
+			if a.permittedRequests.IsPermittedRequestInMap(SOAPMethod) {
+				return datastructures.BliquidityXMLResult{}, ErrMethodProhibited
+			}
+		}
+
+		cachedData, ok := a.GetDataInCacheIfExisting(SOAPMethod, rawBody)
+		if err != nil {
+			a.logger.Error(err.Error())
+			return response, err
+		}
+		if ok {
+			response, ok = cachedData.(datastructures.BliquidityXMLResult)
+			if !ok {
+				err = ErrAssertionAfterGetCacheData
+				a.logger.Error(err.Error())
+			} else {
+				return response, nil
+			}
+		}
+
+		input.XMLNs = cbrNamespace
+		/*
+			err = a.ProcessRequest(ctx, SOAPMethod, startNodeName, input, response, &response)
+			if err != nil {
+				a.logger.Error(err.Error())
+				return response, err
+			}*/
+		res, err := a.soapSender.SoapCall(ctx, SOAPMethod, input)
+		if err != nil {
+			a.logger.Error(err.Error())
+			return response, err
+		}
+		err = a.XMLToStructDecoder(res, startNodeName, &response)
+		if err != nil {
+			a.logger.Error(err.Error())
+			return response, err
+		}
+
+		err = a.AddOrUpdateDataInCache(SOAPMethod, input, response)
+		if err != nil {
+			a.logger.Error(err.Error())
+			return response, err
+		}
+	}
+	return response, err
+}
