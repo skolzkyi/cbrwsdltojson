@@ -3,7 +3,6 @@ package internalhttp
 import (
 	"context"
 	"errors"
-	"fmt"
 	"io"
 	"net/http"
 	"strings"
@@ -47,7 +46,6 @@ func (s *Server) GetMethodDataWithoutCache(w http.ResponseWriter, r *http.Reques
 			return
 		}
 		rawBody := helpers.ClearStringByWhitespaceAndLinebreak(string(body))
-		fmt.Println("nocache_tag_in_upd_add: ", SOAPAction+rawBody)
 		s.app.RemoveDataInMemCacheBySOAPAction(SOAPAction + rawBody)
 
 		// 307, not 303: on 307 not lost body and not change verb to GET

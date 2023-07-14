@@ -13,6 +13,8 @@ services:
        cbrwsdltojson:
         condition: service_started
     volumes:
-      - "./configs:/app/configs"
+    - type: bind
+      source: ../integrationtestslogs
+      target: /deployLogs
     networks:
     - default_network

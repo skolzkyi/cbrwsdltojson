@@ -119,6 +119,26 @@ func New(logger Logger, config Config, sender SoapRequestSender, memcache AppMem
 	return &app
 }
 
+func (a *App) ProcessRequest(ctx context.Context, SOAPMethod string, startNodeName string, inputData interface{}, responseData interface{}, pointerToResponseData interface{}) error {
+	res, err := a.soapSender.SoapCall(ctx, SOAPMethod, inputData)
+	if err != nil {
+		a.logger.Error(err.Error())
+		return err
+	}
+	err = a.XMLToStructDecoder(res, startNodeName, pointerToResponseData)
+	if err != nil {
+		a.logger.Error(err.Error())
+		return err
+	}
+
+	err = a.AddOrUpdateDataInCache(SOAPMethod, inputData, responseData)
+	if err != nil {
+		a.logger.Error(err.Error())
+		return err
+	}
+	return nil
+}
+
 func (a *App) XMLToStructDecoder(data []byte, startNodeName string, pointerToStruct interface{}) error {
 	xmlData := bytes.NewBuffer(data)
 
@@ -255,7 +275,12 @@ func (a *App) BiCurBaseXML(ctx context.Context, input datastructures.BiCurBaseXM
 		}
 
 		input.XMLNs = cbrNamespace
-
+		/*
+			err = a.ProcessRequest(ctx, SOAPMethod, startNodeName, input, response, &response)
+			if err != nil {
+				a.logger.Error(err.Error())
+				return response, err
+			}*/
 		res, err := a.soapSender.SoapCall(ctx, SOAPMethod, input)
 		if err != nil {
 			a.logger.Error(err.Error())
