@@ -119,7 +119,7 @@ func New(logger Logger, config Config, sender SoapRequestSender, memcache AppMem
 	return &app
 }
 
-func (a *App) ProcessRequest(ctx context.Context, SOAPMethod string, startNodeName string, inputData interface{}, responseData interface{}, pointerToResponseData interface{}) error {
+func (a *App) ProcessRequest(ctx context.Context, SOAPMethod string, startNodeName string, inputData interface{}, responseData interface{}, pointerToResponseData interface{}) error { //nolint: gocritic
 	res, err := a.soapSender.SoapCall(ctx, SOAPMethod, inputData)
 	if err != nil {
 		a.logger.Error(err.Error())
