@@ -26,9 +26,9 @@ type GetCursOnDateXMLResult struct {
 }
 
 type GetCursOnDateXMLResultElem struct {
-	Vname   string `xml:"Vname"`
-	Vnom    int32  `xml:"Vnom"`
-	Vcurs   string `xml:"Vcurs"`
-	Vcode   string `xml:"Vcode"`
-	VchCode string `xml:"VchCode"`
+	Vname   string `xml:"Vname" json:"Vname"`
+	Vnom    int32  `xml:"Vnom" json:"Vnom"`
+	Vcurs   string `xml:"Vcurs" json:"Vcurs"`
+	Vcode   string `xml:"Vcode" json:"Vcode"`
+	VchCode string `xml:"VchCode" json:"VchCode"`
 }

@@ -11,6 +11,10 @@ import (
 	"go.uber.org/zap"
 )
 
+const cFromDate = "2023-06-22"
+
+const cToDate = "2023-06-23"
+
 var ErrAssertion = errors.New("assertion error")
 
 type ConfigMock struct{}
@@ -111,7 +115,7 @@ func (srsm *SoapRequestSenderMock) SoapCall(_ context.Context, action string, in
 		if !ok {
 			return nil, ErrAssertion
 		}
-		if inputData.OnDate == "2023-06-22" {
+		if inputData.OnDate == cFromDate {
 			return []byte(`<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><soap:Body><GetCursOnDateXMLResponse xmlns="http://web.cbr.ru/"><GetCursOnDateXMLResult><ValuteData OnDate="20230622" xmlns=""><ValuteCursOnDate><Vname>Австралийский доллар      </Vname><Vnom>1</Vnom><Vcurs>57.1445</Vcurs><Vcode>36</Vcode><VchCode>AUD</VchCode></ValuteCursOnDate><ValuteCursOnDate><Vname>Азербайджанский манат         </Vname><Vnom>1</Vnom><Vcurs>49.5569</Vcurs><Vcode>944</Vcode><VchCode>AZN</VchCode></ValuteCursOnDate></ValuteData></GetCursOnDateXMLResult></GetCursOnDateXMLResponse></soap:Body></soap:Envelope>`), nil
 		}
 		return nil, customsoap.ErrContextWSReqExpired
@@ -120,8 +124,17 @@ func (srsm *SoapRequestSenderMock) SoapCall(_ context.Context, action string, in
 		if !ok {
 			return nil, ErrAssertion
 		}
-		if inputData.FromDate == "2023-06-22" && inputData.ToDate == "2023-06-23" {
+		if inputData.FromDate == cFromDate && inputData.ToDate == cToDate {
 			return []byte(`<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><soap:Body><BiCurBaseXMLResponse xmlns="http://web.cbr.ru/"><BiCurBaseXMLResult><BiCurBase xmlns=""><BCB><D0>2023-06-22T00:00:00Z</D0><VAL>87.736315</VAL></BCB><BCB><D0>2023-06-23T00:00:00Z</D0><VAL>87.358585</VAL></BCB></BiCurBase></BiCurBaseXMLResult></BiCurBaseXMLResponse></soap:Body></soap:Envelope>`), nil
+		}
+		return nil, customsoap.ErrContextWSReqExpired
+	case "BliquidityXML":
+		inputData, ok := input.(datastructures.BliquidityXML)
+		if !ok {
+			return nil, ErrAssertion
+		}
+		if inputData.FromDate == cFromDate && inputData.ToDate == cToDate {
+			return []byte(`<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><soap:Body><BliquidityXMLResponse xmlns="http://web.cbr.ru/"><BliquidityXMLResult><Bliquidity xmlns=""><BL><DT>2023-06-22T00:00:00Z</DT><StrLiDef>-1022.50</StrLiDef><claims>1533.70</claims><actionBasedRepoFX>1378.40</actionBasedRepoFX><actionBasedSecureLoans>0.00</actionBasedSecureLoans><standingFacilitiesRepoFX>0.00</standingFacilitiesRepoFX><standingFacilitiesSecureLoans>155.30</standingFacilitiesSecureLoans><liabilities>-2890.20</liabilities><depositAuctionBased>-1828.30</depositAuctionBased><depositStandingFacilities>-1061.90</depositStandingFacilities><CBRbonds>0.00</CBRbonds><netCBRclaims>334.10</netCBRclaims></BL><BL><DT>2023-06-23T00:00:00Z</DT><StrLiDef>-980.70</StrLiDef><claims>1558.80</claims><actionBasedRepoFX>1378.40</actionBasedRepoFX><actionBasedSecureLoans>0.00</actionBasedSecureLoans><standingFacilitiesRepoFX>0.00</standingFacilitiesRepoFX><standingFacilitiesSecureLoans>180.40</standingFacilitiesSecureLoans><liabilities>-2873.00</liabilities><depositAuctionBased>-1828.30</depositAuctionBased><depositStandingFacilities>-1044.60</depositStandingFacilities><CBRbonds>0.00</CBRbonds><netCBRclaims>333.40</netCBRclaims></BL></Bliquidity></BliquidityXMLResult></BliquidityXMLResponse></soap:Body></soap:Envelope>`), nil
 		}
 		return nil, customsoap.ErrContextWSReqExpired
 	default:

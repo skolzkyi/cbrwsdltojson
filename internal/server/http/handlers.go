@@ -131,3 +131,41 @@ func (s *Server) BiCurBaseXML(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
+
+func (s *Server) BliquidityXML(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
+	ctx, cancel := context.WithTimeout(r.Context(), s.Config.GetCBRWSDLTimeout())
+	defer cancel()
+	switch r.Method {
+	case http.MethodPost:
+		newRequest := datastructures.BliquidityXML{}
+
+		body, err := s.ReadDataFromInputJSON(&newRequest, r)
+		if err != nil {
+			apiErrHandler(err, &w)
+			return
+		}
+		err = newRequest.Validate(s.Config.GetDateTimeRequestLayout())
+		if err != nil {
+			apiErrHandler(err, &w)
+			return
+		}
+
+		answer, err := s.app.BliquidityXML(ctx, newRequest, body)
+		if err != nil {
+			apiErrHandler(err, &w)
+			return
+		}
+		err = s.WriteDataToOutputJSON(answer, w)
+		if err != nil {
+			apiErrHandler(err, &w)
+			return
+		}
+
+		return
+
+	default:
+		apiErrHandler(ErrUnsupportedMethod, &w)
+		return
+	}
+}

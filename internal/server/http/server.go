@@ -46,6 +46,7 @@ type Application interface {
 	RemoveDataInMemCacheBySOAPAction(SOAPAction string)
 	GetCursOnDateXML(ctx context.Context, input datastructures.GetCursOnDateXML, rawBody string) (datastructures.GetCursOnDateXMLResult, error)
 	BiCurBaseXML(ctx context.Context, input datastructures.BiCurBaseXML, rawBody string) (datastructures.BiCurBaseXMLResult, error)
+	BliquidityXML(ctx context.Context, input datastructures.BliquidityXML, rawBody string) (datastructures.BliquidityXMLResult, error)
 }
 
 func NewServer(logger Logger, app Application, config Config) *Server {

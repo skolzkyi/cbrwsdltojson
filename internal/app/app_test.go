@@ -233,6 +233,74 @@ func initTestDataBiCurBaseXML(t *testing.T) *AppTestTable {
 	return &testDataBiCurBaseXML
 }
 
+// BliquidityXML.
+func initTestDataBliquidityXML(t *testing.T) *AppTestTable {
+	t.Helper()
+	testBliquidityXMLResult := datastructures.BliquidityXMLResult{
+		BL: make([]datastructures.BliquidityXMLResultElem, 2),
+	}
+	testBliquidityXMLResultElem := datastructures.BliquidityXMLResultElem{
+		DT:                            time.Date(2023, time.June, 22, 0, 0, 0, 0, time.UTC),
+		StrLiDef:                      "-1022.50",
+		Claims:                        "1533.70",
+		ActionBasedRepoFX:             "1378.40",
+		ActionBasedSecureLoans:        "0.00",
+		StandingFacilitiesRepoFX:      "0.00",
+		StandingFacilitiesSecureLoans: "155.30",
+		Liabilities:                   "-2890.20",
+		DepositAuctionBased:           "-1828.30",
+		DepositStandingFacilities:     "-1061.90",
+		CBRbonds:                      "0.00",
+		NetCBRclaims:                  "334.10",
+	}
+	testBliquidityXMLResult.BL[0] = testBliquidityXMLResultElem
+	testBliquidityXMLResultElem = datastructures.BliquidityXMLResultElem{
+		DT:                            time.Date(2023, time.June, 23, 0, 0, 0, 0, time.UTC),
+		StrLiDef:                      "-980.70",
+		Claims:                        "1558.80",
+		ActionBasedRepoFX:             "1378.40",
+		ActionBasedSecureLoans:        "0.00",
+		StandingFacilitiesRepoFX:      "0.00",
+		StandingFacilitiesSecureLoans: "180.40",
+		Liabilities:                   "-2873.00",
+		DepositAuctionBased:           "-1828.30",
+		DepositStandingFacilities:     "-1044.60",
+		CBRbonds:                      "0.00",
+		NetCBRclaims:                  "333.40",
+	}
+	testBliquidityXMLResult.BL[1] = testBliquidityXMLResultElem
+	testDataBliquidityXML := AppTestTable{
+		MethodName: "BliquidityXML",
+	}
+	testCases := make([]AppTestCase, 2)
+	testCases[0] = AppTestCase{
+		Name: "Positive",
+		Input: datastructures.BliquidityXML{
+			FromDate: "2023-06-22",
+			ToDate:   "2023-06-23",
+		},
+		Output: testBliquidityXMLResult,
+		Error:  nil,
+	}
+
+	testCases[1] = AppTestCase{
+		Name: "Negative",
+		Input: datastructures.BliquidityXML{
+			FromDate: "022-14-22",
+			ToDate:   "2023-06-23",
+		},
+		Output: datastructures.BliquidityXMLResult{},
+		Error:  customsoap.ErrContextWSReqExpired,
+	}
+	standartTestCacheCases := createStandartTestCacheCases(t, datastructures.BliquidityXML{
+		FromDate: "022-14-22",
+		ToDate:   "2023-06-23",
+	}, testBliquidityXMLResult)
+	testDataBliquidityXML.TestCases = append(testDataBliquidityXML.TestCases, standartTestCacheCases...)
+	testDataBliquidityXML.TestCases = testCases
+	return &testDataBliquidityXML
+}
+
 func TestCasesGetCursOnDateXML(t *testing.T) {
 	t.Parallel()
 	testCasesByMethod := initTestDataGetCursOnDateXML(t)
@@ -303,6 +371,48 @@ func TestCasesBiCurBaseXML(t *testing.T) {
 					time.Sleep(3 * time.Second)
 				}
 				_, err := testApp.BiCurBaseXML(context.Background(), inputAssert, string(rawBody))
+				require.Equal(t, nil, err)
+				cachedData2, ok := testApp.Appmemcache.GetCacheDataInCache(testCasesByMethod.MethodName)
+				require.Equal(t, true, ok)
+				if curTestCase.IsCacheData {
+					require.Equal(t, cachedData.InfoDTStamp, cachedData2.InfoDTStamp)
+				} else {
+					require.NotEqual(t, cachedData.InfoDTStamp, cachedData2.InfoDTStamp)
+				}
+			}
+			testApp.RemoveDataInMemCacheBySOAPAction(testCasesByMethod.MethodName)
+		})
+	}
+}
+
+func TestCasesBliquidityXML(t *testing.T) {
+	t.Parallel()
+	testCasesByMethod := initTestDataBliquidityXML(t)
+	for _, curTestCase := range testCasesByMethod.TestCases {
+		curTestCase := curTestCase
+		t.Run(testCasesByMethod.MethodName+":"+curTestCase.Name, func(t *testing.T) {
+			t.Parallel()
+			var cachedData memcache.CacheInfo
+			testApp := initTestApp(t)
+			inputAssert, ok := curTestCase.Input.(datastructures.BliquidityXML)
+			require.Equal(t, true, ok)
+			rawBody, err := json.Marshal(inputAssert)
+			require.NoError(t, err)
+			testRes, err := testApp.BliquidityXML(context.Background(), inputAssert, string(rawBody))
+			if err == nil {
+				testApp.Appmemcache.PrintAllCacheKeys()
+				cacheTag := getTagForCache(t, testCasesByMethod.MethodName, inputAssert)
+				cachedData, ok = testApp.Appmemcache.GetCacheDataInCache(cacheTag)
+				require.Equal(t, true, ok)
+			}
+			if !curTestCase.IsCacheTest {
+				require.Equal(t, curTestCase.Error, err)
+				require.Equal(t, curTestCase.Output, testRes)
+			} else {
+				if !curTestCase.IsCacheData {
+					time.Sleep(3 * time.Second)
+				}
+				_, err := testApp.BliquidityXML(context.Background(), inputAssert, string(rawBody))
 				require.Equal(t, nil, err)
 				cachedData2, ok := testApp.Appmemcache.GetCacheDataInCache(testCasesByMethod.MethodName)
 				require.Equal(t, true, ok)
