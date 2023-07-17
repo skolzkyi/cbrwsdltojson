@@ -218,6 +218,7 @@ func (a *App) GetCursOnDateXML(ctx context.Context, input interface{}, rawBody s
 		if !ok {
 			err = ErrAssertionOfInputData
 			a.logger.Error(err.Error())
+			return response, err
 		}
 		res, err := a.soapSender.SoapCall(ctx, SOAPMethod, *inputAsserted)
 		if err != nil {
@@ -285,8 +286,9 @@ func (a *App) BiCurBaseXML(ctx context.Context, input interface{}, rawBody strin
 		if !ok {
 			err = ErrAssertionOfInputData
 			a.logger.Error(err.Error())
+			return response, err
 		}
-		res, err := a.soapSender.SoapCall(ctx, SOAPMethod, inputAsserted)
+		res, err := a.soapSender.SoapCall(ctx, SOAPMethod, *inputAsserted)
 		if err != nil {
 			a.logger.Error(err.Error())
 			return response, err
@@ -347,8 +349,9 @@ func (a *App) BliquidityXML(ctx context.Context, input interface{}, rawBody stri
 		if !ok {
 			err = ErrAssertionOfInputData
 			a.logger.Error(err.Error())
+			return response, err
 		}
-		res, err := a.soapSender.SoapCall(ctx, SOAPMethod, inputAsserted)
+		res, err := a.soapSender.SoapCall(ctx, SOAPMethod, *inputAsserted)
 		if err != nil {
 			a.logger.Error(err.Error())
 			return response, err
