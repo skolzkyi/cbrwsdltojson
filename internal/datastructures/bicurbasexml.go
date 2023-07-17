@@ -12,6 +12,10 @@ type BiCurBaseXML struct {
 	ToDate   string   `xml:"ToDate"`
 }
 
+func (data *BiCurBaseXML) Init() {
+	data.XMLNs = cbrNamespace
+}
+
 func (data *BiCurBaseXML) Validate(inputDTLayout string) error {
 	fromDateDate, err := time.Parse(inputDTLayout, data.FromDate)
 	if err != nil {

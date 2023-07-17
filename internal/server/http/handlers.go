@@ -11,6 +11,13 @@ import (
 	datastructures "github.com/skolzkyi/cbrwsdltojson/internal/datastructures"
 )
 
+type requestData interface {
+	Init()
+	Validate(string) error
+}
+
+type blLayerMethod func(context.Context, interface{}, string) (interface{}, error)
+
 var (
 	ErrInJSONBadParse        = errors.New("error parsing input json")
 	ErrOutJSONBadParse       = errors.New("error parsing output json")
@@ -48,7 +55,7 @@ func (s *Server) GetMethodDataWithoutCache(w http.ResponseWriter, r *http.Reques
 		rawBody := helpers.ClearStringByWhitespaceAndLinebreak(string(body))
 		s.app.RemoveDataInMemCacheBySOAPAction(SOAPAction + rawBody)
 
-		// 307, not 303: on 307 not lost body and not change verb to GET
+		// 307, not 303: on 307 no lost body and no change verb to GET
 		http.Redirect(w, r, "/"+SOAPAction, http.StatusTemporaryRedirect)
 
 	default:
@@ -57,26 +64,27 @@ func (s *Server) GetMethodDataWithoutCache(w http.ResponseWriter, r *http.Reques
 	}
 }
 
-func (s *Server) GetCursOnDateXML(w http.ResponseWriter, r *http.Request) {
+func (s *Server) universalMethodHandler(w http.ResponseWriter, r *http.Request, reqData requestData, appMethod blLayerMethod) {
 	defer r.Body.Close()
 	ctx, cancel := context.WithTimeout(r.Context(), s.Config.GetCBRWSDLTimeout())
 	defer cancel()
 	switch r.Method {
 	case http.MethodPost:
-		newRequest := datastructures.GetCursOnDateXML{}
-
-		body, err := s.ReadDataFromInputJSON(&newRequest, r)
-		if err != nil {
-			apiErrHandler(err, &w)
-			return
-		}
-		err = newRequest.Validate(s.Config.GetDateTimeRequestLayout())
+		body, err := s.ReadDataFromInputJSON(reqData, r)
 		if err != nil {
 			apiErrHandler(err, &w)
 			return
 		}
 
-		answer, err := s.app.GetCursOnDateXML(ctx, newRequest, body)
+		reqData.Init()
+
+		err = reqData.Validate(s.Config.GetDateTimeRequestLayout())
+		if err != nil {
+			apiErrHandler(err, &w)
+			return
+		}
+
+		answer, err := appMethod(ctx, reqData, body)
 		if err != nil {
 			apiErrHandler(err, &w)
 			return
@@ -92,80 +100,19 @@ func (s *Server) GetCursOnDateXML(w http.ResponseWriter, r *http.Request) {
 		apiErrHandler(ErrUnsupportedMethod, &w)
 		return
 	}
+}
+
+func (s *Server) GetCursOnDateXML(w http.ResponseWriter, r *http.Request) {
+	newRequest := datastructures.GetCursOnDateXML{}
+	s.universalMethodHandler(w, r, &newRequest, s.app.GetCursOnDateXML)
 }
 
 func (s *Server) BiCurBaseXML(w http.ResponseWriter, r *http.Request) {
-	defer r.Body.Close()
-	ctx, cancel := context.WithTimeout(r.Context(), s.Config.GetCBRWSDLTimeout())
-	defer cancel()
-	switch r.Method {
-	case http.MethodPost:
-		newRequest := datastructures.BiCurBaseXML{}
-
-		body, err := s.ReadDataFromInputJSON(&newRequest, r)
-		if err != nil {
-			apiErrHandler(err, &w)
-			return
-		}
-		err = newRequest.Validate(s.Config.GetDateTimeRequestLayout())
-		if err != nil {
-			apiErrHandler(err, &w)
-			return
-		}
-
-		answer, err := s.app.BiCurBaseXML(ctx, newRequest, body)
-		if err != nil {
-			apiErrHandler(err, &w)
-			return
-		}
-		err = s.WriteDataToOutputJSON(answer, w)
-		if err != nil {
-			apiErrHandler(err, &w)
-			return
-		}
-
-		return
-
-	default:
-		apiErrHandler(ErrUnsupportedMethod, &w)
-		return
-	}
+	newRequest := datastructures.BiCurBaseXML{}
+	s.universalMethodHandler(w, r, &newRequest, s.app.BiCurBaseXML)
 }
 
 func (s *Server) BliquidityXML(w http.ResponseWriter, r *http.Request) {
-	defer r.Body.Close()
-	ctx, cancel := context.WithTimeout(r.Context(), s.Config.GetCBRWSDLTimeout())
-	defer cancel()
-	switch r.Method {
-	case http.MethodPost:
-		newRequest := datastructures.BliquidityXML{}
-
-		body, err := s.ReadDataFromInputJSON(&newRequest, r)
-		if err != nil {
-			apiErrHandler(err, &w)
-			return
-		}
-		err = newRequest.Validate(s.Config.GetDateTimeRequestLayout())
-		if err != nil {
-			apiErrHandler(err, &w)
-			return
-		}
-
-		answer, err := s.app.BliquidityXML(ctx, newRequest, body)
-		if err != nil {
-			apiErrHandler(err, &w)
-			return
-		}
-		err = s.WriteDataToOutputJSON(answer, w)
-		if err != nil {
-			apiErrHandler(err, &w)
-			return
-		}
-
-		return
-
-	default:
-		apiErrHandler(ErrUnsupportedMethod, &w)
-		return
-	}
+	newRequest := datastructures.BliquidityXML{}
+	s.universalMethodHandler(w, r, &newRequest, s.app.BliquidityXML)
 }

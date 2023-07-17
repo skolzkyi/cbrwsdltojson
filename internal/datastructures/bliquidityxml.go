@@ -12,6 +12,10 @@ type BliquidityXML struct {
 	ToDate   string   `xml:"ToDate"`
 }
 
+func (data *BliquidityXML) Init() {
+	data.XMLNs = cbrNamespace
+}
+
 func (data *BliquidityXML) Validate(inputDTLayout string) error {
 	fromDateDate, err := time.Parse(inputDTLayout, data.FromDate)
 	if err != nil {

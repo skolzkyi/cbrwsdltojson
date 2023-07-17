@@ -17,11 +17,10 @@ import (
 	memcache "github.com/skolzkyi/cbrwsdltojson/internal/memcache"
 )
 
-const cbrNamespace = "http://web.cbr.ru/"
-
 var (
 	ErrAssertionAfterXMLDecoding  = errors.New("assertion error after XML decoding")
 	ErrAssertionAfterGetCacheData = errors.New("assertion error after get cached data")
+	ErrAssertionOfInputData       = errors.New("assertion input data error")
 	ErrMethodProhibited           = errors.New("method prohibited")
 	ErrContextWSReqExpired        = errors.New("context of request to CBR WS expired")
 )
@@ -185,7 +184,7 @@ func (a *App) RemoveDataInMemCacheBySOAPAction(tag string) {
 	a.Appmemcache.RemovePayloadInCache(tag)
 }
 
-func (a *App) GetCursOnDateXML(ctx context.Context, input datastructures.GetCursOnDateXML, rawBody string) (datastructures.GetCursOnDateXMLResult, error) {
+func (a *App) GetCursOnDateXML(ctx context.Context, input interface{}, rawBody string) (interface{}, error) {
 	var err error
 	var response datastructures.GetCursOnDateXMLResult
 	select {
@@ -197,7 +196,7 @@ func (a *App) GetCursOnDateXML(ctx context.Context, input datastructures.GetCurs
 		startNodeName := "ValuteData"
 		if a.permittedRequests.PermittedRequestMapLength() > 0 {
 			if a.permittedRequests.IsPermittedRequestInMap(SOAPMethod) {
-				return datastructures.GetCursOnDateXMLResult{}, ErrMethodProhibited
+				return nil, ErrMethodProhibited
 			}
 		}
 
@@ -215,10 +214,12 @@ func (a *App) GetCursOnDateXML(ctx context.Context, input datastructures.GetCurs
 				return response, nil
 			}
 		}
-
-		input.XMLNs = cbrNamespace
-
-		res, err := a.soapSender.SoapCall(ctx, SOAPMethod, input)
+		inputAsserted, ok := input.(*datastructures.GetCursOnDateXML)
+		if !ok {
+			err = ErrAssertionOfInputData
+			a.logger.Error(err.Error())
+		}
+		res, err := a.soapSender.SoapCall(ctx, SOAPMethod, *inputAsserted)
 		if err != nil {
 			a.logger.Error(err.Error())
 			return response, err
@@ -243,7 +244,7 @@ func (a *App) GetCursOnDateXML(ctx context.Context, input datastructures.GetCurs
 	return response, err
 }
 
-func (a *App) BiCurBaseXML(ctx context.Context, input datastructures.BiCurBaseXML, rawBody string) (datastructures.BiCurBaseXMLResult, error) {
+func (a *App) BiCurBaseXML(ctx context.Context, input interface{}, rawBody string) (interface{}, error) {
 	var err error
 	var response datastructures.BiCurBaseXMLResult
 	select {
@@ -274,14 +275,18 @@ func (a *App) BiCurBaseXML(ctx context.Context, input datastructures.BiCurBaseXM
 			}
 		}
 
-		input.XMLNs = cbrNamespace
 		/*
 			err = a.ProcessRequest(ctx, SOAPMethod, startNodeName, input, response, &response)
 			if err != nil {
 				a.logger.Error(err.Error())
 				return response, err
 			}*/
-		res, err := a.soapSender.SoapCall(ctx, SOAPMethod, input)
+		inputAsserted, ok := input.(*datastructures.BiCurBaseXML)
+		if !ok {
+			err = ErrAssertionOfInputData
+			a.logger.Error(err.Error())
+		}
+		res, err := a.soapSender.SoapCall(ctx, SOAPMethod, inputAsserted)
 		if err != nil {
 			a.logger.Error(err.Error())
 			return response, err
@@ -301,7 +306,7 @@ func (a *App) BiCurBaseXML(ctx context.Context, input datastructures.BiCurBaseXM
 	return response, err
 }
 
-func (a *App) BliquidityXML(ctx context.Context, input datastructures.BliquidityXML, rawBody string) (datastructures.BliquidityXMLResult, error) {
+func (a *App) BliquidityXML(ctx context.Context, input interface{}, rawBody string) (interface{}, error) {
 	var err error
 	var response datastructures.BliquidityXMLResult
 	select {
@@ -332,14 +337,18 @@ func (a *App) BliquidityXML(ctx context.Context, input datastructures.Bliquidity
 			}
 		}
 
-		input.XMLNs = cbrNamespace
 		/*
 			err = a.ProcessRequest(ctx, SOAPMethod, startNodeName, input, response, &response)
 			if err != nil {
 				a.logger.Error(err.Error())
 				return response, err
 			}*/
-		res, err := a.soapSender.SoapCall(ctx, SOAPMethod, input)
+		inputAsserted, ok := input.(*datastructures.BliquidityXML)
+		if !ok {
+			err = ErrAssertionOfInputData
+			a.logger.Error(err.Error())
+		}
+		res, err := a.soapSender.SoapCall(ctx, SOAPMethod, inputAsserted)
 		if err != nil {
 			a.logger.Error(err.Error())
 			return response, err
