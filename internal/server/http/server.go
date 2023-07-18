@@ -12,9 +12,7 @@ import (
 	"go.uber.org/zap"
 )
 
-var (
-	ErrAssertionGetFullRequestTimeout = errors.New("error of data assertion on get full request timeout")
-)
+var ErrAssertionGetFullRequestTimeout = errors.New("error of data assertion on get full request timeout")
 
 type Server struct {
 	serv              *http.Server

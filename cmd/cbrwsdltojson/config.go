@@ -9,17 +9,15 @@ import (
 )
 
 type Config struct {
-	permittedRequest       map[string]struct{} `mapstructure:"PERMITTED_REQUESTS"`
-	Logger                 LoggerConf          `mapstructure:"Logger"`
-	ServerShutdownTimeout  time.Duration       `mapstructure:"SERVER_SHUTDOWN_TIMEOUT"`
-	CBRWSDLTimeout         time.Duration       `mapstructure:"CBR_WSDL_TIMEOUT"`
-	InfoExpirTime          time.Duration       `mapstructure:"INFO_EXPIR_TIME"`
-	address                string              `mapstructure:"ADDRESS"`
-	port                   string              `mapstructure:"PORT"`
-	cbrWSDLAddress         string              `mapstructure:"CBR_WSDL_ADDRESS"`
-	dateTimeResponseLayout string              `mapstructure:"DATE_TIME_RESPONSE_LAYOUT"`
-	dateTimeRequestLayout  string              `mapstructure:"DATE_TIME_REQUEST_LAYOUT"`
-	loggingOn              bool                `mapstructure:"LOGGING_ON"`
+	permittedRequest      map[string]struct{} `mapstructure:"PERMITTED_REQUESTS"`
+	Logger                LoggerConf          `mapstructure:"Logger"`
+	ServerShutdownTimeout time.Duration       `mapstructure:"SERVER_SHUTDOWN_TIMEOUT"`
+	CBRWSDLTimeout        time.Duration       `mapstructure:"CBR_WSDL_TIMEOUT"`
+	InfoExpirTime         time.Duration       `mapstructure:"INFO_EXPIR_TIME"`
+	address               string              `mapstructure:"ADDRESS"`
+	port                  string              `mapstructure:"PORT"`
+	cbrWSDLAddress        string              `mapstructure:"CBR_WSDL_ADDRESS"`
+	loggingOn             bool                `mapstructure:"LOGGING_ON"`
 }
 
 type LoggerConf struct {
@@ -68,8 +66,6 @@ func (config *Config) Init(path string) error {
 	config.InfoExpirTime = viper.GetDuration("INFO_EXPIR_TIME")
 	config.loggingOn = viper.GetBool("LOGGING_ON")
 	config.cbrWSDLAddress = viper.GetString("CBR_WSDL_ADDRESS")
-	config.dateTimeResponseLayout = viper.GetString("DATE_TIME_RESPONSE_LAYOUT")
-	config.dateTimeRequestLayout = viper.GetString("DATE_TIME_REQUEST_LAYOUT")
 	tempPermReq := viper.GetString("PERMITTED_REQUESTS")
 	permittedRequests := make(map[string]struct{})
 	if tempPermReq != "" {
@@ -112,14 +108,6 @@ func (config *Config) GetCBRWSDLAddress() string {
 
 func (config *Config) GetLoggingOn() bool {
 	return config.loggingOn
-}
-
-func (config *Config) GetDateTimeResponseLayout() string {
-	return config.dateTimeResponseLayout
-}
-
-func (config *Config) GetDateTimeRequestLayout() string {
-	return config.dateTimeRequestLayout
 }
 
 func (config *Config) GetPermittedRequests() map[string]struct{} {

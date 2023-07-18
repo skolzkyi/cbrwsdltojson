@@ -5,8 +5,10 @@ import (
 	"time"
 )
 
-const cbrNamespace = "http://web.cbr.ru/"
-const inputDTLayout = "2006-01-02"
+const (
+	cbrNamespace  = "http://web.cbr.ru/"
+	inputDTLayout = "2006-01-02"
+)
 
 var (
 	ErrBadInputDateData = errors.New("fromDate after toDate")
