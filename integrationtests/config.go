@@ -9,16 +9,14 @@ import (
 )
 
 type Config struct {
-	permittedRequest       map[string]struct{} `mapstructure:"PERMITTED_REQUESTS"`
-	Logger                 LoggerConf          `mapstructure:"Logger"`
-	ServerShutdownTimeout  time.Duration       `mapstructure:"SERVER_SHUTDOWN_TIMEOUT"`
-	CBRWSDLTimeout         time.Duration       `mapstructure:"CBR_WSDL_TIMEOUT"`
-	address                string              `mapstructure:"ADDRESS"`
-	port                   string              `mapstructure:"PORT"`
-	cbrWSDLAddress         string              `mapstructure:"CBR_WSDL_ADDRESS"`
-	dateTimeResponseLayout string              `mapstructure:"DATE_TIME_RESPONSE_LAYOUT"`
-	dateTimeRequestLayout  string              `mapstructure:"DATE_TIME_REQUEST_LAYOUT"`
-	loggingOn              bool                `mapstructure:"LOGGING_ON"`
+	permittedRequest      map[string]struct{} `mapstructure:"PERMITTED_REQUESTS"`
+	Logger                LoggerConf          `mapstructure:"Logger"`
+	ServerShutdownTimeout time.Duration       `mapstructure:"SERVER_SHUTDOWN_TIMEOUT"`
+	CBRWSDLTimeout        time.Duration       `mapstructure:"CBR_WSDL_TIMEOUT"`
+	address               string              `mapstructure:"ADDRESS"`
+	port                  string              `mapstructure:"PORT"`
+	cbrWSDLAddress        string              `mapstructure:"CBR_WSDL_ADDRESS"`
+	loggingOn             bool                `mapstructure:"LOGGING_ON"`
 }
 
 type LoggerConf struct {
