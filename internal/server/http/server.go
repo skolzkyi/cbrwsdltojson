@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"net/http"
 	"time"
@@ -107,7 +108,7 @@ func (s *Server) WriteDataToOutputJSON(marshallingObject interface{}, w http.Res
 		s.logg.Error("server WriteDataToOutputJSON error: " + err.Error())
 		return err
 	}
-
+	fmt.Println("len of answer: ", len(jsonstring))
 	_, err = w.Write(jsonstring)
 	if err != nil {
 		s.logg.Error("server WriteDataToOutputJSON error: " + err.Error())

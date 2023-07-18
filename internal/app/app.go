@@ -118,22 +118,23 @@ func New(logger Logger, config Config, sender SoapRequestSender, memcache AppMem
 	return &app
 }
 
-func (a *App) ProcessRequest(ctx context.Context, SOAPMethod string, startNodeName string, inputData interface{}, responseData interface{}, pointerToResponseData interface{}) error { //nolint: gocritic
-	res, err := a.soapSender.SoapCall(ctx, SOAPMethod, inputData)
-	if err != nil {
+func (a *App) ProcessRequest(ctx context.Context, SOAPMethod string, startNodeName string, inputData interface{}, pointerToResponseData interface{}) error { //nolint: gocritic
+	select {
+	case <-ctx.Done():
+		err := ErrContextWSReqExpired
 		a.logger.Error(err.Error())
 		return err
-	}
-	err = a.XMLToStructDecoder(res, startNodeName, pointerToResponseData)
-	if err != nil {
-		a.logger.Error(err.Error())
-		return err
-	}
-
-	err = a.AddOrUpdateDataInCache(SOAPMethod, inputData, responseData)
-	if err != nil {
-		a.logger.Error(err.Error())
-		return err
+	default:
+		res, err := a.soapSender.SoapCall(ctx, SOAPMethod, inputData)
+		if err != nil {
+			a.logger.Error(err.Error())
+			return err
+		}
+		err = a.XMLToStructDecoder(res, startNodeName, pointerToResponseData)
+		if err != nil {
+			a.logger.Error(err.Error())
+			return err
+		}
 	}
 	return nil
 }
@@ -191,6 +192,7 @@ func (a *App) GetCursOnDateXML(ctx context.Context, input interface{}, rawBody s
 	case <-ctx.Done():
 		err = ErrContextWSReqExpired
 		a.logger.Error(err.Error())
+		return response, err
 	default:
 		SOAPMethod := "GetCursOnDateXML"
 		startNodeName := "ValuteData"
@@ -201,10 +203,6 @@ func (a *App) GetCursOnDateXML(ctx context.Context, input interface{}, rawBody s
 		}
 
 		cachedData, ok := a.GetDataInCacheIfExisting(SOAPMethod, rawBody)
-		if err != nil {
-			a.logger.Error(err.Error())
-			return response, err
-		}
 		if ok {
 			response, ok = cachedData.(datastructures.GetCursOnDateXMLResult)
 			if !ok {
@@ -242,7 +240,7 @@ func (a *App) GetCursOnDateXML(ctx context.Context, input interface{}, rawBody s
 			return response, err
 		}
 	}
-	return response, err
+	return response, nil
 }
 
 func (a *App) BiCurBaseXML(ctx context.Context, input interface{}, rawBody string) (interface{}, error) {
@@ -252,6 +250,7 @@ func (a *App) BiCurBaseXML(ctx context.Context, input interface{}, rawBody strin
 	case <-ctx.Done():
 		err = ErrContextWSReqExpired
 		a.logger.Error(err.Error())
+		return response, err
 	default:
 		SOAPMethod := "BiCurBaseXML"
 		startNodeName := "BiCurBase"
@@ -262,10 +261,6 @@ func (a *App) BiCurBaseXML(ctx context.Context, input interface{}, rawBody strin
 		}
 
 		cachedData, ok := a.GetDataInCacheIfExisting(SOAPMethod, rawBody)
-		if err != nil {
-			a.logger.Error(err.Error())
-			return response, err
-		}
 		if ok {
 			response, ok = cachedData.(datastructures.BiCurBaseXMLResult)
 			if !ok {
@@ -276,24 +271,14 @@ func (a *App) BiCurBaseXML(ctx context.Context, input interface{}, rawBody strin
 			}
 		}
 
-		/*
-			err = a.ProcessRequest(ctx, SOAPMethod, startNodeName, input, response, &response)
-			if err != nil {
-				a.logger.Error(err.Error())
-				return response, err
-			}*/
 		inputAsserted, ok := input.(*datastructures.BiCurBaseXML)
 		if !ok {
 			err = ErrAssertionOfInputData
 			a.logger.Error(err.Error())
-			return response, err
+			return nil, err
 		}
-		res, err := a.soapSender.SoapCall(ctx, SOAPMethod, *inputAsserted)
-		if err != nil {
-			a.logger.Error(err.Error())
-			return response, err
-		}
-		err = a.XMLToStructDecoder(res, startNodeName, &response)
+
+		err = a.ProcessRequest(ctx, SOAPMethod, startNodeName, *inputAsserted, &response)
 		if err != nil {
 			a.logger.Error(err.Error())
 			return response, err
@@ -305,7 +290,7 @@ func (a *App) BiCurBaseXML(ctx context.Context, input interface{}, rawBody strin
 			return response, err
 		}
 	}
-	return response, err
+	return response, nil
 }
 
 func (a *App) BliquidityXML(ctx context.Context, input interface{}, rawBody string) (interface{}, error) {
@@ -315,6 +300,7 @@ func (a *App) BliquidityXML(ctx context.Context, input interface{}, rawBody stri
 	case <-ctx.Done():
 		err = ErrContextWSReqExpired
 		a.logger.Error(err.Error())
+		return response, err
 	default:
 		SOAPMethod := "BliquidityXML"
 		startNodeName := "Bliquidity"
@@ -325,10 +311,6 @@ func (a *App) BliquidityXML(ctx context.Context, input interface{}, rawBody stri
 		}
 
 		cachedData, ok := a.GetDataInCacheIfExisting(SOAPMethod, rawBody)
-		if err != nil {
-			a.logger.Error(err.Error())
-			return response, err
-		}
 		if ok {
 			response, ok = cachedData.(datastructures.BliquidityXMLResult)
 			if !ok {
@@ -339,24 +321,13 @@ func (a *App) BliquidityXML(ctx context.Context, input interface{}, rawBody stri
 			}
 		}
 
-		/*
-			err = a.ProcessRequest(ctx, SOAPMethod, startNodeName, input, response, &response)
-			if err != nil {
-				a.logger.Error(err.Error())
-				return response, err
-			}*/
 		inputAsserted, ok := input.(*datastructures.BliquidityXML)
 		if !ok {
 			err = ErrAssertionOfInputData
 			a.logger.Error(err.Error())
 			return response, err
 		}
-		res, err := a.soapSender.SoapCall(ctx, SOAPMethod, *inputAsserted)
-		if err != nil {
-			a.logger.Error(err.Error())
-			return response, err
-		}
-		err = a.XMLToStructDecoder(res, startNodeName, &response)
+		err = a.ProcessRequest(ctx, SOAPMethod, startNodeName, *inputAsserted, &response)
 		if err != nil {
 			a.logger.Error(err.Error())
 			return response, err
@@ -368,5 +339,5 @@ func (a *App) BliquidityXML(ctx context.Context, input interface{}, rawBody stri
 			return response, err
 		}
 	}
-	return response, err
+	return response, nil
 }

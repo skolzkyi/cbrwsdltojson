@@ -89,6 +89,7 @@ func (s *Server) universalMethodHandler(w http.ResponseWriter, r *http.Request, 
 			apiErrHandler(err, &w)
 			return
 		}
+
 		err = s.WriteDataToOutputJSON(answer, w)
 		if err != nil {
 			apiErrHandler(err, &w)
