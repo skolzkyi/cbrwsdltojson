@@ -53,6 +53,8 @@ func initAllDatastructuresTestTable(t *testing.T) AllDatastructuresTestTable {
 	AllDTTable = append(AllDTTable, curDatastructuresTestTable)
 	curDatastructuresTestTable = initTestCasesBliquidityXML(t)
 	AllDTTable = append(AllDTTable, curDatastructuresTestTable)
+	curDatastructuresTestTable = initTestCasesDepoDynamicXML(t)
+	AllDTTable = append(AllDTTable, curDatastructuresTestTable)
 	return AllDTTable
 }
 
@@ -441,6 +443,137 @@ func initTestCasesBliquidityXML(t *testing.T) DatastructuresTestTable {
 		DSAssert, ok := Datastructure.(datastructures.BliquidityXMLResult)
 		if !ok {
 			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:BliquidityXMLResult")
+		}
+		marshXMLres, err := xml.Marshal(DSAssert)
+		require.NoError(t, err)
+		require.Equal(t, XMLMarshalControl, string(marshXMLres))
+	}
+	newCase.ValidateControlTestFunc = func(_ *testing.T, _ interface{}, _ error) {}
+	DatastructuresTest.OutputDataCases[0] = newCase
+	return DatastructuresTest
+}
+
+func initTestCasesDepoDynamicXML(t *testing.T) DatastructuresTestTable {
+	t.Helper()
+	DatastructuresTest := DatastructuresTestTable{}
+	DatastructuresTest.MethodName = "DepoDynamicXML"
+	DatastructuresTest.InputDataCases = make([]DatastructuresTestCase, 4)
+	DatastructuresTest.OutputDataCases = make([]DatastructuresTestCase, 1)
+	var newCase DatastructuresTestCase
+	newCase = DatastructuresTestCase{
+		Name:              "XMLMarshalControl",
+		DataStructureType: "DepoDynamicXML",
+		Datastructure: datastructures.DepoDynamicXML{
+			FromDate: "2023-06-22",
+			ToDate:   "2023-06-23",
+			XMLNs:    "http://web.cbr.ru/",
+		},
+		NeedXMLMarshal:    true,
+		XMLMarshalControl: `<DepoDynamicXML xmlns="http://web.cbr.ru/"><fromDate>2023-06-22</fromDate><ToDate>2023-06-23</ToDate></DepoDynamicXML>`,
+	}
+	newCase.MarshalXMLTestFunc = func(t *testing.T, Datastructure interface{}, XMLMarshalControl string) {
+		t.Helper()
+		DSAssert, ok := Datastructure.(datastructures.DepoDynamicXML)
+		if !ok {
+			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:DepoDynamicXML")
+		}
+		marshXMLres, err := xml.Marshal(DSAssert)
+		require.NoError(t, err)
+		require.Equal(t, XMLMarshalControl, string(marshXMLres))
+	}
+	newCase.ValidateControlTestFunc = func(_ *testing.T, _ interface{}, _ error) {}
+	DatastructuresTest.InputDataCases[0] = newCase
+	newCase = DatastructuresTestCase{
+		Name:              "ValidateControlNegativeBadRawData",
+		DataStructureType: "DepoDynamicXML",
+		Datastructure: datastructures.DepoDynamicXML{
+			FromDate: "022-14-22",
+			ToDate:   "2023-06-23",
+			XMLNs:    "http://web.cbr.ru/",
+		},
+		NeedValidate:    true,
+		ValidateControl: datastructures.ErrBadRawData,
+	}
+	newCase.MarshalXMLTestFunc = func(_ *testing.T, _ interface{}, _ string) {}
+	newCase.ValidateControlTestFunc = func(t *testing.T, Datastructure interface{}, ValidateControl error) {
+		t.Helper()
+		DSAssert, ok := Datastructure.(datastructures.DepoDynamicXML)
+		if !ok {
+			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:DepoDynamicXML")
+		}
+		err := DSAssert.Validate("2006-01-02")
+		require.Equal(t, ValidateControl, err)
+	}
+	DatastructuresTest.InputDataCases[1] = newCase
+	newCase = DatastructuresTestCase{
+		Name:              "ValidateControlNegativeFromDateAfterToDate",
+		DataStructureType: "DepoDynamicXML",
+		Datastructure: datastructures.DepoDynamicXML{
+			FromDate: "2023-06-23",
+			ToDate:   "2023-06-22",
+			XMLNs:    "http://web.cbr.ru/",
+		},
+		NeedValidate:    true,
+		ValidateControl: datastructures.ErrBadInputDateData,
+	}
+	newCase.MarshalXMLTestFunc = func(_ *testing.T, _ interface{}, _ string) {}
+	newCase.ValidateControlTestFunc = func(t *testing.T, Datastructure interface{}, ValidateControl error) {
+		t.Helper()
+		DSAssert, ok := Datastructure.(datastructures.DepoDynamicXML)
+		if !ok {
+			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:DepoDynamicXML")
+		}
+		err := DSAssert.Validate("2006-01-02")
+		require.Equal(t, ValidateControl, err)
+	}
+	DatastructuresTest.InputDataCases[2] = newCase
+	newCase = DatastructuresTestCase{
+		Name:              "ValidateControlPositive",
+		DataStructureType: "DepoDynamicXML",
+		Datastructure: datastructures.DepoDynamicXML{
+			FromDate: "2023-06-22",
+			ToDate:   "2023-06-23",
+			XMLNs:    "http://web.cbr.ru/",
+		},
+		NeedValidate:    true,
+		ValidateControl: nil,
+	}
+	newCase.MarshalXMLTestFunc = func(_ *testing.T, _ interface{}, _ string) {}
+	newCase.ValidateControlTestFunc = func(t *testing.T, Datastructure interface{}, ValidateControl error) {
+		t.Helper()
+		DSAssert, ok := Datastructure.(datastructures.DepoDynamicXML)
+		if !ok {
+			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:DepoDynamicXML")
+		}
+		err := DSAssert.Validate("2006-01-02")
+		require.Equal(t, ValidateControl, err)
+	}
+	DatastructuresTest.InputDataCases[3] = newCase
+	testDepoDynamicXMLResult := datastructures.DepoDynamicXMLResult{
+		Depo: make([]datastructures.DepoDynamicXMLResultElem, 2),
+	}
+	testDepoDynamicXMLElem := datastructures.DepoDynamicXMLResultElem{
+		DateDepo:  time.Date(2023, time.June, 22, 0, 0, 0, 0, time.UTC),
+		Overnight: "6.50",
+	}
+	testDepoDynamicXMLResult.Depo[0] = testDepoDynamicXMLElem
+	testDepoDynamicXMLElem = datastructures.DepoDynamicXMLResultElem{
+		DateDepo:  time.Date(2023, time.June, 23, 0, 0, 0, 0, time.UTC),
+		Overnight: "6.50",
+	}
+	testDepoDynamicXMLResult.Depo[1] = testDepoDynamicXMLElem
+	newCase = DatastructuresTestCase{
+		Name:              "XMLMarshalControl",
+		DataStructureType: "DepoDynamicXML",
+		Datastructure:     testDepoDynamicXMLResult,
+		NeedXMLMarshal:    true,
+		XMLMarshalControl: `<DepoDynamicXMLResult><Depo><DateDepo>2023-06-22T00:00:00Z</DateDepo><Overnight>6.50</Overnight></Depo><Depo><DateDepo>2023-06-23T00:00:00Z</DateDepo><Overnight>6.50</Overnight></Depo></DepoDynamicXMLResult>`,
+	}
+	newCase.MarshalXMLTestFunc = func(t *testing.T, Datastructure interface{}, XMLMarshalControl string) {
+		t.Helper()
+		DSAssert, ok := Datastructure.(datastructures.DepoDynamicXMLResult)
+		if !ok {
+			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:DepoDynamicXMLResult")
 		}
 		marshXMLres, err := xml.Marshal(DSAssert)
 		require.NoError(t, err)
