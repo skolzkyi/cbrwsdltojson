@@ -49,6 +49,7 @@ type Application interface {
 	BiCurBaseXML(ctx context.Context, input interface{}, rawBody string) (interface{}, error)
 	BliquidityXML(ctx context.Context, input interface{}, rawBody string) (interface{}, error)
 	DepoDynamicXML(ctx context.Context, input interface{}, rawBody string) (interface{}, error)
+	DragMetDynamicXML(ctx context.Context, input interface{}, rawBody string) (interface{}, error)
 }
 
 func NewServer(logger Logger, app Application, config Config) *Server {
