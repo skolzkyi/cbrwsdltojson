@@ -4,11 +4,11 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"net/http"
 	"time"
 
-	datastructures "github.com/skolzkyi/cbrwsdltojson/internal/datastructures"
 	"go.uber.org/zap"
 )
 
@@ -44,9 +44,9 @@ type Logger interface {
 
 type Application interface {
 	RemoveDataInMemCacheBySOAPAction(SOAPAction string)
-	GetCursOnDateXML(ctx context.Context, input datastructures.GetCursOnDateXML, rawBody string) (datastructures.GetCursOnDateXMLResult, error)
-	BiCurBaseXML(ctx context.Context, input datastructures.BiCurBaseXML, rawBody string) (datastructures.BiCurBaseXMLResult, error)
-	BliquidityXML(ctx context.Context, input datastructures.BliquidityXML, rawBody string) (datastructures.BliquidityXMLResult, error)
+	GetCursOnDateXML(ctx context.Context, input interface{}, rawBody string) (interface{}, error)
+	BiCurBaseXML(ctx context.Context, input interface{}, rawBody string) (interface{}, error)
+	BliquidityXML(ctx context.Context, input interface{}, rawBody string) (interface{}, error)
 }
 
 func NewServer(logger Logger, app Application, config Config) *Server {
@@ -108,7 +108,7 @@ func (s *Server) WriteDataToOutputJSON(marshallingObject interface{}, w http.Res
 		s.logg.Error("server WriteDataToOutputJSON error: " + err.Error())
 		return err
 	}
-
+	fmt.Println("len of answer: ", len(jsonstring))
 	_, err = w.Write(jsonstring)
 	if err != nil {
 		s.logg.Error("server WriteDataToOutputJSON error: " + err.Error())

@@ -11,6 +11,10 @@ type GetCursOnDateXML struct {
 	OnDate  string   `xml:"On_date"`
 }
 
+func (data *GetCursOnDateXML) Init() {
+	data.XMLNs = cbrNamespace
+}
+
 func (data *GetCursOnDateXML) Validate(inputDTLayout string) error {
 	_, err := time.Parse(inputDTLayout, data.OnDate)
 	if err != nil {

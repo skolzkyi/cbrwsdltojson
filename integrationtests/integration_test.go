@@ -115,8 +115,6 @@ func TestMain(m *testing.M) {
 			log.Info("Integration tests up")
 			exitCode := m.Run()
 			log.Info("exitCode:" + strconv.Itoa(exitCode))
-			//for {
-			//}
 			log.Info("Integration tests down succesful")
 			os.Exit(exitCode) //nolint:gocritic
 		}

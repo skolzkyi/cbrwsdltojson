@@ -5,6 +5,8 @@ import (
 	"time"
 )
 
+const cbrNamespace = "http://web.cbr.ru/"
+
 var (
 	ErrBadInputDateData = errors.New("fromDate after toDate")
 	ErrBadRawData       = errors.New("parse raw date error")
