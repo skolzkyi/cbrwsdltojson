@@ -7,6 +7,7 @@ import (
 	"context"
 	"encoding/xml"
 	"errors"
+	"fmt"
 	"io"
 	"net/http"
 	"strings"
@@ -89,12 +90,12 @@ func (soapSender *CBRSOAPSender) SoapCall(ctx context.Context, action string, pa
 		}
 
 		// get data fo test cases
-		/*XMLstrForTest, err := xml.Marshal(payload)
+		XMLstrForTest, err := xml.Marshal(payload)
 		if err != nil {
 			soapSender.InclLogger.Error(err.Error())
 			return nil, err
 		}
-		fmt.Println("XMLstrForTest: ", string(XMLstrForTest))*/
+		fmt.Println("XMLstrForTest: ", string(XMLstrForTest))
 		// end get data fo test cases
 
 		v := soapRQ{
@@ -140,7 +141,7 @@ func (soapSender *CBRSOAPSender) SoapCall(ctx context.Context, action string, pa
 			return nil, err
 		}
 		// get data fo test cases
-		//	fmt.Println("ResponseXMLForTest: ", string(bodyBytes))
+		fmt.Println("ResponseXMLForTest: ", string(bodyBytes))
 		// end get data fo test cases
 
 		return bodyBytes, nil

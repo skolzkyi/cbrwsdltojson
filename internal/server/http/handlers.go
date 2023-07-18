@@ -117,3 +117,8 @@ func (s *Server) BliquidityXML(w http.ResponseWriter, r *http.Request) {
 	newRequest := datastructures.BliquidityXML{}
 	s.universalMethodHandler(w, r, &newRequest, s.app.BliquidityXML)
 }
+
+func (s *Server) DepoDynamicXML(w http.ResponseWriter, r *http.Request) {
+	newRequest := datastructures.DepoDynamicXML{}
+	s.universalMethodHandler(w, r, &newRequest, s.app.DepoDynamicXML)
+}

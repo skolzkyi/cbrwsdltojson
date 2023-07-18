@@ -82,6 +82,20 @@ func (atc *AllTestCases) Init() {
 		OutputControl: `{"BL":[{"DT":"2023-06-23T00:00:00+03:00","StrLiDef":"-1022.50","claims":"1533.70","actionBasedRepoFX":"1378.40","actionBasedSecureLoans":"0.00","standingFacilitiesRepoFX":"0.00","standingFacilitiesSecureLoans":"155.30","liabilities":"-2890.20","depositAuctionBased":"-1828.30","depositStandingFacilities":"-1061.90","CBRbonds":"0.00","netCBRclaims":"334.10"},{"DT":"2023-06-22T00:00:00+03:00","StrLiDef":"-980.70","claims":"1558.80","actionBasedRepoFX":"1378.40","actionBasedSecureLoans":"0.00","standingFacilitiesRepoFX":"0.00","standingFacilitiesSecureLoans":"180.40","liabilities":"-2873.00","depositAuctionBased":"-1828.30","depositStandingFacilities":"-1044.60","CBRbonds":"0.00","netCBRclaims":"333.40"}]}`,
 	}
 	atc.Cases = append(atc.Cases, curCase)
+	curCase = TestCase{
+		Method:        "DepoDynamicXML",
+		Handler:       "/DepoDynamicXML",
+		Request:       `{"FromDate":"2023-06-22","ToDate":"2023-06-23"}`,
+		OutputControl: `{"Depo":[{"DateDepo":"2023-06-22T00:00:00+03:00","Overnight":"6.50"},{"DateDepo":"2023-06-23T00:00:00+03:00","Overnight":"6.50"}]}`,
+	}
+	atc.Cases = append(atc.Cases, curCase)
+	curCase = TestCase{
+		Method:        "DepoDynamicXML",
+		Handler:       "/GetMethodDataWithoutCache/DepoDynamicXML",
+		Request:       `{"FromDate":"2023-06-22","ToDate":"2023-06-23"}`,
+		OutputControl: `{"Depo":[{"DateDepo":"2023-06-22T00:00:00+03:00","Overnight":"6.50"},{"DateDepo":"2023-06-23T00:00:00+03:00","Overnight":"6.50"}]}`,
+	}
+	atc.Cases = append(atc.Cases, curCase)
 }
 
 func init() {

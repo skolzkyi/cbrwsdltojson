@@ -311,12 +311,62 @@ func initTestDataBliquidityXML(t *testing.T) AppTestTable {
 	return testDataBliquidityXML
 }
 
+// DepoDynamicXML.
+func initTestDataDepoDynamicXML(t *testing.T) AppTestTable {
+	t.Helper()
+	testDataDepoDynamicXML := AppTestTable{
+		MethodName: "DepoDynamicXML",
+		Method:     (*app.App).DepoDynamicXML,
+	}
+	testDepoDynamicXMLResult := datastructures.DepoDynamicXMLResult{
+		Depo: make([]datastructures.DepoDynamicXMLResultElem, 2),
+	}
+	testDepoDynamicXMLResultElem := datastructures.DepoDynamicXMLResultElem{
+		DateDepo:  time.Date(2023, time.June, 22, 0, 0, 0, 0, time.UTC),
+		Overnight: "6.50",
+	}
+	testDepoDynamicXMLResult.Depo[0] = testDepoDynamicXMLResultElem
+	testDepoDynamicXMLResultElem = datastructures.DepoDynamicXMLResultElem{
+		DateDepo:  time.Date(2023, time.June, 23, 0, 0, 0, 0, time.UTC),
+		Overnight: "6.50",
+	}
+	testDepoDynamicXMLResult.Depo[1] = testDepoDynamicXMLResultElem
+	testCases := make([]AppTestCase, 2)
+	testCases[0] = AppTestCase{
+		Name: "Positive",
+		Input: &datastructures.DepoDynamicXML{
+			FromDate: "2023-06-22",
+			ToDate:   "2023-06-23",
+		},
+		Output: testDepoDynamicXMLResult,
+		Error:  nil,
+	}
+
+	testCases[1] = AppTestCase{
+		Name: "Negative",
+		Input: &datastructures.DepoDynamicXML{
+			FromDate: "022-14-22",
+			ToDate:   "2023-06-23",
+		},
+		Output: datastructures.DepoDynamicXMLResult{},
+		Error:  customsoap.ErrContextWSReqExpired,
+	}
+	standartTestCacheCases := createStandartTestCacheCases(t, datastructures.DepoDynamicXML{
+		FromDate: "022-14-22",
+		ToDate:   "2023-06-23",
+	}, testDepoDynamicXMLResult)
+	testDataDepoDynamicXML.TestCases = append(testDataDepoDynamicXML.TestCases, standartTestCacheCases...)
+	testDataDepoDynamicXML.TestCases = testCases
+	return testDataDepoDynamicXML
+}
+
 func TestAllAppCases(t *testing.T) {
 	acTable := AllCasesTable{}
-	acTable.CasesByMethod = make([]AppTestTable, 3)
+	acTable.CasesByMethod = make([]AppTestTable, 4)
 	acTable.CasesByMethod[0] = initTestDataGetCursOnDateXML(t)
 	acTable.CasesByMethod[1] = initTestDataBiCurBaseXML(t)
 	acTable.CasesByMethod[2] = initTestDataBliquidityXML(t)
+	acTable.CasesByMethod[3] = initTestDataDepoDynamicXML(t)
 	t.Parallel()
 	for _, curMethodTable := range acTable.CasesByMethod {
 		curMethodTable := curMethodTable
