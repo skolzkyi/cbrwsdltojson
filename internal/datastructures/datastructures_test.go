@@ -55,6 +55,8 @@ func initAllDatastructuresTestTable(t *testing.T) AllDatastructuresTestTable {
 	AllDTTable = append(AllDTTable, curDatastructuresTestTable)
 	curDatastructuresTestTable = initTestCasesDepoDynamicXML(t)
 	AllDTTable = append(AllDTTable, curDatastructuresTestTable)
+	curDatastructuresTestTable = initTestCasesDragMetDynamicXML(t)
+	AllDTTable = append(AllDTTable, curDatastructuresTestTable)
 	return AllDTTable
 }
 
@@ -574,6 +576,176 @@ func initTestCasesDepoDynamicXML(t *testing.T) DatastructuresTestTable {
 		DSAssert, ok := Datastructure.(datastructures.DepoDynamicXMLResult)
 		if !ok {
 			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:DepoDynamicXMLResult")
+		}
+		marshXMLres, err := xml.Marshal(DSAssert)
+		require.NoError(t, err)
+		require.Equal(t, XMLMarshalControl, string(marshXMLres))
+	}
+	newCase.ValidateControlTestFunc = func(_ *testing.T, _ interface{}, _ error) {}
+	DatastructuresTest.OutputDataCases[0] = newCase
+	return DatastructuresTest
+}
+
+func initTestCasesDragMetDynamicXML(t *testing.T) DatastructuresTestTable { // nolint:funlen, nolintlint
+	t.Helper()
+	DatastructuresTest := DatastructuresTestTable{}
+	DatastructuresTest.MethodName = "DragMetDynamicXML"
+	DatastructuresTest.InputDataCases = make([]DatastructuresTestCase, 4)
+	DatastructuresTest.OutputDataCases = make([]DatastructuresTestCase, 1)
+	var newCase DatastructuresTestCase
+	newCase = DatastructuresTestCase{
+		Name:              "XMLMarshalControl",
+		DataStructureType: "DragMetDynamicXML",
+		Datastructure: datastructures.DragMetDynamicXML{
+			FromDate: "2023-06-22",
+			ToDate:   "2023-06-23",
+			XMLNs:    "http://web.cbr.ru/",
+		},
+		NeedXMLMarshal:    true,
+		XMLMarshalControl: `<DragMetDynamicXML xmlns="http://web.cbr.ru/"><fromDate>2023-06-22</fromDate><ToDate>2023-06-23</ToDate></DragMetDynamicXML>`,
+	}
+	newCase.MarshalXMLTestFunc = func(t *testing.T, Datastructure interface{}, XMLMarshalControl string) {
+		t.Helper()
+		DSAssert, ok := Datastructure.(datastructures.DragMetDynamicXML)
+		if !ok {
+			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:DragMetDynamicXML")
+		}
+		marshXMLres, err := xml.Marshal(DSAssert)
+		require.NoError(t, err)
+		require.Equal(t, XMLMarshalControl, string(marshXMLres))
+	}
+	newCase.ValidateControlTestFunc = func(_ *testing.T, _ interface{}, _ error) {}
+	DatastructuresTest.InputDataCases[0] = newCase
+	newCase = DatastructuresTestCase{
+		Name:              "ValidateControlNegativeBadRawData",
+		DataStructureType: "DepoDynamicXML",
+		Datastructure: datastructures.DragMetDynamicXML{
+			FromDate: "022-14-22",
+			ToDate:   "2023-06-23",
+			XMLNs:    "http://web.cbr.ru/",
+		},
+		NeedValidate:    true,
+		ValidateControl: datastructures.ErrBadRawData,
+	}
+	newCase.MarshalXMLTestFunc = func(_ *testing.T, _ interface{}, _ string) {}
+	newCase.ValidateControlTestFunc = func(t *testing.T, Datastructure interface{}, ValidateControl error) {
+		t.Helper()
+		DSAssert, ok := Datastructure.(datastructures.DragMetDynamicXML)
+		if !ok {
+			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:DragMetDynamicXML")
+		}
+		err := DSAssert.Validate()
+		require.Equal(t, ValidateControl, err)
+	}
+	DatastructuresTest.InputDataCases[1] = newCase
+	newCase = DatastructuresTestCase{
+		Name:              "ValidateControlNegativeFromDateAfterToDate",
+		DataStructureType: "DragMetDynamicXML",
+		Datastructure: datastructures.DragMetDynamicXML{
+			FromDate: "2023-06-23",
+			ToDate:   "2023-06-22",
+			XMLNs:    "http://web.cbr.ru/",
+		},
+		NeedValidate:    true,
+		ValidateControl: datastructures.ErrBadInputDateData,
+	}
+	newCase.MarshalXMLTestFunc = func(_ *testing.T, _ interface{}, _ string) {}
+	newCase.ValidateControlTestFunc = func(t *testing.T, Datastructure interface{}, ValidateControl error) {
+		t.Helper()
+		DSAssert, ok := Datastructure.(datastructures.DragMetDynamicXML)
+		if !ok {
+			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:DragMetDynamicXML")
+		}
+		err := DSAssert.Validate()
+		require.Equal(t, ValidateControl, err)
+	}
+	DatastructuresTest.InputDataCases[2] = newCase
+	newCase = DatastructuresTestCase{
+		Name:              "ValidateControlPositive",
+		DataStructureType: "DragMetDynamicXML",
+		Datastructure: datastructures.DragMetDynamicXML{
+			FromDate: "2023-06-22",
+			ToDate:   "2023-06-23",
+			XMLNs:    "http://web.cbr.ru/",
+		},
+		NeedValidate:    true,
+		ValidateControl: nil,
+	}
+	newCase.MarshalXMLTestFunc = func(_ *testing.T, _ interface{}, _ string) {}
+	newCase.ValidateControlTestFunc = func(t *testing.T, Datastructure interface{}, ValidateControl error) {
+		t.Helper()
+		DSAssert, ok := Datastructure.(datastructures.DragMetDynamicXML)
+		if !ok {
+			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:DragMetDynamicXML")
+		}
+		err := DSAssert.Validate()
+		require.Equal(t, ValidateControl, err)
+	}
+	DatastructuresTest.InputDataCases[3] = newCase
+	testDragMetDynamicXMLResult := datastructures.DragMetDynamicXMLResult{
+		DrgMet: make([]datastructures.DragMetDynamicXMLResultElem, 8),
+	}
+	testDragMetDynamicXMLElem := datastructures.DragMetDynamicXMLResultElem{
+		DateMet: time.Date(2023, time.June, 22, 0, 0, 0, 0, time.UTC),
+		CodMet:  "1",
+		Price:   "5228.8000",
+	}
+	testDragMetDynamicXMLResult.DrgMet[0] = testDragMetDynamicXMLElem
+	testDragMetDynamicXMLElem = datastructures.DragMetDynamicXMLResultElem{
+		DateMet: time.Date(2023, time.June, 22, 0, 0, 0, 0, time.UTC),
+		CodMet:  "2",
+		Price:   "64.3800",
+	}
+	testDragMetDynamicXMLResult.DrgMet[1] = testDragMetDynamicXMLElem
+	testDragMetDynamicXMLElem = datastructures.DragMetDynamicXMLResultElem{
+		DateMet: time.Date(2023, time.June, 22, 0, 0, 0, 0, time.UTC),
+		CodMet:  "3",
+		Price:   "2611.0800",
+	}
+	testDragMetDynamicXMLResult.DrgMet[2] = testDragMetDynamicXMLElem
+	testDragMetDynamicXMLElem = datastructures.DragMetDynamicXMLResultElem{
+		DateMet: time.Date(2023, time.June, 22, 0, 0, 0, 0, time.UTC),
+		CodMet:  "4",
+		Price:   "3786.6100",
+	}
+	testDragMetDynamicXMLResult.DrgMet[3] = testDragMetDynamicXMLElem
+	testDragMetDynamicXMLElem = datastructures.DragMetDynamicXMLResultElem{
+		DateMet: time.Date(2023, time.June, 23, 0, 0, 0, 0, time.UTC),
+		CodMet:  "1",
+		Price:   "5176.2400",
+	}
+	testDragMetDynamicXMLResult.DrgMet[4] = testDragMetDynamicXMLElem
+	testDragMetDynamicXMLElem = datastructures.DragMetDynamicXMLResultElem{
+		DateMet: time.Date(2023, time.June, 23, 0, 0, 0, 0, time.UTC),
+		CodMet:  "2",
+		Price:   "62.0300",
+	}
+	testDragMetDynamicXMLResult.DrgMet[5] = testDragMetDynamicXMLElem
+	testDragMetDynamicXMLElem = datastructures.DragMetDynamicXMLResultElem{
+		DateMet: time.Date(2023, time.June, 23, 0, 0, 0, 0, time.UTC),
+		CodMet:  "3",
+		Price:   "2550.9600",
+	}
+	testDragMetDynamicXMLResult.DrgMet[6] = testDragMetDynamicXMLElem
+	testDragMetDynamicXMLElem = datastructures.DragMetDynamicXMLResultElem{
+		DateMet: time.Date(2023, time.June, 23, 0, 0, 0, 0, time.UTC),
+		CodMet:  "4",
+		Price:   "3610.0500",
+	}
+	testDragMetDynamicXMLResult.DrgMet[7] = testDragMetDynamicXMLElem
+
+	newCase = DatastructuresTestCase{
+		Name:              "XMLMarshalControl",
+		DataStructureType: "DragMetDynamicXML",
+		Datastructure:     testDragMetDynamicXMLResult,
+		NeedXMLMarshal:    true,
+		XMLMarshalControl: `<DragMetDynamicXMLResult><DrgMet><DateMet>2023-06-22T00:00:00Z</DateMet><CodMet>1</CodMet><price>5228.8000</price></DrgMet><DrgMet><DateMet>2023-06-22T00:00:00Z</DateMet><CodMet>2</CodMet><price>64.3800</price></DrgMet><DrgMet><DateMet>2023-06-22T00:00:00Z</DateMet><CodMet>3</CodMet><price>2611.0800</price></DrgMet><DrgMet><DateMet>2023-06-22T00:00:00Z</DateMet><CodMet>4</CodMet><price>3786.6100</price></DrgMet><DrgMet><DateMet>2023-06-23T00:00:00Z</DateMet><CodMet>1</CodMet><price>5176.2400</price></DrgMet><DrgMet><DateMet>2023-06-23T00:00:00Z</DateMet><CodMet>2</CodMet><price>62.0300</price></DrgMet><DrgMet><DateMet>2023-06-23T00:00:00Z</DateMet><CodMet>3</CodMet><price>2550.9600</price></DrgMet><DrgMet><DateMet>2023-06-23T00:00:00Z</DateMet><CodMet>4</CodMet><price>3610.0500</price></DrgMet></DragMetDynamicXMLResult>`,
+	}
+	newCase.MarshalXMLTestFunc = func(t *testing.T, Datastructure interface{}, XMLMarshalControl string) {
+		t.Helper()
+		DSAssert, ok := Datastructure.(datastructures.DragMetDynamicXMLResult)
+		if !ok {
+			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:DragMetDynamicXMLResult")
 		}
 		marshXMLres, err := xml.Marshal(DSAssert)
 		require.NoError(t, err)

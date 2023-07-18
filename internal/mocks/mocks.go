@@ -100,7 +100,7 @@ func (l *LoggerMock) Fatal(msg string) {
 
 type SoapRequestSenderMock struct{}
 
-func (srsm *SoapRequestSenderMock) SoapCall(_ context.Context, action string, input interface{}) ([]byte, error) {
+func (srsm *SoapRequestSenderMock) SoapCall(_ context.Context, action string, input interface{}) ([]byte, error) { // nolint:gocognit, nolintlint
 	switch action {
 	case "GetCursOnDateXML":
 		inputData, ok := input.(datastructures.GetCursOnDateXML)
@@ -136,6 +136,15 @@ func (srsm *SoapRequestSenderMock) SoapCall(_ context.Context, action string, in
 		}
 		if inputData.FromDate == cFromDate && inputData.ToDate == cToDate {
 			return []byte(`<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><soap:Body><DepoDynamicXMLResponse xmlns="http://web.cbr.ru/"><DepoDynamicXMLResult><DepoDynamic xmlns=""><Depo><DateDepo>2023-06-22T00:00:00Z</DateDepo><Overnight>6.50</Overnight></Depo><Depo><DateDepo>2023-06-23T00:00:00Z</DateDepo><Overnight>6.50</Overnight></Depo></DepoDynamic></DepoDynamicXMLResult></DepoDynamicXMLResponse></soap:Body></soap:Envelope>`), nil
+		}
+		return nil, customsoap.ErrContextWSReqExpired
+	case "DragMetDynamicXML":
+		inputData, ok := input.(datastructures.DragMetDynamicXML)
+		if !ok {
+			return nil, ErrAssertion
+		}
+		if inputData.FromDate == cFromDate && inputData.ToDate == cToDate {
+			return []byte(`<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><soap:Body><DragMetDynamicXMLResponse xmlns="http://web.cbr.ru/"><DragMetDynamicXMLResult><DragMetall xmlns=""><DrgMet><DateMet>2023-06-22T00:00:00Z</DateMet><CodMet>1</CodMet><price>5228.8000</price></DrgMet><DrgMet><DateMet>2023-06-22T00:00:00Z</DateMet><CodMet>2</CodMet><price>64.3800</price></DrgMet><DrgMet><DateMet>2023-06-22T00:00:00Z</DateMet><CodMet>3</CodMet><price>2611.0800</price></DrgMet><DrgMet><DateMet>2023-06-22T00:00:00Z</DateMet><CodMet>4</CodMet><price>3786.6100</price></DrgMet><DrgMet><DateMet>2023-06-23T00:00:00Z</DateMet><CodMet>1</CodMet><price>5176.2400</price></DrgMet><DrgMet><DateMet>2023-06-23T00:00:00Z</DateMet><CodMet>2</CodMet><price>62.0300</price></DrgMet><DrgMet><DateMet>2023-06-23T00:00:00Z</DateMet><CodMet>3</CodMet><price>2550.9600</price></DrgMet><DrgMet><DateMet>2023-06-23T00:00:00Z</DateMet><CodMet>4</CodMet><price>3610.0500</price></DrgMet></DragMetall></DragMetDynamicXMLResult></DragMetDynamicXMLResponse></soap:Body></soap:Envelope>`), nil
 		}
 		return nil, customsoap.ErrContextWSReqExpired
 	default:
