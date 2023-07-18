@@ -16,7 +16,7 @@ func (data *DepoDynamicXML) Init() {
 	data.XMLNs = cbrNamespace
 }
 
-func (data *DepoDynamicXML) Validate(inputDTLayout string) error {
+func (data *DepoDynamicXML) Validate() error {
 	fromDateDate, err := time.Parse(inputDTLayout, data.FromDate)
 	if err != nil {
 		return ErrBadRawData

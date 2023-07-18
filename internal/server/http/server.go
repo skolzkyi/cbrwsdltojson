@@ -4,19 +4,22 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io"
 	"net/http"
+	"sync/atomic"
 	"time"
 
 	"go.uber.org/zap"
 )
 
+var ErrAssertionGetFullRequestTimeout = errors.New("error of data assertion on get full request timeout")
+
 type Server struct {
-	serv   *http.Server
-	logg   Logger
-	app    Application
-	Config Config
+	serv              *http.Server
+	logg              Logger
+	app               Application
+	Config            Config
+	fullRequestTimeot atomic.Value
 }
 
 type Config interface {
@@ -29,8 +32,6 @@ type Config interface {
 	GetInfoExpirTime() time.Duration
 	GetCBRWSDLAddress() string
 	GetLoggingOn() bool
-	GetDateTimeResponseLayout() string
-	GetDateTimeRequestLayout() string
 	GetPermittedRequests() map[string]struct{}
 }
 
@@ -55,6 +56,7 @@ func NewServer(logger Logger, app Application, config Config) *Server {
 	server.logg = logger
 	server.app = app
 	server.Config = config
+	server.fullRequestTimeot.Store(config.GetCBRWSDLTimeout())
 	server.serv = &http.Server{
 		Addr:              config.GetServerURL(),
 		Handler:           server.routes(),
@@ -87,6 +89,16 @@ func (s *Server) Stop(ctx context.Context) error {
 	return err
 }
 
+func (s *Server) GetFullRequestTimeout() (time.Duration, error) {
+	var timeout time.Duration
+	timeoutAny := s.fullRequestTimeot.Load()
+	timeout, ok := timeoutAny.(time.Duration)
+	if !ok {
+		return timeout, ErrAssertionGetFullRequestTimeout
+	}
+	return timeout, nil
+}
+
 func (s *Server) ReadDataFromInputJSON(pointerOnStruct interface{}, r *http.Request) (string, error) {
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
@@ -109,7 +121,6 @@ func (s *Server) WriteDataToOutputJSON(marshallingObject interface{}, w http.Res
 		s.logg.Error("server WriteDataToOutputJSON error: " + err.Error())
 		return err
 	}
-	fmt.Println("len of answer: ", len(jsonstring))
 	_, err = w.Write(jsonstring)
 	if err != nil {
 		s.logg.Error("server WriteDataToOutputJSON error: " + err.Error())

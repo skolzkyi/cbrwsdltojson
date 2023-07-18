@@ -15,7 +15,7 @@ func (data *GetCursOnDateXML) Init() {
 	data.XMLNs = cbrNamespace
 }
 
-func (data *GetCursOnDateXML) Validate(inputDTLayout string) error {
+func (data *GetCursOnDateXML) Validate() error {
 	_, err := time.Parse(inputDTLayout, data.OnDate)
 	if err != nil {
 		return ErrBadRawData

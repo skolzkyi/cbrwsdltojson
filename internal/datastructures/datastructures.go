@@ -5,7 +5,10 @@ import (
 	"time"
 )
 
-const cbrNamespace = "http://web.cbr.ru/"
+const (
+	cbrNamespace  = "http://web.cbr.ru/"
+	inputDTLayout = "2006-01-02"
+)
 
 var (
 	ErrBadInputDateData = errors.New("fromDate after toDate")
@@ -22,7 +25,7 @@ type RequestGetCursDynamic struct {
 	ValutaCode string
 }
 
-func (data *RequestGetCursDynamic) Validate(inputDTLayout string) error {
+func (data *RequestGetCursDynamic) Validate() error {
 	fromDateDate, err := time.Parse(inputDTLayout, data.FromDate)
 	if err != nil {
 		return err
