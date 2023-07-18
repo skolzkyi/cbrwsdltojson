@@ -47,4 +47,10 @@
         <li>response: {"Depo":[{"DateDepo":"2023-06-22T00:00:00+03:00","Overnight":"6.50"},{"DateDepo":"2023-06-23T00:00:00+03:00","Overnight":"6.50"}]}</li>
     </ul>
    </details>
+   <details><summary><b>DragMetDynamicXML</b></summary>
+    <ul>
+        <li>request: {"FromDate":"2023-06-22","ToDate":"2023-06-23"}</li>
+        <li>response: {"DrgMet":[{"DateMet":"2023-06-22T00:00:00+03:00","CodMet":"1","price":"5228.8000"},{"DateMet":"2023-06-22T00:00:00+03:00","CodMet":"2","price":"64.3800"},{"DateMet":"2023-06-22T00:00:00+03:00","CodMet":"3","price":"2611.0800"},{"DateMet":"2023-06-22T00:00:00+03:00","CodMet":"4","price":"3786.6100"},{"DateMet":"2023-06-23T00:00:00+03:00","CodMet":"1","price":"5176.2400"},{"DateMet":"2023-06-23T00:00:00+03:00","CodMet":"2","price":"62.0300"},{"DateMet":"2023-06-23T00:00:00+03:00","CodMet":"3","price":"2550.9600"},{"DateMet":"2023-06-23T00:00:00+03:00","CodMet":"4","price":"3610.0500"}]}</li>
+    </ul>
+   </details>
   

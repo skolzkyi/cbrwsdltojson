@@ -127,3 +127,8 @@ func (s *Server) DepoDynamicXML(w http.ResponseWriter, r *http.Request) {
 	newRequest := datastructures.DepoDynamicXML{}
 	s.universalMethodHandler(w, r, &newRequest, s.app.DepoDynamicXML)
 }
+
+func (s *Server) DragMetDynamicXML(w http.ResponseWriter, r *http.Request) {
+	newRequest := datastructures.DragMetDynamicXML{}
+	s.universalMethodHandler(w, r, &newRequest, s.app.DragMetDynamicXML)
+}

@@ -360,13 +360,101 @@ func initTestDataDepoDynamicXML(t *testing.T) AppTestTable {
 	return testDataDepoDynamicXML
 }
 
+// DragMetDynamicXML.
+func initTestDragMetDynamicXML(t *testing.T) AppTestTable {
+	t.Helper()
+	testDataDragMetDynamicXML := AppTestTable{
+		MethodName: "DragMetDynamicXML",
+		Method:     (*app.App).DragMetDynamicXML,
+	}
+	testDragMetDynamicXMLResult := datastructures.DragMetDynamicXMLResult{
+		DrgMet: make([]datastructures.DragMetDynamicXMLResultElem, 8),
+	}
+	testDragMetDynamicXMLElem := datastructures.DragMetDynamicXMLResultElem{
+		DateMet: time.Date(2023, time.June, 22, 0, 0, 0, 0, time.UTC),
+		CodMet:  "1",
+		Price:   "5228.8000",
+	}
+	testDragMetDynamicXMLResult.DrgMet[0] = testDragMetDynamicXMLElem
+	testDragMetDynamicXMLElem = datastructures.DragMetDynamicXMLResultElem{
+		DateMet: time.Date(2023, time.June, 22, 0, 0, 0, 0, time.UTC),
+		CodMet:  "2",
+		Price:   "64.3800",
+	}
+	testDragMetDynamicXMLResult.DrgMet[1] = testDragMetDynamicXMLElem
+	testDragMetDynamicXMLElem = datastructures.DragMetDynamicXMLResultElem{
+		DateMet: time.Date(2023, time.June, 22, 0, 0, 0, 0, time.UTC),
+		CodMet:  "3",
+		Price:   "2611.0800",
+	}
+	testDragMetDynamicXMLResult.DrgMet[2] = testDragMetDynamicXMLElem
+	testDragMetDynamicXMLElem = datastructures.DragMetDynamicXMLResultElem{
+		DateMet: time.Date(2023, time.June, 22, 0, 0, 0, 0, time.UTC),
+		CodMet:  "4",
+		Price:   "3786.6100",
+	}
+	testDragMetDynamicXMLResult.DrgMet[3] = testDragMetDynamicXMLElem
+	testDragMetDynamicXMLElem = datastructures.DragMetDynamicXMLResultElem{
+		DateMet: time.Date(2023, time.June, 23, 0, 0, 0, 0, time.UTC),
+		CodMet:  "1",
+		Price:   "5176.2400",
+	}
+	testDragMetDynamicXMLResult.DrgMet[4] = testDragMetDynamicXMLElem
+	testDragMetDynamicXMLElem = datastructures.DragMetDynamicXMLResultElem{
+		DateMet: time.Date(2023, time.June, 23, 0, 0, 0, 0, time.UTC),
+		CodMet:  "2",
+		Price:   "62.0300",
+	}
+	testDragMetDynamicXMLResult.DrgMet[5] = testDragMetDynamicXMLElem
+	testDragMetDynamicXMLElem = datastructures.DragMetDynamicXMLResultElem{
+		DateMet: time.Date(2023, time.June, 23, 0, 0, 0, 0, time.UTC),
+		CodMet:  "3",
+		Price:   "2550.9600",
+	}
+	testDragMetDynamicXMLResult.DrgMet[6] = testDragMetDynamicXMLElem
+	testDragMetDynamicXMLElem = datastructures.DragMetDynamicXMLResultElem{
+		DateMet: time.Date(2023, time.June, 23, 0, 0, 0, 0, time.UTC),
+		CodMet:  "4",
+		Price:   "3610.0500",
+	}
+	testDragMetDynamicXMLResult.DrgMet[7] = testDragMetDynamicXMLElem
+	testCases := make([]AppTestCase, 2)
+	testCases[0] = AppTestCase{
+		Name: "Positive",
+		Input: &datastructures.DragMetDynamicXML{
+			FromDate: "2023-06-22",
+			ToDate:   "2023-06-23",
+		},
+		Output: testDragMetDynamicXMLResult,
+		Error:  nil,
+	}
+
+	testCases[1] = AppTestCase{
+		Name: "Negative",
+		Input: &datastructures.DragMetDynamicXML{
+			FromDate: "022-14-22",
+			ToDate:   "2023-06-23",
+		},
+		Output: datastructures.DragMetDynamicXMLResult{},
+		Error:  customsoap.ErrContextWSReqExpired,
+	}
+	standartTestCacheCases := createStandartTestCacheCases(t, datastructures.DragMetDynamicXML{
+		FromDate: "022-14-22",
+		ToDate:   "2023-06-23",
+	}, testDragMetDynamicXMLResult)
+	testDataDragMetDynamicXML.TestCases = append(testDataDragMetDynamicXML.TestCases, standartTestCacheCases...)
+	testDataDragMetDynamicXML.TestCases = testCases
+	return testDataDragMetDynamicXML
+}
+
 func TestAllAppCases(t *testing.T) {
 	acTable := AllCasesTable{}
-	acTable.CasesByMethod = make([]AppTestTable, 4)
+	acTable.CasesByMethod = make([]AppTestTable, 5)
 	acTable.CasesByMethod[0] = initTestDataGetCursOnDateXML(t)
 	acTable.CasesByMethod[1] = initTestDataBiCurBaseXML(t)
 	acTable.CasesByMethod[2] = initTestDataBliquidityXML(t)
 	acTable.CasesByMethod[3] = initTestDataDepoDynamicXML(t)
+	acTable.CasesByMethod[4] = initTestDragMetDynamicXML(t)
 	t.Parallel()
 	for _, curMethodTable := range acTable.CasesByMethod {
 		curMethodTable := curMethodTable
