@@ -51,8 +51,6 @@ type Config interface {
 	GetInfoExpirTime() time.Duration
 	GetCBRWSDLAddress() string
 	GetLoggingOn() bool
-	GetDateTimeResponseLayout() string
-	GetDateTimeRequestLayout() string
 	GetPermittedRequests() map[string]struct{}
 }
 

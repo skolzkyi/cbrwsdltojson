@@ -13,7 +13,7 @@ import (
 
 type requestData interface {
 	Init()
-	Validate(string) error
+	Validate() error
 }
 
 type blLayerMethod func(context.Context, interface{}, string) (interface{}, error)
@@ -66,7 +66,12 @@ func (s *Server) GetMethodDataWithoutCache(w http.ResponseWriter, r *http.Reques
 
 func (s *Server) universalMethodHandler(w http.ResponseWriter, r *http.Request, reqData requestData, appMethod blLayerMethod) {
 	defer r.Body.Close()
-	ctx, cancel := context.WithTimeout(r.Context(), s.Config.GetCBRWSDLTimeout())
+	fullRequestTimeout, err := s.GetFullRequestTimeout()
+	if err != nil {
+		apiErrHandler(err, &w)
+		return
+	}
+	ctx, cancel := context.WithTimeout(r.Context(), fullRequestTimeout)
 	defer cancel()
 	switch r.Method {
 	case http.MethodPost:
@@ -78,7 +83,7 @@ func (s *Server) universalMethodHandler(w http.ResponseWriter, r *http.Request, 
 
 		reqData.Init()
 
-		err = reqData.Validate(s.Config.GetDateTimeRequestLayout())
+		err = reqData.Validate()
 		if err != nil {
 			apiErrHandler(err, &w)
 			return

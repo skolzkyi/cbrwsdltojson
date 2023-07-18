@@ -16,7 +16,7 @@ func (data *BliquidityXML) Init() {
 	data.XMLNs = cbrNamespace
 }
 
-func (data *BliquidityXML) Validate(inputDTLayout string) error {
+func (data *BliquidityXML) Validate() error {
 	fromDateDate, err := time.Parse(inputDTLayout, data.FromDate)
 	if err != nil {
 		return ErrBadRawData

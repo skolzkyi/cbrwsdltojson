@@ -104,7 +104,7 @@ func initTestCasesGetCursOnDateXML(t *testing.T) DatastructuresTestTable {
 		if !ok {
 			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:GetCursOnDateXML")
 		}
-		err := DSAssert.Validate("2006-01-02")
+		err := DSAssert.Validate()
 		require.Equal(t, ValidateControl, err)
 	}
 	DatastructuresTest.InputDataCases[1] = newCase
@@ -125,7 +125,7 @@ func initTestCasesGetCursOnDateXML(t *testing.T) DatastructuresTestTable {
 		if !ok {
 			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:GetCursOnDateXML")
 		}
-		err := DSAssert.Validate("2006-01-02")
+		err := DSAssert.Validate()
 		require.Equal(t, ValidateControl, err)
 	}
 	DatastructuresTest.InputDataCases[2] = newCase
@@ -219,7 +219,7 @@ func initTestCasesBiCurBaseXML(t *testing.T) DatastructuresTestTable {
 		if !ok {
 			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:BiCurBaseXML")
 		}
-		err := DSAssert.Validate("2006-01-02")
+		err := DSAssert.Validate()
 		require.Equal(t, ValidateControl, err)
 	}
 	DatastructuresTest.InputDataCases[1] = newCase
@@ -241,7 +241,7 @@ func initTestCasesBiCurBaseXML(t *testing.T) DatastructuresTestTable {
 		if !ok {
 			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:BiCurBaseXML")
 		}
-		err := DSAssert.Validate("2006-01-02")
+		err := DSAssert.Validate()
 		require.Equal(t, ValidateControl, err)
 	}
 	DatastructuresTest.InputDataCases[2] = newCase
@@ -263,7 +263,7 @@ func initTestCasesBiCurBaseXML(t *testing.T) DatastructuresTestTable {
 		if !ok {
 			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:BiCurBaseXML")
 		}
-		err := DSAssert.Validate("2006-01-02")
+		err := DSAssert.Validate()
 		require.Equal(t, ValidateControl, err)
 	}
 	DatastructuresTest.InputDataCases[3] = newCase
@@ -350,7 +350,7 @@ func initTestCasesBliquidityXML(t *testing.T) DatastructuresTestTable {
 		if !ok {
 			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:BliquidityXML2")
 		}
-		err := DSAssert.Validate("2006-01-02")
+		err := DSAssert.Validate()
 		require.Equal(t, ValidateControl, err)
 	}
 	DatastructuresTest.InputDataCases[1] = newCase
@@ -372,7 +372,7 @@ func initTestCasesBliquidityXML(t *testing.T) DatastructuresTestTable {
 		if !ok {
 			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:BliquidityXML3")
 		}
-		err := DSAssert.Validate("2006-01-02")
+		err := DSAssert.Validate()
 		require.Equal(t, ValidateControl, err)
 	}
 	DatastructuresTest.InputDataCases[2] = newCase
@@ -394,7 +394,7 @@ func initTestCasesBliquidityXML(t *testing.T) DatastructuresTestTable {
 		if !ok {
 			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:BliquidityXML4")
 		}
-		err := DSAssert.Validate("2006-01-02")
+		err := DSAssert.Validate()
 		require.Equal(t, ValidateControl, err)
 	}
 	DatastructuresTest.InputDataCases[3] = newCase
@@ -501,7 +501,7 @@ func initTestCasesDepoDynamicXML(t *testing.T) DatastructuresTestTable {
 		if !ok {
 			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:DepoDynamicXML")
 		}
-		err := DSAssert.Validate("2006-01-02")
+		err := DSAssert.Validate()
 		require.Equal(t, ValidateControl, err)
 	}
 	DatastructuresTest.InputDataCases[1] = newCase
@@ -523,7 +523,7 @@ func initTestCasesDepoDynamicXML(t *testing.T) DatastructuresTestTable {
 		if !ok {
 			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:DepoDynamicXML")
 		}
-		err := DSAssert.Validate("2006-01-02")
+		err := DSAssert.Validate()
 		require.Equal(t, ValidateControl, err)
 	}
 	DatastructuresTest.InputDataCases[2] = newCase
@@ -545,7 +545,7 @@ func initTestCasesDepoDynamicXML(t *testing.T) DatastructuresTestTable {
 		if !ok {
 			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:DepoDynamicXML")
 		}
-		err := DSAssert.Validate("2006-01-02")
+		err := DSAssert.Validate()
 		require.Equal(t, ValidateControl, err)
 	}
 	DatastructuresTest.InputDataCases[3] = newCase

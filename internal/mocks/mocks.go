@@ -55,14 +55,6 @@ func (config *ConfigMock) GetLoggingOn() bool {
 	return true
 }
 
-func (config *ConfigMock) GetDateTimeResponseLayout() string {
-	return "2006-01-02"
-}
-
-func (config *ConfigMock) GetDateTimeRequestLayout() string {
-	return "2006-01-02"
-}
-
 func (config *ConfigMock) GetPermittedRequests() map[string]struct{} {
 	return nil
 }
