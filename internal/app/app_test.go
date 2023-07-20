@@ -447,14 +447,74 @@ func initTestDragMetDynamicXML(t *testing.T) AppTestTable {
 	return testDataDragMetDynamicXML
 }
 
+// DVXML.
+func initTestDataDVXML(t *testing.T) AppTestTable {
+	t.Helper()
+	testDataDVXML := AppTestTable{
+		MethodName: "DVXML",
+		Method:     (*app.App).DVXML,
+	}
+	testDVXMLResult := datastructures.DVXMLResult{
+		DV: make([]datastructures.DVXMLResultElem, 2),
+	}
+	testDVXMLElem := datastructures.DVXMLResultElem{
+		Date:     time.Date(2023, time.June, 22, 0, 0, 0, 0, time.UTC),
+		VOvern:   "0.0000",
+		VLomb:    "9051.4000",
+		VIDay:    "281.3800",
+		VOther:   "504831.8300",
+		Vol_Gold: "0.0000",
+		VIDate:   time.Date(2023, time.June, 21, 0, 0, 0, 0, time.UTC),
+	}
+	testDVXMLResult.DV[0] = testDVXMLElem
+	testDVXMLElem = datastructures.DVXMLResultElem{
+		Date:     time.Date(2023, time.June, 23, 0, 0, 0, 0, time.UTC),
+		VOvern:   "0.0000",
+		VLomb:    "8851.4000",
+		VIDay:    "118.5300",
+		VOther:   "480499.1600",
+		Vol_Gold: "0.0000",
+		VIDate:   time.Date(2023, time.June, 22, 0, 0, 0, 0, time.UTC),
+	}
+	testDVXMLResult.DV[1] = testDVXMLElem
+	testCases := make([]AppTestCase, 2)
+	testCases[0] = AppTestCase{
+		Name: "Positive",
+		Input: &datastructures.DVXML{
+			FromDate: "2023-06-22",
+			ToDate:   "2023-06-23",
+		},
+		Output: testDVXMLResult,
+		Error:  nil,
+	}
+
+	testCases[1] = AppTestCase{
+		Name: "Negative",
+		Input: &datastructures.DVXML{
+			FromDate: "022-14-22",
+			ToDate:   "2023-06-23",
+		},
+		Output: datastructures.DVXMLResult{},
+		Error:  customsoap.ErrContextWSReqExpired,
+	}
+	standartTestCacheCases := createStandartTestCacheCases(t, datastructures.DVXML{
+		FromDate: "022-14-22",
+		ToDate:   "2023-06-23",
+	}, testDVXMLResult)
+	testDataDVXML.TestCases = append(testDataDVXML.TestCases, standartTestCacheCases...)
+	testDataDVXML.TestCases = testCases
+	return testDataDVXML
+}
+
 func TestAllAppCases(t *testing.T) {
 	acTable := AllCasesTable{}
-	acTable.CasesByMethod = make([]AppTestTable, 5)
+	acTable.CasesByMethod = make([]AppTestTable, 6)
 	acTable.CasesByMethod[0] = initTestDataGetCursOnDateXML(t)
 	acTable.CasesByMethod[1] = initTestDataBiCurBaseXML(t)
 	acTable.CasesByMethod[2] = initTestDataBliquidityXML(t)
 	acTable.CasesByMethod[3] = initTestDataDepoDynamicXML(t)
 	acTable.CasesByMethod[4] = initTestDragMetDynamicXML(t)
+	acTable.CasesByMethod[5] = initTestDataDVXML(t)
 	t.Parallel()
 	for _, curMethodTable := range acTable.CasesByMethod {
 		curMethodTable := curMethodTable

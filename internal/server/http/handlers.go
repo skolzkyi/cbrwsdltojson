@@ -132,3 +132,8 @@ func (s *Server) DragMetDynamicXML(w http.ResponseWriter, r *http.Request) {
 	newRequest := datastructures.DragMetDynamicXML{}
 	s.universalMethodHandler(w, r, &newRequest, s.app.DragMetDynamicXML)
 }
+
+func (s *Server) DVXML(w http.ResponseWriter, r *http.Request) {
+	newRequest := datastructures.DVXML{}
+	s.universalMethodHandler(w, r, &newRequest, s.app.DVXML)
+}

@@ -14,6 +14,7 @@ func (s *Server) routes() *http.ServeMux {
 	mux.HandleFunc("/BliquidityXML", loggingMiddleware(s.BliquidityXML, s.logg))
 	mux.HandleFunc("/DepoDynamicXML", loggingMiddleware(s.DepoDynamicXML, s.logg))
 	mux.HandleFunc("/DragMetDynamicXML", loggingMiddleware(s.DragMetDynamicXML, s.logg))
+	mux.HandleFunc("/DVXML", loggingMiddleware(s.DVXML, s.logg))
 
 	return mux
 }
