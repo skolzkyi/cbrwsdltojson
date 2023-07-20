@@ -42,6 +42,6 @@ type DVXMLResultElem struct {
 	VLomb    string    `xml:"VLomb" json:"VLomb"`
 	VIDay    string    `xml:"VIDay" json:"VIDay"`
 	VOther   string    `xml:"VOther" json:"VOther"`
-	Vol_Gold string    `xml:"Vol_Gold" json:"Vol_Gold"`
+	Vol_Gold string    `xml:"Vol_Gold" json:"Vol_Gold"` //nolint:revive, stylecheck
 	VIDate   time.Time `xml:"VIDate" json:"VIDate"`
 }
