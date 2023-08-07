@@ -19,8 +19,8 @@ type EnumReutersValutesXMLResult struct {
 }
 
 type EnumReutersValutesXMLResultElem struct {
-	Num_code  int32  `xml:"num_code" json:"num_code"`
-	Char_code string `xml:"char_code" json:"char_code"`
-	Title_ru  string `xml:"Title_ru" json:"Title_ru"`
-	Title_en  string `xml:"Title_en" json:"Title_en"`
+	Num_code  int32  `xml:"num_code" json:"num_code"`   //nolint:revive, stylecheck
+	Char_code string `xml:"char_code" json:"char_code"` //nolint:revive, stylecheck
+	Title_ru  string `xml:"Title_ru" json:"Title_ru"`   //nolint:revive, stylecheck
+	Title_en  string `xml:"Title_en" json:"Title_en"`   //nolint:revive, stylecheck
 }

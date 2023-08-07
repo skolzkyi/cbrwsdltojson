@@ -18,7 +18,7 @@ type requestData interface {
 
 type blLayerMethod func(context.Context, interface{}, string) (interface{}, error)
 
-// without parameters
+// without parameters.
 type blLayerMethodWP func(context.Context) (interface{}, error)
 
 var (
@@ -111,7 +111,7 @@ func (s *Server) universalMethodHandler(w http.ResponseWriter, r *http.Request, 
 	}
 }
 
-// without parameters
+// without parameters.
 func (s *Server) universalMethodHandlerWP(w http.ResponseWriter, r *http.Request, appMethod blLayerMethodWP) {
 	defer r.Body.Close()
 	fullRequestTimeout, err := s.GetFullRequestTimeout()
@@ -174,6 +174,5 @@ func (s *Server) DVXML(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) EnumReutersValutesXML(w http.ResponseWriter, r *http.Request) {
-	//newRequest := datastructures.EnumReutersValutesXML{}
 	s.universalMethodHandlerWP(w, r, s.app.EnumReutersValutesXML)
 }

@@ -59,6 +59,8 @@ func initAllDatastructuresTestTable(t *testing.T) AllDatastructuresTestTable {
 	AllDTTable = append(AllDTTable, curDatastructuresTestTable)
 	curDatastructuresTestTable = initTestCasesDVXML(t)
 	AllDTTable = append(AllDTTable, curDatastructuresTestTable)
+	curDatastructuresTestTable = initTestCasesEnumReutersValutesXML(t)
+	AllDTTable = append(AllDTTable, curDatastructuresTestTable)
 	return AllDTTable
 }
 
@@ -890,6 +892,53 @@ func initTestCasesDVXML(t *testing.T) DatastructuresTestTable { // nolint:funlen
 		DSAssert, ok := Datastructure.(datastructures.DVXMLResult)
 		if !ok {
 			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:DVXMLResult")
+		}
+		marshXMLres, err := xml.Marshal(DSAssert)
+		require.NoError(t, err)
+		require.Equal(t, XMLMarshalControl, string(marshXMLres))
+	}
+	newCase.ValidateControlTestFunc = func(_ *testing.T, _ interface{}, _ error) {}
+	DatastructuresTest.OutputDataCases[0] = newCase
+	return DatastructuresTest
+}
+
+func initTestCasesEnumReutersValutesXML(t *testing.T) DatastructuresTestTable { // nolint:funlen, nolintlint
+	t.Helper()
+	DatastructuresTest := DatastructuresTestTable{}
+	DatastructuresTest.MethodName = "EnumReutersValutesXML"
+	DatastructuresTest.InputDataCases = make([]DatastructuresTestCase, 0)
+	DatastructuresTest.OutputDataCases = make([]DatastructuresTestCase, 1)
+	var newCase DatastructuresTestCase
+	testEnumReutersValutesXML := datastructures.EnumReutersValutesXMLResult{
+		EnumRValutes: make([]datastructures.EnumReutersValutesXMLResultElem, 2),
+	}
+	testEnumReutersValutesXMLElem := datastructures.EnumReutersValutesXMLResultElem{
+		Num_code:  8,
+		Char_code: "ALL",
+		Title_ru:  "Албанский лек",
+		Title_en:  "Albanian Lek",
+	}
+	testEnumReutersValutesXML.EnumRValutes[0] = testEnumReutersValutesXMLElem
+	testEnumReutersValutesXMLElem = datastructures.EnumReutersValutesXMLResultElem{
+		Num_code:  12,
+		Char_code: "DZD",
+		Title_ru:  "Алжирский динар",
+		Title_en:  "Algerian Dinar",
+	}
+	testEnumReutersValutesXML.EnumRValutes[1] = testEnumReutersValutesXMLElem
+
+	newCase = DatastructuresTestCase{
+		Name:              "XMLMarshalControl",
+		DataStructureType: "EnumReutersValutesXML",
+		Datastructure:     testEnumReutersValutesXML,
+		NeedXMLMarshal:    true,
+		XMLMarshalControl: `<EnumReutersValutesXMLResult><EnumRValutes><num_code>8</num_code><char_code>ALL</char_code><Title_ru>Албанский лек</Title_ru><Title_en>Albanian Lek</Title_en></EnumRValutes><EnumRValutes><num_code>12</num_code><char_code>DZD</char_code><Title_ru>Алжирский динар</Title_ru><Title_en>Algerian Dinar</Title_en></EnumRValutes></EnumReutersValutesXMLResult>`,
+	}
+	newCase.MarshalXMLTestFunc = func(t *testing.T, Datastructure interface{}, XMLMarshalControl string) {
+		t.Helper()
+		DSAssert, ok := Datastructure.(datastructures.EnumReutersValutesXMLResult)
+		if !ok {
+			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:EnumReutersValutesXMLResult")
 		}
 		marshXMLres, err := xml.Marshal(DSAssert)
 		require.NoError(t, err)
