@@ -176,3 +176,8 @@ func (s *Server) DVXML(w http.ResponseWriter, r *http.Request) {
 func (s *Server) EnumReutersValutesXML(w http.ResponseWriter, r *http.Request) {
 	s.universalMethodHandlerWP(w, r, s.app.EnumReutersValutesXML)
 }
+
+func (s *Server) EnumValutesXML(w http.ResponseWriter, r *http.Request) {
+	newRequest := datastructures.EnumValutesXML{}
+	s.universalMethodHandler(w, r, &newRequest, s.app.EnumValutesXML)
+}
