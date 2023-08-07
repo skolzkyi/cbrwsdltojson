@@ -547,9 +547,56 @@ func initTestDataEnumReutersValutesXML(t *testing.T) AppTestTable {
 	return testDataDVXML
 }
 
+// EnumValutesXML.
+func initTestDataEnumValutesXML(t *testing.T) AppTestTable {
+	t.Helper()
+	testDataDVXML := AppTestTable{
+		MethodName: "EnumValutesXML",
+		Method:     (*app.App).EnumValutesXML,
+	}
+	testEnumValutesXMLResult := datastructures.EnumValutesXMLResult{
+		EnumValutes: make([]datastructures.EnumValutesXMLResultElem, 2),
+	}
+	testEnumValutesXMLElem := datastructures.EnumValutesXMLResultElem{
+		Vcode:       "R01010",
+		Vname:       "Австралийский доллар",
+		VEngname:    "Australian Dollar",
+		Vnom:        1,
+		VcommonCode: "R01010",
+		VnumCode:    36,
+		VcharCode:   "AUD",
+	}
+	testEnumValutesXMLResult.EnumValutes[0] = testEnumValutesXMLElem
+	testEnumValutesXMLElem = datastructures.EnumValutesXMLResultElem{
+		Vcode:       "R01015",
+		Vname:       "Австрийский шиллинг",
+		VEngname:    "Austrian Shilling",
+		Vnom:        1000,
+		VcommonCode: "R01015",
+		VnumCode:    40,
+		VcharCode:   "ATS",
+	}
+	testEnumValutesXMLResult.EnumValutes[1] = testEnumValutesXMLElem
+
+	testCases := make([]AppTestCase, 1)
+	testCases[0] = AppTestCase{
+		Name: "Positive",
+		Input: &datastructures.EnumValutesXML{
+			Seld: false,
+		},
+		Output: testEnumValutesXMLResult,
+		Error:  nil,
+	}
+
+	standartTestCacheCases := createStandartTestCacheCases(t, datastructures.EnumValutesXML{}, testEnumValutesXMLResult)
+	testDataDVXML.TestCases = append(testDataDVXML.TestCases, standartTestCacheCases...)
+	testDataDVXML.TestCases = testCases
+	return testDataDVXML
+}
+
 func TestAllAppCases(t *testing.T) {
 	acTable := AllCasesTable{}
-	acTable.CasesByMethod = make([]AppTestTable, 7)
+	acTable.CasesByMethod = make([]AppTestTable, 8)
 	acTable.CasesByMethod[0] = initTestDataGetCursOnDateXML(t)
 	acTable.CasesByMethod[1] = initTestDataBiCurBaseXML(t)
 	acTable.CasesByMethod[2] = initTestDataBliquidityXML(t)
@@ -557,6 +604,7 @@ func TestAllAppCases(t *testing.T) {
 	acTable.CasesByMethod[4] = initTestDragMetDynamicXML(t)
 	acTable.CasesByMethod[5] = initTestDataDVXML(t)
 	acTable.CasesByMethod[6] = initTestDataEnumReutersValutesXML(t)
+	acTable.CasesByMethod[7] = initTestDataEnumValutesXML(t)
 	t.Parallel()
 	for _, curMethodTable := range acTable.CasesByMethod {
 		curMethodTable := curMethodTable

@@ -5,7 +5,7 @@ import (
 )
 
 type EnumValutesXML struct {
-	XMLName xml.Name `xml:"GetCursOnDateXML" json:"-"`
+	XMLName xml.Name `xml:"EnumValutesXML" json:"-"`
 	XMLNs   string   `xml:"xmlns,attr" json:"-"`
 	Seld    bool     `xml:"Seld"`
 }
@@ -20,10 +20,10 @@ func (data *EnumValutesXML) Validate() error {
 
 type EnumValutesXMLResult struct {
 	// ValuteData node
-	EnumValutes []EnumValutesXMLElem `xml:"EnumValutes"`
+	EnumValutes []EnumValutesXMLResultElem `xml:"EnumValutes"`
 }
 
-type EnumValutesXMLElem struct {
+type EnumValutesXMLResultElem struct {
 	Vcode       string `xml:"Vcode" json:"Vcode"`
 	Vname       string `xml:"Vname" json:"Vname"`
 	VEngname    string `xml:"VEngname" json:"VEngname"`

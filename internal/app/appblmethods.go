@@ -4,7 +4,6 @@ import (
 	"context"
 	"strings"
 
-	"github.com/skolzkyi/cbrwsdltojson/helpers"
 	datastructures "github.com/skolzkyi/cbrwsdltojson/internal/datastructures"
 )
 
@@ -407,10 +406,10 @@ func (a *App) EnumValutesXML(ctx context.Context, input interface{}, rawBody str
 		}
 
 		for i := range response.EnumValutes {
-			response.EnumValutes[i].Vcode = helpers.ClearStringByWhitespaceAndLinebreak(response.EnumValutes[i].Vcode)
-			response.EnumValutes[i].Vname = helpers.ClearStringByWhitespaceAndLinebreak(response.EnumValutes[i].Vcode)
-			response.EnumValutes[i].VEngname = helpers.ClearStringByWhitespaceAndLinebreak(response.EnumValutes[i].Vcode)
-			response.EnumValutes[i].VcommonCode = helpers.ClearStringByWhitespaceAndLinebreak(response.EnumValutes[i].Vcode)
+			response.EnumValutes[i].Vcode = strings.TrimSpace(response.EnumValutes[i].Vcode)
+			response.EnumValutes[i].Vname = strings.TrimSpace(response.EnumValutes[i].Vname)
+			response.EnumValutes[i].VEngname = strings.TrimSpace(response.EnumValutes[i].VEngname)
+			response.EnumValutes[i].VcommonCode = strings.TrimSpace(response.EnumValutes[i].VcommonCode)
 		}
 
 		err = a.AddOrUpdateDataInCache(SOAPMethod, input, response)

@@ -162,6 +162,12 @@ func (srsm *SoapRequestSenderMock) SoapCall(_ context.Context, action string, in
 			return nil, ErrAssertion
 		}
 		return []byte(`<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><soap:Body><EnumReutersValutesXMLResponse xmlns="http://web.cbr.ru/"><EnumReutersValutesXMLResult><ReutersValutesList xmlns=""><EnumRValutes><num_code>8</num_code><char_code>ALL</char_code><Title_ru>Албанский лек</Title_ru><Title_en>Albanian Lek</Title_en></EnumRValutes><EnumRValutes><num_code>12</num_code><char_code>DZD</char_code><Title_ru>Алжирский динар</Title_ru><Title_en>Algerian Dinar</Title_en></EnumRValutes></ReutersValutesList></EnumReutersValutesXMLResult></EnumReutersValutesXMLResponse></Body></soap:Envelope>`), nil
+	case "EnumValutesXML":
+		_, ok := input.(datastructures.EnumValutesXML)
+		if !ok {
+			return nil, ErrAssertion
+		}
+		return []byte(`<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><soap:Body><EnumReutersValutesXMLResponse xmlns="http://web.cbr.ru/"><EnumValutesXMLResult><ValuteData xmlns=""><EnumValutes><Vcode>R01010</Vcode><Vname>Австралийский доллар</Vname><VEngname>Australian Dollar</VEngname><Vnom>1</Vnom><VcommonCode>R01010</VcommonCode><VnumCode>36</VnumCode><VcharCode>AUD</VcharCode></EnumValutes><EnumValutes><Vcode>R01015</Vcode><Vname>Австрийский шиллинг</Vname><VEngname>Austrian Shilling</VEngname><Vnom>1000</Vnom><VcommonCode>R01015</VcommonCode><VnumCode>40</VnumCode><VcharCode>ATS</VcharCode></EnumValutes></ValuteData></EnumValutesXMLResult></EnumReutersValutesXMLResponse></Body></soap:Envelope>`), nil
 	default:
 		return nil, errors.New("SoapRequestSenderMock: unsupported action")
 	}
