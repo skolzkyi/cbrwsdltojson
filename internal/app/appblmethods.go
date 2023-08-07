@@ -358,3 +358,65 @@ func (a *App) EnumReutersValutesXML(ctx context.Context) (interface{}, error) {
 	}
 	return response, nil
 }
+
+func (a *App) EnumValutesXML(ctx context.Context, input interface{}, rawBody string) (interface{}, error) {
+	var err error
+	var response datastructures.EnumValutesXMLResult
+	select {
+	case <-ctx.Done():
+		err = ErrContextWSReqExpired
+		a.logger.Error(err.Error())
+		return response, err
+	default:
+		SOAPMethod := "EnumValutesXML"
+		startNodeName := "ValuteData"
+		if a.permittedRequests.PermittedRequestMapLength() > 0 {
+			if a.permittedRequests.IsPermittedRequestInMap(SOAPMethod) {
+				return datastructures.EnumValutesXML{}, ErrMethodProhibited
+			}
+		}
+
+		cachedData, ok := a.GetDataInCacheIfExisting(SOAPMethod, rawBody)
+		if ok {
+			response, ok = cachedData.(datastructures.EnumValutesXMLResult)
+			if !ok {
+				err = ErrAssertionAfterGetCacheData
+				a.logger.Error(err.Error())
+			} else {
+				return response, nil
+			}
+		}
+
+		inputAsserted, ok := input.(*datastructures.EnumValutesXML)
+		if !ok {
+			err = ErrAssertionOfInputData
+			a.logger.Error(err.Error())
+			return response, err
+		}
+		res, err := a.soapSender.SoapCall(ctx, SOAPMethod, *inputAsserted)
+		if err != nil {
+			a.logger.Error(err.Error())
+			return response, err
+		}
+
+		err = a.XMLToStructDecoder(res, startNodeName, &response)
+		if err != nil {
+			a.logger.Error(err.Error())
+			return response, err
+		}
+
+		for i := range response.EnumValutes {
+			response.EnumValutes[i].Vcode = strings.TrimSpace(response.EnumValutes[i].Vcode)
+			response.EnumValutes[i].Vname = strings.TrimSpace(response.EnumValutes[i].Vname)
+			response.EnumValutes[i].VEngname = strings.TrimSpace(response.EnumValutes[i].VEngname)
+			response.EnumValutes[i].VcommonCode = strings.TrimSpace(response.EnumValutes[i].VcommonCode)
+		}
+
+		err = a.AddOrUpdateDataInCache(SOAPMethod, input, response)
+		if err != nil {
+			a.logger.Error(err.Error())
+			return response, err
+		}
+	}
+	return response, nil
+}
