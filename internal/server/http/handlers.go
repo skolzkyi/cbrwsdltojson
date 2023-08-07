@@ -18,6 +18,9 @@ type requestData interface {
 
 type blLayerMethod func(context.Context, interface{}, string) (interface{}, error)
 
+// without parameters.
+type blLayerMethodWP func(context.Context) (interface{}, error)
+
 var (
 	ErrInJSONBadParse        = errors.New("error parsing input json")
 	ErrOutJSONBadParse       = errors.New("error parsing output json")
@@ -108,6 +111,38 @@ func (s *Server) universalMethodHandler(w http.ResponseWriter, r *http.Request, 
 	}
 }
 
+// without parameters.
+func (s *Server) universalMethodHandlerWP(w http.ResponseWriter, r *http.Request, appMethod blLayerMethodWP) {
+	defer r.Body.Close()
+	fullRequestTimeout, err := s.GetFullRequestTimeout()
+	if err != nil {
+		apiErrHandler(err, &w)
+		return
+	}
+	ctx, cancel := context.WithTimeout(r.Context(), fullRequestTimeout)
+	defer cancel()
+	switch r.Method {
+	case http.MethodPost:
+
+		answer, err := appMethod(ctx)
+		if err != nil {
+			apiErrHandler(err, &w)
+			return
+		}
+
+		err = s.WriteDataToOutputJSON(answer, w)
+		if err != nil {
+			apiErrHandler(err, &w)
+			return
+		}
+		return
+
+	default:
+		apiErrHandler(ErrUnsupportedMethod, &w)
+		return
+	}
+}
+
 func (s *Server) GetCursOnDateXML(w http.ResponseWriter, r *http.Request) {
 	newRequest := datastructures.GetCursOnDateXML{}
 	s.universalMethodHandler(w, r, &newRequest, s.app.GetCursOnDateXML)
@@ -136,4 +171,8 @@ func (s *Server) DragMetDynamicXML(w http.ResponseWriter, r *http.Request) {
 func (s *Server) DVXML(w http.ResponseWriter, r *http.Request) {
 	newRequest := datastructures.DVXML{}
 	s.universalMethodHandler(w, r, &newRequest, s.app.DVXML)
+}
+
+func (s *Server) EnumReutersValutesXML(w http.ResponseWriter, r *http.Request) {
+	s.universalMethodHandlerWP(w, r, s.app.EnumReutersValutesXML)
 }

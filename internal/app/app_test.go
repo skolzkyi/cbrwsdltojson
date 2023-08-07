@@ -27,6 +27,8 @@ type AllCasesTable struct {
 type AppTestTable struct {
 	MethodName string
 	Method     func(*app.App, context.Context, interface{}, string) (interface{}, error)
+	MethodWP   func(*app.App, context.Context) (interface{}, error)
+	IsMethodWP bool
 	TestCases  []AppTestCase
 }
 
@@ -506,15 +508,55 @@ func initTestDataDVXML(t *testing.T) AppTestTable {
 	return testDataDVXML
 }
 
+// EnumReutersValutesXML.
+func initTestDataEnumReutersValutesXML(t *testing.T) AppTestTable {
+	t.Helper()
+	testDataDVXML := AppTestTable{
+		MethodName: "EnumReutersValutesXML",
+		MethodWP:   (*app.App).EnumReutersValutesXML,
+		IsMethodWP: true,
+	}
+	testEnumReutersValutesXMLResult := datastructures.EnumReutersValutesXMLResult{
+		EnumRValutes: make([]datastructures.EnumReutersValutesXMLResultElem, 2),
+	}
+	testEnumReutersValutesXMLElem := datastructures.EnumReutersValutesXMLResultElem{
+		Num_code:  8,
+		Char_code: "ALL",
+		Title_ru:  "Албанский лек",
+		Title_en:  "Albanian Lek",
+	}
+	testEnumReutersValutesXMLResult.EnumRValutes[0] = testEnumReutersValutesXMLElem
+	testEnumReutersValutesXMLElem = datastructures.EnumReutersValutesXMLResultElem{
+		Num_code:  12,
+		Char_code: "DZD",
+		Title_ru:  "Алжирский динар",
+		Title_en:  "Algerian Dinar",
+	}
+	testEnumReutersValutesXMLResult.EnumRValutes[1] = testEnumReutersValutesXMLElem
+	testCases := make([]AppTestCase, 1)
+	testCases[0] = AppTestCase{
+		Name:   "Positive",
+		Input:  &datastructures.EnumReutersValutesXML{},
+		Output: testEnumReutersValutesXMLResult,
+		Error:  nil,
+	}
+
+	standartTestCacheCases := createStandartTestCacheCases(t, datastructures.EnumReutersValutesXML{}, testEnumReutersValutesXMLResult)
+	testDataDVXML.TestCases = append(testDataDVXML.TestCases, standartTestCacheCases...)
+	testDataDVXML.TestCases = testCases
+	return testDataDVXML
+}
+
 func TestAllAppCases(t *testing.T) {
 	acTable := AllCasesTable{}
-	acTable.CasesByMethod = make([]AppTestTable, 6)
+	acTable.CasesByMethod = make([]AppTestTable, 7)
 	acTable.CasesByMethod[0] = initTestDataGetCursOnDateXML(t)
 	acTable.CasesByMethod[1] = initTestDataBiCurBaseXML(t)
 	acTable.CasesByMethod[2] = initTestDataBliquidityXML(t)
 	acTable.CasesByMethod[3] = initTestDataDepoDynamicXML(t)
 	acTable.CasesByMethod[4] = initTestDragMetDynamicXML(t)
 	acTable.CasesByMethod[5] = initTestDataDVXML(t)
+	acTable.CasesByMethod[6] = initTestDataEnumReutersValutesXML(t)
 	t.Parallel()
 	for _, curMethodTable := range acTable.CasesByMethod {
 		curMethodTable := curMethodTable
@@ -522,15 +564,28 @@ func TestAllAppCases(t *testing.T) {
 			curTestCase := curTestCase
 			t.Run(curMethodTable.MethodName+":"+curTestCase.Name, func(t *testing.T) {
 				t.Parallel()
+				var testRes interface{}
 				var cachedData memcache.CacheInfo
+				var rawBody []byte
+				var err error
 				var ok bool
 				testApp := initTestApp(t)
-				rawBody, err := json.Marshal(curTestCase.Input)
-				require.NoError(t, err)
-				testRes, err := curMethodTable.Method(testApp, context.Background(), curTestCase.Input, string(rawBody))
+				if !curMethodTable.IsMethodWP {
+					rawBody, err = json.Marshal(curTestCase.Input)
+					require.NoError(t, err)
+					testRes, err = curMethodTable.Method(testApp, context.Background(), curTestCase.Input, string(rawBody))
+				} else {
+					testRes, err = curMethodTable.MethodWP(testApp, context.Background())
+					require.NoError(t, err)
+				}
 				if err == nil {
 					// testApp.Appmemcache.PrintAllCacheKeys()
-					cacheTag := getTagForCache(t, curMethodTable.MethodName, curTestCase.Input)
+					var cacheTag string
+					if !curMethodTable.IsMethodWP {
+						cacheTag = getTagForCache(t, curMethodTable.MethodName, curTestCase.Input)
+					} else {
+						cacheTag = curMethodTable.MethodName
+					}
 					cachedData, ok = testApp.Appmemcache.GetCacheDataInCache(cacheTag)
 					require.Equal(t, true, ok)
 				}
@@ -538,21 +593,33 @@ func TestAllAppCases(t *testing.T) {
 					require.Equal(t, curTestCase.Error, err)
 					require.Equal(t, curTestCase.Output, testRes)
 				} else {
-					if !curTestCase.IsCacheData {
-						time.Sleep(3 * time.Second)
-					}
-					_, err := curMethodTable.Method(testApp, context.Background(), curTestCase.Input, string(rawBody))
-					require.Equal(t, nil, err)
-					cachedData2, ok := testApp.Appmemcache.GetCacheDataInCache(curMethodTable.MethodName)
-					require.Equal(t, true, ok)
-					if curTestCase.IsCacheData {
-						require.Equal(t, cachedData.InfoDTStamp, cachedData2.InfoDTStamp)
-					} else {
-						require.NotEqual(t, cachedData.InfoDTStamp, cachedData2.InfoDTStamp)
-					}
+					checkCashLogic(t, testApp, &curMethodTable, &curTestCase, cachedData.InfoDTStamp)
 				}
 				testApp.RemoveDataInMemCacheBySOAPAction(curMethodTable.MethodName)
 			})
 		}
+	}
+}
+
+func checkCashLogic(t *testing.T, testApp *app.App, methodTable *AppTestTable, testCase *AppTestCase, prevDataDTStamp time.Time) {
+	t.Helper()
+	if !testCase.IsCacheData {
+		time.Sleep(3 * time.Second)
+	}
+	rawBody, err := json.Marshal(testCase.Input)
+	require.NoError(t, err)
+	if methodTable.IsMethodWP {
+		_, err := methodTable.Method(testApp, context.Background(), testCase.Input, string(rawBody))
+		require.Equal(t, nil, err)
+	} else {
+		_, err := methodTable.MethodWP(testApp, context.Background())
+		require.Equal(t, nil, err)
+	}
+	cachedData2, ok := testApp.Appmemcache.GetCacheDataInCache(methodTable.MethodName)
+	require.Equal(t, true, ok)
+	if testCase.IsCacheData {
+		require.Equal(t, prevDataDTStamp, cachedData2.InfoDTStamp)
+	} else {
+		require.NotEqual(t, prevDataDTStamp, cachedData2.InfoDTStamp)
 	}
 }

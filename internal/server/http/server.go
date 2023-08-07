@@ -51,6 +51,7 @@ type Application interface {
 	DepoDynamicXML(ctx context.Context, input interface{}, rawBody string) (interface{}, error)
 	DragMetDynamicXML(ctx context.Context, input interface{}, rawBody string) (interface{}, error)
 	DVXML(ctx context.Context, input interface{}, rawBody string) (interface{}, error)
+	EnumReutersValutesXML(ctx context.Context) (interface{}, error)
 }
 
 func NewServer(logger Logger, app Application, config Config) *Server {
