@@ -236,7 +236,7 @@ func initTestDataBiCurBaseXML(t *testing.T) AppTestTable {
 		Error:  customsoap.ErrContextWSReqExpired,
 	}
 	standartTestCacheCases := createStandartTestCacheCases(t, datastructures.BiCurBaseXML{
-		FromDate: "022-14-22",
+		FromDate: "2023-06-22",
 		ToDate:   "2023-06-23",
 	}, testBiCurBaseXMLResult)
 	testDataBiCurBaseXML.TestCases = append(testDataBiCurBaseXML.TestCases, standartTestCacheCases...)
@@ -305,7 +305,7 @@ func initTestDataBliquidityXML(t *testing.T) AppTestTable {
 		Error:  customsoap.ErrContextWSReqExpired,
 	}
 	standartTestCacheCases := createStandartTestCacheCases(t, datastructures.BliquidityXML{
-		FromDate: "022-14-22",
+		FromDate: "2023-06-22",
 		ToDate:   "2023-06-23",
 	}, testBliquidityXMLResult)
 	testDataBliquidityXML.TestCases = append(testDataBliquidityXML.TestCases, standartTestCacheCases...)
@@ -354,7 +354,7 @@ func initTestDataDepoDynamicXML(t *testing.T) AppTestTable {
 		Error:  customsoap.ErrContextWSReqExpired,
 	}
 	standartTestCacheCases := createStandartTestCacheCases(t, datastructures.DepoDynamicXML{
-		FromDate: "022-14-22",
+		FromDate: "2023-06-22",
 		ToDate:   "2023-06-23",
 	}, testDepoDynamicXMLResult)
 	testDataDepoDynamicXML.TestCases = append(testDataDepoDynamicXML.TestCases, standartTestCacheCases...)
@@ -441,7 +441,7 @@ func initTestDragMetDynamicXML(t *testing.T) AppTestTable {
 		Error:  customsoap.ErrContextWSReqExpired,
 	}
 	standartTestCacheCases := createStandartTestCacheCases(t, datastructures.DragMetDynamicXML{
-		FromDate: "022-14-22",
+		FromDate: "2023-06-22",
 		ToDate:   "2023-06-23",
 	}, testDragMetDynamicXMLResult)
 	testDataDragMetDynamicXML.TestCases = append(testDataDragMetDynamicXML.TestCases, standartTestCacheCases...)
@@ -500,7 +500,7 @@ func initTestDataDVXML(t *testing.T) AppTestTable {
 		Error:  customsoap.ErrContextWSReqExpired,
 	}
 	standartTestCacheCases := createStandartTestCacheCases(t, datastructures.DVXML{
-		FromDate: "022-14-22",
+		FromDate: "2023-06-22",
 		ToDate:   "2023-06-23",
 	}, testDVXMLResult)
 	testDataDVXML.TestCases = append(testDataDVXML.TestCases, standartTestCacheCases...)
@@ -594,9 +594,59 @@ func initTestDataEnumValutesXML(t *testing.T) AppTestTable {
 	return testDataDVXML
 }
 
+// KeyRateXML.
+func initTestDataKeyRateXML(t *testing.T) AppTestTable {
+	t.Helper()
+	testDataDVXML := AppTestTable{
+		MethodName: "KeyRateXML",
+		Method:     (*app.App).KeyRateXML,
+	}
+	testKeyRateXMLResult := datastructures.KeyRateXMLResult{
+		KR: make([]datastructures.KeyRateXMLResultElem, 2),
+	}
+	testKeyRateXMLResultElem := datastructures.KeyRateXMLResultElem{
+		DT:   time.Date(2023, time.June, 22, 0, 0, 0, 0, time.UTC),
+		Rate: "7.50",
+	}
+	testKeyRateXMLResult.KR[0] = testKeyRateXMLResultElem
+	testKeyRateXMLResultElem = datastructures.KeyRateXMLResultElem{
+		DT:   time.Date(2023, time.June, 23, 0, 0, 0, 0, time.UTC),
+		Rate: "7.50",
+	}
+	testKeyRateXMLResult.KR[1] = testKeyRateXMLResultElem
+
+	testCases := make([]AppTestCase, 2)
+	testCases[0] = AppTestCase{
+		Name: "Positive",
+		Input: &datastructures.KeyRateXML{
+			FromDate: "2023-06-22",
+			ToDate:   "2023-06-23",
+		},
+		Output: testKeyRateXMLResult,
+		Error:  nil,
+	}
+
+	testCases[1] = AppTestCase{
+		Name: "Negative",
+		Input: &datastructures.KeyRateXML{
+			FromDate: "022-14-22",
+			ToDate:   "2023-06-23",
+		},
+		Output: datastructures.KeyRateXMLResult{},
+		Error:  customsoap.ErrContextWSReqExpired,
+	}
+	standartTestCacheCases := createStandartTestCacheCases(t, datastructures.DVXML{
+		FromDate: "2023-06-22",
+		ToDate:   "2023-06-23",
+	}, testKeyRateXMLResult)
+	testDataDVXML.TestCases = append(testDataDVXML.TestCases, standartTestCacheCases...)
+	testDataDVXML.TestCases = testCases
+	return testDataDVXML
+}
+
 func TestAllAppCases(t *testing.T) {
 	acTable := AllCasesTable{}
-	acTable.CasesByMethod = make([]AppTestTable, 8)
+	acTable.CasesByMethod = make([]AppTestTable, 9)
 	acTable.CasesByMethod[0] = initTestDataGetCursOnDateXML(t)
 	acTable.CasesByMethod[1] = initTestDataBiCurBaseXML(t)
 	acTable.CasesByMethod[2] = initTestDataBliquidityXML(t)
@@ -605,6 +655,7 @@ func TestAllAppCases(t *testing.T) {
 	acTable.CasesByMethod[5] = initTestDataDVXML(t)
 	acTable.CasesByMethod[6] = initTestDataEnumReutersValutesXML(t)
 	acTable.CasesByMethod[7] = initTestDataEnumValutesXML(t)
+	acTable.CasesByMethod[8] = initTestDataKeyRateXML(t)
 	t.Parallel()
 	for _, curMethodTable := range acTable.CasesByMethod {
 		curMethodTable := curMethodTable
