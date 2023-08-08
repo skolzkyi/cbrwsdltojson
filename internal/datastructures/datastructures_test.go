@@ -63,6 +63,8 @@ func initAllDatastructuresTestTable(t *testing.T) AllDatastructuresTestTable {
 	AllDTTable = append(AllDTTable, curDatastructuresTestTable)
 	curDatastructuresTestTable = initTestCasesEnumValutesXML(t)
 	AllDTTable = append(AllDTTable, curDatastructuresTestTable)
+	curDatastructuresTestTable = initTestCasesKeyRateXML(t)
+	AllDTTable = append(AllDTTable, curDatastructuresTestTable)
 	return AllDTTable
 }
 
@@ -74,7 +76,7 @@ func initTestCasesGetCursOnDateXML(t *testing.T) DatastructuresTestTable {
 	DatastructuresTest.OutputDataCases = make([]DatastructuresTestCase, 1)
 	var newCase DatastructuresTestCase
 	newCase = DatastructuresTestCase{
-		Name:              "XMLMarshalControl",
+		Name:              "XMLMarshalControlIn",
 		DataStructureType: "GetCursOnDateXML",
 		Datastructure: datastructures.GetCursOnDateXML{
 			OnDate: "2023-06-22",
@@ -158,7 +160,7 @@ func initTestCasesGetCursOnDateXML(t *testing.T) DatastructuresTestTable {
 	}
 	testGetCursOnDateXMLResult.ValuteCursOnDate[1] = testGetCursOnDateXMLResultElem
 	newCase = DatastructuresTestCase{
-		Name:              "XMLMarshalControl",
+		Name:              "XMLMarshalControlOut",
 		DataStructureType: "GetCursOnDateXMLResult",
 		Datastructure:     testGetCursOnDateXMLResult,
 		NeedXMLMarshal:    true,
@@ -187,7 +189,7 @@ func initTestCasesBiCurBaseXML(t *testing.T) DatastructuresTestTable {
 	DatastructuresTest.OutputDataCases = make([]DatastructuresTestCase, 1)
 	var newCase DatastructuresTestCase
 	newCase = DatastructuresTestCase{
-		Name:              "XMLMarshalControl",
+		Name:              "XMLMarshalControlIn",
 		DataStructureType: "BiCurBaseXML",
 		Datastructure: datastructures.BiCurBaseXML{
 			FromDate: "2023-06-22",
@@ -289,7 +291,7 @@ func initTestCasesBiCurBaseXML(t *testing.T) DatastructuresTestTable {
 	}
 	testBiCurBaseXMLResult.BCB[1] = testBiCurBaseXMLResultElem
 	newCase = DatastructuresTestCase{
-		Name:              "XMLMarshalControl",
+		Name:              "XMLMarshalControlOut",
 		DataStructureType: "BiCurBaseXMLResult",
 		Datastructure:     testBiCurBaseXMLResult,
 		NeedXMLMarshal:    true,
@@ -318,7 +320,7 @@ func initTestCasesBliquidityXML(t *testing.T) DatastructuresTestTable {
 	DatastructuresTest.OutputDataCases = make([]DatastructuresTestCase, 1)
 	var newCase DatastructuresTestCase
 	newCase = DatastructuresTestCase{
-		Name:              "XMLMarshalControl",
+		Name:              "XMLMarshalControlIn",
 		DataStructureType: "BliquidityXML",
 		Datastructure: datastructures.BliquidityXML{
 			FromDate: "2023-06-22",
@@ -440,7 +442,7 @@ func initTestCasesBliquidityXML(t *testing.T) DatastructuresTestTable {
 	}
 	testBliquidityXML.BL[1] = testBliquidityXMLElem
 	newCase = DatastructuresTestCase{
-		Name:              "XMLMarshalControl",
+		Name:              "XMLMarshalControlOut",
 		DataStructureType: "BliquidityXML",
 		Datastructure:     testBliquidityXML,
 		NeedXMLMarshal:    true,
@@ -469,7 +471,7 @@ func initTestCasesDepoDynamicXML(t *testing.T) DatastructuresTestTable {
 	DatastructuresTest.OutputDataCases = make([]DatastructuresTestCase, 1)
 	var newCase DatastructuresTestCase
 	newCase = DatastructuresTestCase{
-		Name:              "XMLMarshalControl",
+		Name:              "XMLMarshalControlIn",
 		DataStructureType: "DepoDynamicXML",
 		Datastructure: datastructures.DepoDynamicXML{
 			FromDate: "2023-06-22",
@@ -571,7 +573,7 @@ func initTestCasesDepoDynamicXML(t *testing.T) DatastructuresTestTable {
 	}
 	testDepoDynamicXMLResult.Depo[1] = testDepoDynamicXMLElem
 	newCase = DatastructuresTestCase{
-		Name:              "XMLMarshalControl",
+		Name:              "XMLMarshalControlOut",
 		DataStructureType: "DepoDynamicXML",
 		Datastructure:     testDepoDynamicXMLResult,
 		NeedXMLMarshal:    true,
@@ -600,7 +602,7 @@ func initTestCasesDragMetDynamicXML(t *testing.T) DatastructuresTestTable { // n
 	DatastructuresTest.OutputDataCases = make([]DatastructuresTestCase, 1)
 	var newCase DatastructuresTestCase
 	newCase = DatastructuresTestCase{
-		Name:              "XMLMarshalControl",
+		Name:              "XMLMarshalControlIn",
 		DataStructureType: "DragMetDynamicXML",
 		Datastructure: datastructures.DragMetDynamicXML{
 			FromDate: "2023-06-22",
@@ -741,7 +743,7 @@ func initTestCasesDragMetDynamicXML(t *testing.T) DatastructuresTestTable { // n
 	testDragMetDynamicXMLResult.DrgMet[7] = testDragMetDynamicXMLElem
 
 	newCase = DatastructuresTestCase{
-		Name:              "XMLMarshalControl",
+		Name:              "XMLMarshalControlOut",
 		DataStructureType: "DragMetDynamicXML",
 		Datastructure:     testDragMetDynamicXMLResult,
 		NeedXMLMarshal:    true,
@@ -770,7 +772,7 @@ func initTestCasesDVXML(t *testing.T) DatastructuresTestTable { // nolint:funlen
 	DatastructuresTest.OutputDataCases = make([]DatastructuresTestCase, 1)
 	var newCase DatastructuresTestCase
 	newCase = DatastructuresTestCase{
-		Name:              "XMLMarshalControl",
+		Name:              "XMLMarshalControlIn",
 		DataStructureType: "DVXML",
 		Datastructure: datastructures.DVXML{
 			FromDate: "2023-06-22",
@@ -883,7 +885,7 @@ func initTestCasesDVXML(t *testing.T) DatastructuresTestTable { // nolint:funlen
 	testDVXMLResult.DV[1] = testDVXMLElem
 
 	newCase = DatastructuresTestCase{
-		Name:              "XMLMarshalControl",
+		Name:              "XMLMarshalControlOut",
 		DataStructureType: "DVXML",
 		Datastructure:     testDVXMLResult,
 		NeedXMLMarshal:    true,
@@ -930,7 +932,7 @@ func initTestCasesEnumReutersValutesXML(t *testing.T) DatastructuresTestTable { 
 	testEnumReutersValutesXML.EnumRValutes[1] = testEnumReutersValutesXMLElem
 
 	newCase = DatastructuresTestCase{
-		Name:              "XMLMarshalControl",
+		Name:              "XMLMarshalControlOut",
 		DataStructureType: "EnumReutersValutesXML",
 		Datastructure:     testEnumReutersValutesXML,
 		NeedXMLMarshal:    true,
@@ -959,7 +961,7 @@ func initTestCasesEnumValutesXML(t *testing.T) DatastructuresTestTable { // noli
 	DatastructuresTest.OutputDataCases = make([]DatastructuresTestCase, 1)
 	var newCase DatastructuresTestCase
 	newCase = DatastructuresTestCase{
-		Name:              "XMLMarshalControl",
+		Name:              "XMLMarshalControlIn",
 		DataStructureType: "EnumValutesXML",
 		Datastructure: datastructures.EnumValutesXML{
 			Seld:  false,
@@ -1006,7 +1008,7 @@ func initTestCasesEnumValutesXML(t *testing.T) DatastructuresTestTable { // noli
 	testEnumValutesXMLResult.EnumValutes[1] = testEnumValutesXMLElem
 
 	newCase = DatastructuresTestCase{
-		Name:              "XMLMarshalControl",
+		Name:              "XMLMarshalControlOut",
 		DataStructureType: "EnumValutesXML",
 		Datastructure:     testEnumValutesXMLResult,
 		NeedXMLMarshal:    true,
@@ -1017,6 +1019,138 @@ func initTestCasesEnumValutesXML(t *testing.T) DatastructuresTestTable { // noli
 		DSAssert, ok := Datastructure.(datastructures.EnumValutesXMLResult)
 		if !ok {
 			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:EnumValutesXML")
+		}
+		marshXMLres, err := xml.Marshal(DSAssert)
+		require.NoError(t, err)
+		require.Equal(t, XMLMarshalControl, string(marshXMLres))
+	}
+	newCase.ValidateControlTestFunc = func(_ *testing.T, _ interface{}, _ error) {}
+	DatastructuresTest.OutputDataCases[0] = newCase
+	return DatastructuresTest
+}
+
+func initTestCasesKeyRateXML(t *testing.T) DatastructuresTestTable { // nolint:funlen, nolintlint
+	t.Helper()
+	DatastructuresTest := DatastructuresTestTable{}
+	DatastructuresTest.MethodName = "KeyRateXML"
+	DatastructuresTest.InputDataCases = make([]DatastructuresTestCase, 4)
+	DatastructuresTest.OutputDataCases = make([]DatastructuresTestCase, 1)
+	var newCase DatastructuresTestCase
+	newCase = DatastructuresTestCase{
+		Name:              "XMLMarshalControlIn",
+		DataStructureType: "KeyRateXML",
+		Datastructure: datastructures.KeyRateXML{
+			FromDate: "2023-06-22",
+			ToDate:   "2023-06-23",
+			XMLNs:    "http://web.cbr.ru/",
+		},
+		NeedXMLMarshal:    true,
+		XMLMarshalControl: `<KeyRateXML xmlns="http://web.cbr.ru/"><fromDate>2023-06-22</fromDate><ToDate>2023-06-23</ToDate></KeyRateXML>`,
+	}
+	newCase.MarshalXMLTestFunc = func(t *testing.T, Datastructure interface{}, XMLMarshalControl string) {
+		t.Helper()
+		DSAssert, ok := Datastructure.(datastructures.KeyRateXML)
+		if !ok {
+			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:KeyRateXML")
+		}
+		marshXMLres, err := xml.Marshal(DSAssert)
+		require.NoError(t, err)
+		require.Equal(t, XMLMarshalControl, string(marshXMLres))
+	}
+	newCase.ValidateControlTestFunc = func(_ *testing.T, _ interface{}, _ error) {}
+	DatastructuresTest.InputDataCases[0] = newCase
+	newCase = DatastructuresTestCase{
+		Name:              "ValidateControlNegativeBadRawData",
+		DataStructureType: "KeyRateXML",
+		Datastructure: datastructures.KeyRateXML{
+			FromDate: "022-14-22",
+			ToDate:   "2023-06-23",
+			XMLNs:    "http://web.cbr.ru/",
+		},
+		NeedValidate:    true,
+		ValidateControl: datastructures.ErrBadRawData,
+	}
+	newCase.MarshalXMLTestFunc = func(_ *testing.T, _ interface{}, _ string) {}
+	newCase.ValidateControlTestFunc = func(t *testing.T, Datastructure interface{}, ValidateControl error) {
+		t.Helper()
+		DSAssert, ok := Datastructure.(datastructures.KeyRateXML)
+		if !ok {
+			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:KeyRateXML")
+		}
+		err := DSAssert.Validate()
+		require.Equal(t, ValidateControl, err)
+	}
+	DatastructuresTest.InputDataCases[1] = newCase
+	newCase = DatastructuresTestCase{
+		Name:              "ValidateControlNegativeFromDateAfterToDate",
+		DataStructureType: "KeyRateXML",
+		Datastructure: datastructures.KeyRateXML{
+			FromDate: "2023-06-23",
+			ToDate:   "2023-06-22",
+			XMLNs:    "http://web.cbr.ru/",
+		},
+		NeedValidate:    true,
+		ValidateControl: datastructures.ErrBadInputDateData,
+	}
+	newCase.MarshalXMLTestFunc = func(_ *testing.T, _ interface{}, _ string) {}
+	newCase.ValidateControlTestFunc = func(t *testing.T, Datastructure interface{}, ValidateControl error) {
+		t.Helper()
+		DSAssert, ok := Datastructure.(datastructures.KeyRateXML)
+		if !ok {
+			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:KeyRateXML")
+		}
+		err := DSAssert.Validate()
+		require.Equal(t, ValidateControl, err)
+	}
+	DatastructuresTest.InputDataCases[2] = newCase
+	newCase = DatastructuresTestCase{
+		Name:              "ValidateControlPositive",
+		DataStructureType: "KeyRateXML",
+		Datastructure: datastructures.KeyRateXML{
+			FromDate: "2023-06-22",
+			ToDate:   "2023-06-23",
+			XMLNs:    "http://web.cbr.ru/",
+		},
+		NeedValidate:    true,
+		ValidateControl: nil,
+	}
+	newCase.MarshalXMLTestFunc = func(_ *testing.T, _ interface{}, _ string) {}
+	newCase.ValidateControlTestFunc = func(t *testing.T, Datastructure interface{}, ValidateControl error) {
+		t.Helper()
+		DSAssert, ok := Datastructure.(datastructures.KeyRateXML)
+		if !ok {
+			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:KeyRateXML")
+		}
+		err := DSAssert.Validate()
+		require.Equal(t, ValidateControl, err)
+	}
+	DatastructuresTest.InputDataCases[3] = newCase
+	testKeyRateXMLResult := datastructures.KeyRateXMLResult{
+		KR: make([]datastructures.KeyRateXMLResultElem, 2),
+	}
+	testKeyRateXMLResultElem := datastructures.KeyRateXMLResultElem{
+		DT:   time.Date(2023, time.June, 22, 0, 0, 0, 0, time.UTC),
+		Rate: "7.50",
+	}
+	testKeyRateXMLResult.KR[0] = testKeyRateXMLResultElem
+	testKeyRateXMLResultElem = datastructures.KeyRateXMLResultElem{
+		DT:   time.Date(2023, time.June, 23, 0, 0, 0, 0, time.UTC),
+		Rate: "7.50",
+	}
+	testKeyRateXMLResult.KR[1] = testKeyRateXMLResultElem
+
+	newCase = DatastructuresTestCase{
+		Name:              "XMLMarshalControlOut",
+		DataStructureType: "KeyRateXML",
+		Datastructure:     testKeyRateXMLResult,
+		NeedXMLMarshal:    true,
+		XMLMarshalControl: `<KeyRateXMLResult><KR><DT>2023-06-22T00:00:00Z</DT><Rate>7.50</Rate></KR><KR><DT>2023-06-23T00:00:00Z</DT><Rate>7.50</Rate></KR></KeyRateXMLResult>`,
+	}
+	newCase.MarshalXMLTestFunc = func(t *testing.T, Datastructure interface{}, XMLMarshalControl string) {
+		t.Helper()
+		DSAssert, ok := Datastructure.(datastructures.KeyRateXMLResult)
+		if !ok {
+			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:KeyRateXMLResult")
 		}
 		marshXMLres, err := xml.Marshal(DSAssert)
 		require.NoError(t, err)

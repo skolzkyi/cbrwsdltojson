@@ -181,3 +181,8 @@ func (s *Server) EnumValutesXML(w http.ResponseWriter, r *http.Request) {
 	newRequest := datastructures.EnumValutesXML{}
 	s.universalMethodHandler(w, r, &newRequest, s.app.EnumValutesXML)
 }
+
+func (s *Server) KeyRateXML(w http.ResponseWriter, r *http.Request) {
+	newRequest := datastructures.KeyRateXML{}
+	s.universalMethodHandler(w, r, &newRequest, s.app.KeyRateXML)
+}
