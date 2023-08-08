@@ -53,6 +53,7 @@ type Application interface {
 	DVXML(ctx context.Context, input interface{}, rawBody string) (interface{}, error)
 	EnumReutersValutesXML(ctx context.Context) (interface{}, error)
 	EnumValutesXML(ctx context.Context, input interface{}, rawBody string) (interface{}, error)
+	KeyRateXML(ctx context.Context, input interface{}, rawBody string) (interface{}, error)
 }
 
 func NewServer(logger Logger, app Application, config Config) *Server {

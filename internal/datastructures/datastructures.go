@@ -2,7 +2,7 @@ package datastructures
 
 import (
 	"errors"
-	"time"
+	//"time"
 )
 
 const (
@@ -15,6 +15,7 @@ var (
 	ErrBadRawData       = errors.New("parse raw date error")
 )
 
+/*
 type RequestSeld struct {
 	Seld bool
 }
@@ -38,4 +39,4 @@ func (data *RequestGetCursDynamic) Validate() error {
 		return ErrBadInputDateData
 	}
 	return nil
-}
+}*/
