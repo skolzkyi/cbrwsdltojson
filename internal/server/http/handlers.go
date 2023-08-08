@@ -186,3 +186,7 @@ func (s *Server) KeyRateXML(w http.ResponseWriter, r *http.Request) {
 	newRequest := datastructures.KeyRateXML{}
 	s.universalMethodHandler(w, r, &newRequest, s.app.KeyRateXML)
 }
+
+func (s *Server) MainInfoXML(w http.ResponseWriter, r *http.Request) {
+	s.universalMethodHandlerWP(w, r, s.app.MainInfoXML)
+}

@@ -644,9 +644,53 @@ func initTestDataKeyRateXML(t *testing.T) AppTestTable {
 	return testDataDVXML
 }
 
+// MainInfoXML.
+func initTestDataMainInfoXML(t *testing.T) AppTestTable {
+	t.Helper()
+	testDataDVXML := AppTestTable{
+		MethodName: "MainInfoXML",
+		MethodWP:   (*app.App).MainInfoXML,
+		IsMethodWP: true,
+	}
+	testMainInfoXMLResult := datastructures.MainInfoXMLResult{
+		KeyRate: datastructures.KeyRateElem{
+			Title:   "Ключевая ставка",
+			Date:    "24.07.2023",
+			KeyRate: "8.50",
+		},
+		Inflation: datastructures.InflationElem{
+			Title:     "Инфляция",
+			Date:      "01.06.2023",
+			Inflation: "3.25",
+		},
+		Stavka_ref: datastructures.Stavka_refElem{
+			Title:      "Ставка рефинансирования",
+			Date:       "24.07.2023",
+			Stavka_ref: "8.50",
+		},
+		GoldBaks: datastructures.GoldBaksElem{
+			Title:    "Международные резервы",
+			Date:     "28.07.2023",
+			GoldBaks: 594,
+		},
+	}
+	testCases := make([]AppTestCase, 1)
+	testCases[0] = AppTestCase{
+		Name:   "Positive",
+		Input:  &datastructures.MainInfoXML{},
+		Output: testMainInfoXMLResult,
+		Error:  nil,
+	}
+
+	standartTestCacheCases := createStandartTestCacheCases(t, datastructures.EnumReutersValutesXML{}, testMainInfoXMLResult)
+	testDataDVXML.TestCases = append(testDataDVXML.TestCases, standartTestCacheCases...)
+	testDataDVXML.TestCases = testCases
+	return testDataDVXML
+}
+
 func TestAllAppCases(t *testing.T) {
 	acTable := AllCasesTable{}
-	acTable.CasesByMethod = make([]AppTestTable, 9)
+	acTable.CasesByMethod = make([]AppTestTable, 10)
 	acTable.CasesByMethod[0] = initTestDataGetCursOnDateXML(t)
 	acTable.CasesByMethod[1] = initTestDataBiCurBaseXML(t)
 	acTable.CasesByMethod[2] = initTestDataBliquidityXML(t)
@@ -656,6 +700,7 @@ func TestAllAppCases(t *testing.T) {
 	acTable.CasesByMethod[6] = initTestDataEnumReutersValutesXML(t)
 	acTable.CasesByMethod[7] = initTestDataEnumValutesXML(t)
 	acTable.CasesByMethod[8] = initTestDataKeyRateXML(t)
+	acTable.CasesByMethod[9] = initTestDataMainInfoXML(t)
 	t.Parallel()
 	for _, curMethodTable := range acTable.CasesByMethod {
 		curMethodTable := curMethodTable

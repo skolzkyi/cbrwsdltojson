@@ -469,3 +469,51 @@ func (a *App) KeyRateXML(ctx context.Context, input interface{}, rawBody string)
 	}
 	return response, nil
 }
+
+func (a *App) MainInfoXML(ctx context.Context) (interface{}, error) {
+	var err error
+	var response datastructures.MainInfoXMLResult
+	select {
+	case <-ctx.Done():
+		err = ErrContextWSReqExpired
+		a.logger.Error(err.Error())
+		return response, err
+	default:
+		SOAPMethod := "MainInfoXML"
+		startNodeName := "RegData"
+		if a.permittedRequests.PermittedRequestMapLength() > 0 {
+			if a.permittedRequests.IsPermittedRequestInMap(SOAPMethod) {
+				return datastructures.MainInfoXMLResult{}, ErrMethodProhibited
+			}
+		}
+
+		cachedData, ok := a.Appmemcache.GetCacheDataInCache(SOAPMethod)
+		if ok {
+			response, ok = cachedData.Payload.(datastructures.MainInfoXMLResult)
+			if !ok {
+				err = ErrAssertionAfterGetCacheData
+				a.logger.Error(err.Error())
+			} else {
+				return response, nil
+			}
+		}
+
+		inputAsserted := datastructures.MainInfoXML{}
+		inputAsserted.Init()
+
+		res, err := a.soapSender.SoapCall(ctx, SOAPMethod, inputAsserted)
+		if err != nil {
+			a.logger.Error(err.Error())
+			return response, err
+		}
+
+		err = a.XMLToStructDecoder(res, startNodeName, &response)
+		if err != nil {
+			a.logger.Error(err.Error())
+			return response, err
+		}
+
+		a.Appmemcache.AddOrUpdatePayloadInCache(SOAPMethod, response)
+	}
+	return response, nil
+}

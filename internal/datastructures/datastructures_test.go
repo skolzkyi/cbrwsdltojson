@@ -65,6 +65,8 @@ func initAllDatastructuresTestTable(t *testing.T) AllDatastructuresTestTable {
 	AllDTTable = append(AllDTTable, curDatastructuresTestTable)
 	curDatastructuresTestTable = initTestCasesKeyRateXML(t)
 	AllDTTable = append(AllDTTable, curDatastructuresTestTable)
+	curDatastructuresTestTable = initTestCasesMainInfoXML(t)
+	AllDTTable = append(AllDTTable, curDatastructuresTestTable)
 	return AllDTTable
 }
 
@@ -1151,6 +1153,58 @@ func initTestCasesKeyRateXML(t *testing.T) DatastructuresTestTable { // nolint:f
 		DSAssert, ok := Datastructure.(datastructures.KeyRateXMLResult)
 		if !ok {
 			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:KeyRateXMLResult")
+		}
+		marshXMLres, err := xml.Marshal(DSAssert)
+		require.NoError(t, err)
+		require.Equal(t, XMLMarshalControl, string(marshXMLres))
+	}
+	newCase.ValidateControlTestFunc = func(_ *testing.T, _ interface{}, _ error) {}
+	DatastructuresTest.OutputDataCases[0] = newCase
+	return DatastructuresTest
+}
+
+func initTestCasesMainInfoXML(t *testing.T) DatastructuresTestTable { // nolint:funlen, nolintlint
+	t.Helper()
+	DatastructuresTest := DatastructuresTestTable{}
+	DatastructuresTest.MethodName = "MainInfoXML"
+	DatastructuresTest.InputDataCases = make([]DatastructuresTestCase, 0)
+	DatastructuresTest.OutputDataCases = make([]DatastructuresTestCase, 1)
+	var newCase DatastructuresTestCase
+	testMainInfoXMLResult := datastructures.MainInfoXMLResult{
+		KeyRate: datastructures.KeyRateElem{
+			Title:   "Ключевая ставка",
+			Date:    "24.07.2023",
+			KeyRate: "8.50",
+		},
+		Inflation: datastructures.InflationElem{
+			Title:     "Инфляция",
+			Date:      "01.06.2023",
+			Inflation: "3.25",
+		},
+		Stavka_ref: datastructures.Stavka_refElem{
+			Title:      "Ставка рефинансирования",
+			Date:       "24.07.2023",
+			Stavka_ref: "8.50",
+		},
+		GoldBaks: datastructures.GoldBaksElem{
+			Title:    "Международные резервы",
+			Date:     "28.07.2023",
+			GoldBaks: 594,
+		},
+	}
+
+	newCase = DatastructuresTestCase{
+		Name:              "XMLMarshalControlOut",
+		DataStructureType: "MainInfoXML",
+		Datastructure:     testMainInfoXMLResult,
+		NeedXMLMarshal:    true,
+		XMLMarshalControl: `<MainInfoXMLResult><keyRate Title="Ключевая ставка" Date="24.07.2023">8.50</keyRate><Inflation Title="Инфляция" Date="01.06.2023">3.25</Inflation><stavka_ref Title="Ставка рефинансирования" Date="24.07.2023">8.50</stavka_ref><GoldBaks Title="Международные резервы" Date="28.07.2023">594</GoldBaks></MainInfoXMLResult>`,
+	}
+	newCase.MarshalXMLTestFunc = func(t *testing.T, Datastructure interface{}, XMLMarshalControl string) {
+		t.Helper()
+		DSAssert, ok := Datastructure.(datastructures.MainInfoXMLResult)
+		if !ok {
+			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:MainInfoXMLResult")
 		}
 		marshXMLres, err := xml.Marshal(DSAssert)
 		require.NoError(t, err)

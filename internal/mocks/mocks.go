@@ -177,6 +177,12 @@ func (srsm *SoapRequestSenderMock) SoapCall(_ context.Context, action string, in
 			return []byte(`<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><soap:Body><KeyRateXMLResponse xmlns="http://web.cbr.ru/"><KeyRateXMLResult><KeyRate xmlns=""><KR><DT>2023-06-22T00:00:00Z</DT><Rate>7.50</Rate></KR><KR><DT>2023-06-23T00:00:00Z</DT><Rate>7.50</Rate></KR></KeyRate></KeyRateXMLResult></KeyRateXMLResponse></soap:Body></soap:Envelope>`), nil
 		}
 		return nil, customsoap.ErrContextWSReqExpired
+	case "MainInfoXML":
+		_, ok := input.(datastructures.MainInfoXML)
+		if !ok {
+			return nil, ErrAssertion
+		}
+		return []byte(`<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><soap:Body><MainInfoXMLResponse xmlns="http://web.cbr.ru/"><MainInfoXMLResult><RegData xmlns=""><keyRate Title="Ключевая ставка" Date="24.07.2023">8.50</keyRate><Inflation Title="Инфляция" Date="01.06.2023">3.25</Inflation><stavka_ref Title="Ставка рефинансирования" Date="24.07.2023">8.50</stavka_ref><GoldBaks Title="Международные резервы" Date="28.07.2023">594</GoldBaks></RegData></MainInfoXMLResult></MainInfoXMLResponse></soap:Body></soap:Envelope>`), nil
 	default:
 		return nil, errors.New("SoapRequestSenderMock: unsupported action")
 	}

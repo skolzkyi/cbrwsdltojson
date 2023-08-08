@@ -18,6 +18,7 @@ func (s *Server) routes() *http.ServeMux {
 	mux.HandleFunc("/EnumReutersValutesXML", loggingMiddleware(s.EnumReutersValutesXML, s.logg))
 	mux.HandleFunc("/EnumValutesXML", loggingMiddleware(s.EnumValutesXML, s.logg))
 	mux.HandleFunc("/KeyRateXML", loggingMiddleware(s.KeyRateXML, s.logg))
+	mux.HandleFunc("/MainInfoXML", loggingMiddleware(s.MainInfoXML, s.logg))
 
 	return mux
 }
