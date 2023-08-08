@@ -15,13 +15,13 @@ func (data *MainInfoXML) Init() {
 
 type MainInfoXMLResult struct {
 	// RegData node
-	KeyRate    keyRateElem    `xml:"keyRate" json:"keyRate"`
+	KeyRate    KeyRateElem    `xml:"keyRate" json:"keyRate"`
 	Inflation  InflationElem  `xml:"Inflation" json:"Inflation"`
-	Stavka_ref stavka_refElem `xml:"stavka_ref" json:"stavka_ref"`
+	Stavka_ref Stavka_refElem `xml:"stavka_ref" json:"stavka_ref"` //nolint:revive, stylecheck
 	GoldBaks   GoldBaksElem   `xml:"GoldBaks" json:"GoldBaks"`
 }
 
-type keyRateElem struct {
+type KeyRateElem struct {
 	Title   string `xml:"Title,attr" json:"Title"`
 	Date    string `xml:"Date,attr" json:"Date"`
 	KeyRate string `xml:",chardata" json:"keyRate"`
@@ -33,10 +33,10 @@ type InflationElem struct {
 	Inflation string `xml:",chardata" json:"Inflation"`
 }
 
-type stavka_refElem struct {
+type Stavka_refElem struct { //nolint:revive, stylecheck
 	Title      string `xml:"Title,attr" json:"Title"`
 	Date       string `xml:"Date,attr" json:"Date"`
-	Stavka_ref string `xml:",chardata" json:"stavka_ref"`
+	Stavka_ref string `xml:",chardata" json:"stavka_ref"` //nolint:revive, stylecheck
 }
 
 type GoldBaksElem struct {
