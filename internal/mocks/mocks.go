@@ -100,7 +100,7 @@ func (l *LoggerMock) Fatal(msg string) {
 
 type SoapRequestSenderMock struct{}
 
-func (srsm *SoapRequestSenderMock) SoapCall(_ context.Context, action string, input interface{}) ([]byte, error) { // nolint:gocognit, nolintlint
+func (srsm *SoapRequestSenderMock) SoapCall(_ context.Context, action string, input interface{}) ([]byte, error) { // nolint:gocognit, nolintlint, gocyclo
 	switch action {
 	case "GetCursOnDateXML":
 		inputData, ok := input.(datastructures.GetCursOnDateXML)
