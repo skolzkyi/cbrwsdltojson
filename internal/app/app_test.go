@@ -647,7 +647,7 @@ func initTestDataKeyRateXML(t *testing.T) AppTestTable {
 // MainInfoXML.
 func initTestDataMainInfoXML(t *testing.T) AppTestTable {
 	t.Helper()
-	testDataDVXML := AppTestTable{
+	testDataMainInfoXML := AppTestTable{
 		MethodName: "MainInfoXML",
 		MethodWP:   (*app.App).MainInfoXML,
 		IsMethodWP: true,
@@ -683,14 +683,64 @@ func initTestDataMainInfoXML(t *testing.T) AppTestTable {
 	}
 
 	standartTestCacheCases := createStandartTestCacheCases(t, datastructures.EnumReutersValutesXML{}, testMainInfoXMLResult)
-	testDataDVXML.TestCases = append(testDataDVXML.TestCases, standartTestCacheCases...)
-	testDataDVXML.TestCases = testCases
-	return testDataDVXML
+	testDataMainInfoXML.TestCases = append(testDataMainInfoXML.TestCases, standartTestCacheCases...)
+	testDataMainInfoXML.TestCases = testCases
+	return testDataMainInfoXML
+}
+
+// mrrf7DXML.
+func initTestDataMrrf7DXML(t *testing.T) AppTestTable {
+	t.Helper()
+	testDataMrrf7DXML := AppTestTable{
+		MethodName: "mrrf7DXML",
+		Method:     (*app.App).Mrrf7DXML,
+	}
+	testMrrf7DXMLResult := datastructures.Mrrf7DXMLResult{
+		Mr: make([]datastructures.Mrrf7DXMLResultElem, 2),
+	}
+	testMrrf7DXMLResultElem := datastructures.Mrrf7DXMLResultElem{
+		D0:  time.Date(2023, time.June, 16, 0, 0, 0, 0, time.UTC),
+		Val: "587.50",
+	}
+	testMrrf7DXMLResult.Mr[0] = testMrrf7DXMLResultElem
+	testMrrf7DXMLResultElem = datastructures.Mrrf7DXMLResultElem{
+		D0:  time.Date(2023, time.June, 23, 0, 0, 0, 0, time.UTC),
+		Val: "586.90",
+	}
+	testMrrf7DXMLResult.Mr[1] = testMrrf7DXMLResultElem
+
+	testCases := make([]AppTestCase, 2)
+	testCases[0] = AppTestCase{
+		Name: "Positive",
+		Input: &datastructures.Mrrf7DXML{
+			FromDate: "2023-06-15",
+			ToDate:   "2023-06-23",
+		},
+		Output: testMrrf7DXMLResult,
+		Error:  nil,
+	}
+
+	testCases[1] = AppTestCase{
+		Name: "Negative",
+		Input: &datastructures.Mrrf7DXML{
+			FromDate: "022-14-22",
+			ToDate:   "2023-06-23",
+		},
+		Output: datastructures.Mrrf7DXMLResult{},
+		Error:  customsoap.ErrContextWSReqExpired,
+	}
+	standartTestCacheCases := createStandartTestCacheCases(t, datastructures.Mrrf7DXML{
+		FromDate: "2023-06-15",
+		ToDate:   "2023-06-23",
+	}, testMrrf7DXMLResult)
+	testDataMrrf7DXML.TestCases = append(testDataMrrf7DXML.TestCases, standartTestCacheCases...)
+	testDataMrrf7DXML.TestCases = testCases
+	return testDataMrrf7DXML
 }
 
 func TestAllAppCases(t *testing.T) {
 	acTable := AllCasesTable{}
-	acTable.CasesByMethod = make([]AppTestTable, 10)
+	acTable.CasesByMethod = make([]AppTestTable, 11)
 	acTable.CasesByMethod[0] = initTestDataGetCursOnDateXML(t)
 	acTable.CasesByMethod[1] = initTestDataBiCurBaseXML(t)
 	acTable.CasesByMethod[2] = initTestDataBliquidityXML(t)
@@ -701,6 +751,7 @@ func TestAllAppCases(t *testing.T) {
 	acTable.CasesByMethod[7] = initTestDataEnumValutesXML(t)
 	acTable.CasesByMethod[8] = initTestDataKeyRateXML(t)
 	acTable.CasesByMethod[9] = initTestDataMainInfoXML(t)
+	acTable.CasesByMethod[10] = initTestDataMrrf7DXML(t)
 	t.Parallel()
 	for _, curMethodTable := range acTable.CasesByMethod {
 		curMethodTable := curMethodTable

@@ -190,3 +190,8 @@ func (s *Server) KeyRateXML(w http.ResponseWriter, r *http.Request) {
 func (s *Server) MainInfoXML(w http.ResponseWriter, r *http.Request) {
 	s.universalMethodHandlerWP(w, r, s.app.MainInfoXML)
 }
+
+func (s *Server) Mrrf7DXML(w http.ResponseWriter, r *http.Request) {
+	newRequest := datastructures.Mrrf7DXML{}
+	s.universalMethodHandler(w, r, &newRequest, s.app.Mrrf7DXML)
+}

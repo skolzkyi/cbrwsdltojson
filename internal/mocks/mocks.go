@@ -183,6 +183,15 @@ func (srsm *SoapRequestSenderMock) SoapCall(_ context.Context, action string, in
 			return nil, ErrAssertion
 		}
 		return []byte(`<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><soap:Body><MainInfoXMLResponse xmlns="http://web.cbr.ru/"><MainInfoXMLResult><RegData xmlns=""><keyRate Title="Ключевая ставка" Date="24.07.2023">8.50</keyRate><Inflation Title="Инфляция" Date="01.06.2023">3.25</Inflation><stavka_ref Title="Ставка рефинансирования" Date="24.07.2023">8.50</stavka_ref><GoldBaks Title="Международные резервы" Date="28.07.2023">594</GoldBaks></RegData></MainInfoXMLResult></MainInfoXMLResponse></soap:Body></soap:Envelope>`), nil
+	case "mrrf7DXML":
+		inputData, ok := input.(datastructures.Mrrf7DXML)
+		if !ok {
+			return nil, ErrAssertion
+		}
+		if inputData.FromDate == "2023-06-15" && inputData.ToDate == cToDate {
+			return []byte(`<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><soap:Body><mrrf7DXMLResponse xmlns="http://web.cbr.ru/"><mrrf7DXMLResult><mmrf7d xmlns=""><mr><D0>2023-06-16T00:00:00Z</D0><val>587.50</val></mr><mr><D0>2023-06-23T00:00:00Z</D0><val>586.90</val></mr></mmrf7d></mrrf7DXMLResult></mrrf7DXMLResponse></soap:Body></soap:Envelope>`), nil
+		}
+		return nil, customsoap.ErrContextWSReqExpired
 	default:
 		return nil, errors.New("SoapRequestSenderMock: unsupported action")
 	}
