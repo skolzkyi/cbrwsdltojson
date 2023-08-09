@@ -127,6 +127,14 @@ func (atc *AllTestCases) Init() {
 		Mode: 2,
 	}
 	atc.Cases = append(atc.Cases, curCase)
+	curCase = TestCase{
+		Method:        "mrrf7DXML",
+		Handler:       "/mrrf7DXML",
+		Request:       `{"FromDate":"2023-06-15","ToDate":"2023-06-23"}`,
+		OutputControl: `{"mr":[{"D0":"2023-06-16T00:00:00+03:00","val":"587.50"},{"D0":"2023-06-23T00:00:00+03:00","val":"586.90"}]}`,
+		Mode:          0,
+	}
+	atc.Cases = append(atc.Cases, curCase)
 }
 
 func XMLToStructDecoder(t *testing.T, data []byte, startNodeName string, pointerToStruct interface{}) {
