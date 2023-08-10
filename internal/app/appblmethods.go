@@ -566,3 +566,52 @@ func (a *App) Mrrf7DXML(ctx context.Context, input interface{}, rawBody string) 
 	}
 	return response, nil
 }
+
+func (a *App) MrrfXML(ctx context.Context, input interface{}, rawBody string) (interface{}, error) {
+	var err error
+	var response datastructures.MrrfXMLResult
+	select {
+	case <-ctx.Done():
+		err = ErrContextWSReqExpired
+		a.logger.Error(err.Error())
+		return response, err
+	default:
+		SOAPMethod := "mrrfXML"
+		startNodeName := "mmrf"
+		if a.permittedRequests.PermittedRequestMapLength() > 0 {
+			if a.permittedRequests.IsPermittedRequestInMap(SOAPMethod) {
+				return datastructures.MrrfXML{}, ErrMethodProhibited
+			}
+		}
+
+		cachedData, ok := a.GetDataInCacheIfExisting(SOAPMethod, rawBody)
+		if ok {
+			response, ok = cachedData.(datastructures.MrrfXMLResult)
+			if !ok {
+				err = ErrAssertionAfterGetCacheData
+				a.logger.Error(err.Error())
+			} else {
+				return response, nil
+			}
+		}
+
+		inputAsserted, ok := input.(*datastructures.MrrfXML)
+		if !ok {
+			err = ErrAssertionOfInputData
+			a.logger.Error(err.Error())
+			return response, err
+		}
+		err = a.ProcessRequest(ctx, SOAPMethod, startNodeName, *inputAsserted, &response)
+		if err != nil {
+			a.logger.Error(err.Error())
+			return response, err
+		}
+
+		err = a.AddOrUpdateDataInCache(SOAPMethod, input, response)
+		if err != nil {
+			a.logger.Error(err.Error())
+			return response, err
+		}
+	}
+	return response, nil
+}
