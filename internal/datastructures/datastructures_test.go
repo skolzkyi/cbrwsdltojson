@@ -69,6 +69,8 @@ func initAllDatastructuresTestTable(t *testing.T) AllDatastructuresTestTable {
 	AllDTTable = append(AllDTTable, curDatastructuresTestTable)
 	curDatastructuresTestTable = initTestCasesMrrf7DXML(t)
 	AllDTTable = append(AllDTTable, curDatastructuresTestTable)
+	curDatastructuresTestTable = initTestCasesMrrfXML(t)
+	AllDTTable = append(AllDTTable, curDatastructuresTestTable)
 	return AllDTTable
 }
 
@@ -1261,7 +1263,7 @@ func initTestCasesMrrf7DXML(t *testing.T) DatastructuresTestTable { // nolint:fu
 	newCase.MarshalXMLTestFunc = func(_ *testing.T, _ interface{}, _ string) {}
 	newCase.ValidateControlTestFunc = func(t *testing.T, Datastructure interface{}, ValidateControl error) {
 		t.Helper()
-		DSAssert, ok := Datastructure.(datastructures.DVXML)
+		DSAssert, ok := Datastructure.(datastructures.Mrrf7DXML)
 		if !ok {
 			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:Mrrf7DXML")
 		}
@@ -1339,6 +1341,148 @@ func initTestCasesMrrf7DXML(t *testing.T) DatastructuresTestTable { // nolint:fu
 		DSAssert, ok := Datastructure.(datastructures.Mrrf7DXMLResult)
 		if !ok {
 			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:Mrrf7DXMLResult")
+		}
+		marshXMLres, err := xml.Marshal(DSAssert)
+		require.NoError(t, err)
+		require.Equal(t, XMLMarshalControl, string(marshXMLres))
+	}
+	newCase.ValidateControlTestFunc = func(_ *testing.T, _ interface{}, _ error) {}
+	DatastructuresTest.OutputDataCases[0] = newCase
+	return DatastructuresTest
+}
+
+func initTestCasesMrrfXML(t *testing.T) DatastructuresTestTable { // nolint:funlen, nolintlint
+	t.Helper()
+	DatastructuresTest := DatastructuresTestTable{}
+	DatastructuresTest.MethodName = "mrrfXML"
+	DatastructuresTest.InputDataCases = make([]DatastructuresTestCase, 4)
+	DatastructuresTest.OutputDataCases = make([]DatastructuresTestCase, 1)
+	var newCase DatastructuresTestCase
+	newCase = DatastructuresTestCase{
+		Name:              "XMLMarshalControlIn",
+		DataStructureType: "MrrfXML",
+		Datastructure: datastructures.MrrfXML{
+			FromDate: "2023-05-01",
+			ToDate:   "2023-06-23",
+			XMLNs:    "http://web.cbr.ru/",
+		},
+		NeedXMLMarshal:    true,
+		XMLMarshalControl: `<mrrfXML xmlns="http://web.cbr.ru/"><fromDate>2023-05-01</fromDate><ToDate>2023-06-23</ToDate></mrrfXML>`,
+	}
+	newCase.MarshalXMLTestFunc = func(t *testing.T, Datastructure interface{}, XMLMarshalControl string) {
+		t.Helper()
+		DSAssert, ok := Datastructure.(datastructures.MrrfXML)
+		if !ok {
+			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:MrrfXML")
+		}
+		marshXMLres, err := xml.Marshal(DSAssert)
+		require.NoError(t, err)
+		require.Equal(t, XMLMarshalControl, string(marshXMLres))
+	}
+	newCase.ValidateControlTestFunc = func(_ *testing.T, _ interface{}, _ error) {}
+	DatastructuresTest.InputDataCases[0] = newCase
+	newCase = DatastructuresTestCase{
+		Name:              "ValidateControlNegativeBadRawData",
+		DataStructureType: "MrrfXML",
+		Datastructure: datastructures.MrrfXML{
+			FromDate: "022-14-22",
+			ToDate:   "2023-06-23",
+			XMLNs:    "http://web.cbr.ru/",
+		},
+		NeedValidate:    true,
+		ValidateControl: datastructures.ErrBadRawData,
+	}
+	newCase.MarshalXMLTestFunc = func(_ *testing.T, _ interface{}, _ string) {}
+	newCase.ValidateControlTestFunc = func(t *testing.T, Datastructure interface{}, ValidateControl error) {
+		t.Helper()
+		DSAssert, ok := Datastructure.(datastructures.MrrfXML)
+		if !ok {
+			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:MrrfXML")
+		}
+		err := DSAssert.Validate()
+		require.Equal(t, ValidateControl, err)
+	}
+	DatastructuresTest.InputDataCases[1] = newCase
+	newCase = DatastructuresTestCase{
+		Name:              "ValidateControlNegativeFromDateAfterToDate",
+		DataStructureType: "MrrfXML",
+		Datastructure: datastructures.MrrfXML{
+			FromDate: "2023-06-23",
+			ToDate:   "2023-06-22",
+			XMLNs:    "http://web.cbr.ru/",
+		},
+		NeedValidate:    true,
+		ValidateControl: datastructures.ErrBadInputDateData,
+	}
+	newCase.MarshalXMLTestFunc = func(_ *testing.T, _ interface{}, _ string) {}
+	newCase.ValidateControlTestFunc = func(t *testing.T, Datastructure interface{}, ValidateControl error) {
+		t.Helper()
+		DSAssert, ok := Datastructure.(datastructures.MrrfXML)
+		if !ok {
+			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:MrrfXML")
+		}
+		err := DSAssert.Validate()
+		require.Equal(t, ValidateControl, err)
+	}
+	DatastructuresTest.InputDataCases[2] = newCase
+	newCase = DatastructuresTestCase{
+		Name:              "ValidateControlPositive",
+		DataStructureType: "MrrfXML",
+		Datastructure: datastructures.MrrfXML{
+			FromDate: "2023-06-22",
+			ToDate:   "2023-06-23",
+			XMLNs:    "http://web.cbr.ru/",
+		},
+		NeedValidate:    true,
+		ValidateControl: nil,
+	}
+	newCase.MarshalXMLTestFunc = func(_ *testing.T, _ interface{}, _ string) {}
+	newCase.ValidateControlTestFunc = func(t *testing.T, Datastructure interface{}, ValidateControl error) {
+		t.Helper()
+		DSAssert, ok := Datastructure.(datastructures.MrrfXML)
+		if !ok {
+			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:MrrfXML")
+		}
+		err := DSAssert.Validate()
+		require.Equal(t, ValidateControl, err)
+	}
+	DatastructuresTest.InputDataCases[3] = newCase
+	testMrrfXMLResult := datastructures.MrrfXMLResult{
+		Mr: make([]datastructures.MrrfXMLResultElem, 2),
+	}
+	testMrrfXMLResultElem := datastructures.MrrfXMLResultElem{
+		D0: time.Date(2023, time.May, 01, 0, 0, 0, 0, time.UTC),
+		P1: "595787.00",
+		P2: "447187.00",
+		P3: "418628.00",
+		P4: "23559.00",
+		P5: "5000.00",
+		P6: "148599.00",
+	}
+	testMrrfXMLResult.Mr[0] = testMrrfXMLResultElem
+	testMrrfXMLResultElem = datastructures.MrrfXMLResultElem{
+		D0: time.Date(2023, time.June, 01, 0, 0, 0, 0, time.UTC),
+		P1: "584175.00",
+		P2: "438344.00",
+		P3: "410313.00",
+		P4: "23127.00",
+		P5: "4903.00",
+		P6: "145832.00",
+	}
+	testMrrfXMLResult.Mr[1] = testMrrfXMLResultElem
+
+	newCase = DatastructuresTestCase{
+		Name:              "XMLMarshalControlOut",
+		DataStructureType: "MrrfXML",
+		Datastructure:     testMrrfXMLResult,
+		NeedXMLMarshal:    true,
+		XMLMarshalControl: `<MrrfXMLResult><mr><D0>2023-05-01T00:00:00Z</D0><p1>595787.00</p1><p2>447187.00</p2><p3>418628.00</p3><p4>23559.00</p4><p5>5000.00</p5><p6>148599.00</p6></mr><mr><D0>2023-06-01T00:00:00Z</D0><p1>584175.00</p1><p2>438344.00</p2><p3>410313.00</p3><p4>23127.00</p4><p5>4903.00</p5><p6>145832.00</p6></mr></MrrfXMLResult>`,
+	}
+	newCase.MarshalXMLTestFunc = func(t *testing.T, Datastructure interface{}, XMLMarshalControl string) {
+		t.Helper()
+		DSAssert, ok := Datastructure.(datastructures.MrrfXMLResult)
+		if !ok {
+			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:MrrfXMLResult")
 		}
 		marshXMLres, err := xml.Marshal(DSAssert)
 		require.NoError(t, err)
