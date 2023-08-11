@@ -799,7 +799,7 @@ func initTestDataMrrfXML(t *testing.T) AppTestTable {
 	return testDataMrrfXML
 }
 
-func TestAllAppCases(t *testing.T) { // nolint:gocognit
+func TestAllAppCases(t *testing.T) { //nolint:gocognit, nolintlint, gocyclo, funlen
 	acTable := AllCasesTable{}
 	acTable.CasesByMethod = make([]AppTestTable, 12)
 	acTable.CasesByMethod[0] = initTestDataGetCursOnDateXML(t)
