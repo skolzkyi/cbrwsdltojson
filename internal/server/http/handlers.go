@@ -200,3 +200,8 @@ func (s *Server) MrrfXML(w http.ResponseWriter, r *http.Request) {
 	newRequest := datastructures.MrrfXML{}
 	s.universalMethodHandler(w, r, &newRequest, s.app.MrrfXML)
 }
+
+func (s *Server) NewsInfoXML(w http.ResponseWriter, r *http.Request) {
+	newRequest := datastructures.NewsInfoXML{}
+	s.universalMethodHandler(w, r, &newRequest, s.app.NewsInfoXML)
+}

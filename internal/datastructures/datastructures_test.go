@@ -71,6 +71,8 @@ func initAllDatastructuresTestTable(t *testing.T) AllDatastructuresTestTable {
 	AllDTTable = append(AllDTTable, curDatastructuresTestTable)
 	curDatastructuresTestTable = initTestCasesMrrfXML(t)
 	AllDTTable = append(AllDTTable, curDatastructuresTestTable)
+	curDatastructuresTestTable = initTestCasesNewsInfoXML(t)
+	AllDTTable = append(AllDTTable, curDatastructuresTestTable)
 	return AllDTTable
 }
 
@@ -1483,6 +1485,142 @@ func initTestCasesMrrfXML(t *testing.T) DatastructuresTestTable { // nolint:funl
 		DSAssert, ok := Datastructure.(datastructures.MrrfXMLResult)
 		if !ok {
 			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:MrrfXMLResult")
+		}
+		marshXMLres, err := xml.Marshal(DSAssert)
+		require.NoError(t, err)
+		require.Equal(t, XMLMarshalControl, string(marshXMLres))
+	}
+	newCase.ValidateControlTestFunc = func(_ *testing.T, _ interface{}, _ error) {}
+	DatastructuresTest.OutputDataCases[0] = newCase
+	return DatastructuresTest
+}
+
+func initTestCasesNewsInfoXML(t *testing.T) DatastructuresTestTable { // nolint:funlen, nolintlint
+	t.Helper()
+	DatastructuresTest := DatastructuresTestTable{}
+	DatastructuresTest.MethodName = "NewsInfoXML"
+	DatastructuresTest.InputDataCases = make([]DatastructuresTestCase, 4)
+	DatastructuresTest.OutputDataCases = make([]DatastructuresTestCase, 1)
+	var newCase DatastructuresTestCase
+	newCase = DatastructuresTestCase{
+		Name:              "XMLMarshalControlIn",
+		DataStructureType: "NewsInfoXML",
+		Datastructure: datastructures.NewsInfoXML{
+			FromDate: "2023-06-22",
+			ToDate:   "2023-06-23",
+			XMLNs:    "http://web.cbr.ru/",
+		},
+		NeedXMLMarshal:    true,
+		XMLMarshalControl: `<NewsInfoXML xmlns="http://web.cbr.ru/"><fromDate>2023-06-22</fromDate><ToDate>2023-06-23</ToDate></NewsInfoXML>`,
+	}
+	newCase.MarshalXMLTestFunc = func(t *testing.T, Datastructure interface{}, XMLMarshalControl string) {
+		t.Helper()
+		DSAssert, ok := Datastructure.(datastructures.NewsInfoXML)
+		if !ok {
+			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:NewsInfoXML")
+		}
+		marshXMLres, err := xml.Marshal(DSAssert)
+		require.NoError(t, err)
+		require.Equal(t, XMLMarshalControl, string(marshXMLres))
+	}
+	newCase.ValidateControlTestFunc = func(_ *testing.T, _ interface{}, _ error) {}
+	DatastructuresTest.InputDataCases[0] = newCase
+	newCase = DatastructuresTestCase{
+		Name:              "ValidateControlNegativeBadRawData",
+		DataStructureType: "NewsInfoXML",
+		Datastructure: datastructures.NewsInfoXML{
+			FromDate: "022-14-22",
+			ToDate:   "2023-06-23",
+			XMLNs:    "http://web.cbr.ru/",
+		},
+		NeedValidate:    true,
+		ValidateControl: datastructures.ErrBadRawData,
+	}
+	newCase.MarshalXMLTestFunc = func(_ *testing.T, _ interface{}, _ string) {}
+	newCase.ValidateControlTestFunc = func(t *testing.T, Datastructure interface{}, ValidateControl error) {
+		t.Helper()
+		DSAssert, ok := Datastructure.(datastructures.NewsInfoXML)
+		if !ok {
+			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:NewsInfoXML")
+		}
+		err := DSAssert.Validate()
+		require.Equal(t, ValidateControl, err)
+	}
+	DatastructuresTest.InputDataCases[1] = newCase
+	newCase = DatastructuresTestCase{
+		Name:              "ValidateControlNegativeFromDateAfterToDate",
+		DataStructureType: "NewsInfoXML",
+		Datastructure: datastructures.NewsInfoXML{
+			FromDate: "2023-06-23",
+			ToDate:   "2023-06-22",
+			XMLNs:    "http://web.cbr.ru/",
+		},
+		NeedValidate:    true,
+		ValidateControl: datastructures.ErrBadInputDateData,
+	}
+	newCase.MarshalXMLTestFunc = func(_ *testing.T, _ interface{}, _ string) {}
+	newCase.ValidateControlTestFunc = func(t *testing.T, Datastructure interface{}, ValidateControl error) {
+		t.Helper()
+		DSAssert, ok := Datastructure.(datastructures.NewsInfoXML)
+		if !ok {
+			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:NewsInfoXML")
+		}
+		err := DSAssert.Validate()
+		require.Equal(t, ValidateControl, err)
+	}
+	DatastructuresTest.InputDataCases[2] = newCase
+	newCase = DatastructuresTestCase{
+		Name:              "ValidateControlPositive",
+		DataStructureType: "NewsInfoXML",
+		Datastructure: datastructures.NewsInfoXML{
+			FromDate: "2023-06-22",
+			ToDate:   "2023-06-23",
+			XMLNs:    "http://web.cbr.ru/",
+		},
+		NeedValidate:    true,
+		ValidateControl: nil,
+	}
+	newCase.MarshalXMLTestFunc = func(_ *testing.T, _ interface{}, _ string) {}
+	newCase.ValidateControlTestFunc = func(t *testing.T, Datastructure interface{}, ValidateControl error) {
+		t.Helper()
+		DSAssert, ok := Datastructure.(datastructures.NewsInfoXML)
+		if !ok {
+			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:NewsInfoXML")
+		}
+		err := DSAssert.Validate()
+		require.Equal(t, ValidateControl, err)
+	}
+	DatastructuresTest.InputDataCases[3] = newCase
+	testNewsInfoXMLResult := datastructures.NewsInfoXMLResult{
+		News: make([]datastructures.NewsInfoXMLResultElem, 2),
+	}
+	testNewsInfoXMLResultElem := datastructures.NewsInfoXMLResultElem{
+		Doc_id:  35498,
+		DocDate: time.Date(2023, time.June, 22, 0, 0, 0, 0, time.UTC),
+		Title:   "О развитии банковского сектора Российской Федерации в мае 2023 года",
+		Url:     "/analytics/bank_sector/develop/#a_48876",
+	}
+	testNewsInfoXMLResult.News[0] = testNewsInfoXMLResultElem
+	testNewsInfoXMLResultElem = datastructures.NewsInfoXMLResultElem{
+		Doc_id:  35495,
+		DocDate: time.Date(2023, time.June, 22, 0, 0, 0, 0, time.UTC),
+		Title:   "Указание Банка России от 10.01.2023 № 6356-У",
+		Url:     "/Queries/UniDbQuery/File/90134/2803",
+	}
+	testNewsInfoXMLResult.News[1] = testNewsInfoXMLResultElem
+
+	newCase = DatastructuresTestCase{
+		Name:              "XMLMarshalControlOut",
+		DataStructureType: "NewsInfoXML",
+		Datastructure:     testNewsInfoXMLResult,
+		NeedXMLMarshal:    true,
+		XMLMarshalControl: `<NewsInfoXMLResult><News><Doc_id>35498</Doc_id><DocDate>2023-06-22T00:00:00Z</DocDate><Title>О развитии банковского сектора Российской Федерации в мае 2023 года</Title><Url>/analytics/bank_sector/develop/#a_48876</Url></News><News><Doc_id>35495</Doc_id><DocDate>2023-06-22T00:00:00Z</DocDate><Title>Указание Банка России от 10.01.2023 № 6356-У</Title><Url>/Queries/UniDbQuery/File/90134/2803</Url></News></NewsInfoXMLResult>`,
+	}
+	newCase.MarshalXMLTestFunc = func(t *testing.T, Datastructure interface{}, XMLMarshalControl string) {
+		t.Helper()
+		DSAssert, ok := Datastructure.(datastructures.NewsInfoXMLResult)
+		if !ok {
+			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:NewsInfoXMLResult")
 		}
 		marshXMLres, err := xml.Marshal(DSAssert)
 		require.NoError(t, err)

@@ -799,9 +799,64 @@ func initTestDataMrrfXML(t *testing.T) AppTestTable {
 	return testDataMrrfXML
 }
 
+// NewsInfoXML.
+func initTestDataNewsInfoXML(t *testing.T) AppTestTable {
+	t.Helper()
+	testDataNewsInfoXML := AppTestTable{
+		MethodName: "NewsInfoXML",
+		Method:     (*app.App).NewsInfoXML,
+	}
+
+	testNewsInfoXMLResult := datastructures.NewsInfoXMLResult{
+		News: make([]datastructures.NewsInfoXMLResultElem, 2),
+	}
+	testNewsInfoXMLResultElem := datastructures.NewsInfoXMLResultElem{
+		Doc_id:  35498,
+		DocDate: time.Date(2023, time.June, 22, 0, 0, 0, 0, time.UTC),
+		Title:   "О развитии банковского сектора Российской Федерации в мае 2023 года",
+		Url:     "/analytics/bank_sector/develop/#a_48876",
+	}
+	testNewsInfoXMLResult.News[0] = testNewsInfoXMLResultElem
+	testNewsInfoXMLResultElem = datastructures.NewsInfoXMLResultElem{
+		Doc_id:  35495,
+		DocDate: time.Date(2023, time.June, 22, 0, 0, 0, 0, time.UTC),
+		Title:   "Указание Банка России от 10.01.2023 № 6356-У",
+		Url:     "/Queries/UniDbQuery/File/90134/2803",
+	}
+	testNewsInfoXMLResult.News[1] = testNewsInfoXMLResultElem
+
+	testCases := make([]AppTestCase, 2)
+	testCases[0] = AppTestCase{
+		Name: "Positive",
+		Input: &datastructures.NewsInfoXML{
+			FromDate: "2023-06-22",
+			ToDate:   "2023-06-23",
+		},
+		Output: testNewsInfoXMLResult,
+		Error:  nil,
+	}
+
+	testCases[1] = AppTestCase{
+		Name: "Negative",
+		Input: &datastructures.NewsInfoXML{
+			FromDate: "022-14-22",
+			ToDate:   "2023-06-23",
+		},
+		Output: datastructures.NewsInfoXMLResult{},
+		Error:  customsoap.ErrContextWSReqExpired,
+	}
+	standartTestCacheCases := createStandartTestCacheCases(t, datastructures.NewsInfoXML{
+		FromDate: "2023-06-22",
+		ToDate:   "2023-06-23",
+	}, testNewsInfoXMLResult)
+	testDataNewsInfoXML.TestCases = append(testDataNewsInfoXML.TestCases, standartTestCacheCases...)
+	testDataNewsInfoXML.TestCases = testCases
+	return testDataNewsInfoXML
+}
+
 func TestAllAppCases(t *testing.T) { //nolint:gocognit, nolintlint, gocyclo, funlen
 	acTable := AllCasesTable{}
-	acTable.CasesByMethod = make([]AppTestTable, 12)
+	acTable.CasesByMethod = make([]AppTestTable, 13)
 	acTable.CasesByMethod[0] = initTestDataGetCursOnDateXML(t)
 	acTable.CasesByMethod[1] = initTestDataBiCurBaseXML(t)
 	acTable.CasesByMethod[2] = initTestDataBliquidityXML(t)
@@ -814,6 +869,7 @@ func TestAllAppCases(t *testing.T) { //nolint:gocognit, nolintlint, gocyclo, fun
 	acTable.CasesByMethod[9] = initTestDataMainInfoXML(t)
 	acTable.CasesByMethod[10] = initTestDataMrrf7DXML(t)
 	acTable.CasesByMethod[11] = initTestDataMrrfXML(t)
+	acTable.CasesByMethod[12] = initTestDataNewsInfoXML(t)
 	t.Parallel()
 	for _, curMethodTable := range acTable.CasesByMethod {
 		curMethodTable := curMethodTable
