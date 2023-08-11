@@ -40,5 +40,5 @@ type NewsInfoXMLResultElem struct {
 	Doc_id  int64     `xml:"Doc_id" json:"Doc_id"` //nolint:revive, stylecheck
 	DocDate time.Time `xml:"DocDate" json:"DocDate"`
 	Title   string    `xml:"Title" json:"Title"`
-	Url     string    `xml:"Url" json:"Url"`
+	Url     string    `xml:"Url" json:"Url"` //nolint:revive, stylecheck
 }

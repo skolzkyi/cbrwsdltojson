@@ -143,6 +143,14 @@ func (atc *AllTestCases) Init() {
 		Mode:          0,
 	}
 	atc.Cases = append(atc.Cases, curCase)
+	curCase = TestCase{
+		Method:        "NewsInfoXML",
+		Handler:       "/NewsInfoXML",
+		Request:       `{"FromDate":"2023-06-22","ToDate":"2023-06-23"}`,
+		OutputControl: `{"News":[{"Doc_id":35498,"DocDate":"2023-06-22T19:10:00.07+03:00","Title":"О развитии банковского сектора Российской Федерации в мае 2023 года","Url":"/analytics/bank_sector/develop/#a_48876"},{"Doc_id":35495,"DocDate":"2023-06-22T09:35:00+03:00","Title":"Указание Банка России от 10.01.2023 № 6356-У","Url":"/Queries/UniDbQuery/File/90134/2803"}]}`,
+		Mode:          0,
+	}
+	atc.Cases = append(atc.Cases, curCase)
 }
 
 func XMLToStructDecoder(t *testing.T, data []byte, startNodeName string, pointerToStruct interface{}) {
