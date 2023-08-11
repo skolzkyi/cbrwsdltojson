@@ -3,7 +3,6 @@ package app_test
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"testing"
 	"time"
 
@@ -800,7 +799,7 @@ func initTestDataMrrfXML(t *testing.T) AppTestTable {
 	return testDataMrrfXML
 }
 
-func TestAllAppCases(t *testing.T) {
+func TestAllAppCases(t *testing.T) { // nolint:gocognit
 	acTable := AllCasesTable{}
 	acTable.CasesByMethod = make([]AppTestTable, 12)
 	acTable.CasesByMethod[0] = initTestDataGetCursOnDateXML(t)
@@ -832,9 +831,6 @@ func TestAllAppCases(t *testing.T) {
 					rawBody, err = json.Marshal(curTestCase.Input)
 					require.NoError(t, err)
 					testRes, err = curMethodTable.Method(testApp, context.Background(), curTestCase.Input, string(rawBody))
-					if curMethodTable.MethodName == "mrrfXML" && curTestCase.Name == "Positive" {
-						fmt.Println("testRes for mrrfXML-Positive: ", testRes, " err: ", err)
-					}
 				} else {
 					testRes, err = curMethodTable.MethodWP(testApp, context.Background())
 					require.NoError(t, err)
