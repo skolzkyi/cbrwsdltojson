@@ -104,4 +104,10 @@
         <li>response: {"News":[{"Doc_id":35498,"DocDate":"2023-06-22T19:10:00.07+03:00","Title":"О развитии банковского сектора Российской Федерации в мае 2023 года","Url":"/analytics/bank_sector/develop/#a_48876"},{"Doc_id":35495,"DocDate":"2023-06-22T09:35:00+03:00","Title":"Указание Банка России от 10.01.2023 № 6356-У","Url":"/Queries/UniDbQuery/File/90134/2803"}]}</li>
     </ul>
    </details>
+   <details><summary><b>OmodInfoXML</b></summary>
+    <ul>
+        <li>request: -</li>
+        <li>response: {"Date":"05.03.2018","DirectRepo":{"Time":"10:00","debt":"0","rate":"0","minrate1D":"7.5","minrate7D":"7.5"},"RevRepo":{"Time":"10:00","debt":"0","rate":"4.97","sum_debt":"0"},"OBR":{"Time":"10:00","debt":"0","rate":"3.55"},"Deposit":"0","Credit":"0","VolNom":"6741.11","TotalFixRepoVol":"3132.2","FixRepoDate":"02.03.2018","FixRepo1D":{"debt":"3130.1","rate":"8.5"},"FixRepo7D":{"debt":"0","rate":"8.5"},"FixRepo1Y":{"rate":"8.5"}}</li>
+    </ul>
+   </details>
   
