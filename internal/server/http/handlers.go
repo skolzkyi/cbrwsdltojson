@@ -205,3 +205,7 @@ func (s *Server) NewsInfoXML(w http.ResponseWriter, r *http.Request) {
 	newRequest := datastructures.NewsInfoXML{}
 	s.universalMethodHandler(w, r, &newRequest, s.app.NewsInfoXML)
 }
+
+func (s *Server) OmodInfoXML(w http.ResponseWriter, r *http.Request) {
+	s.universalMethodHandlerWP(w, r, s.app.OmodInfoXML)
+}

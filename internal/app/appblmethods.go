@@ -674,3 +674,51 @@ func (a *App) NewsInfoXML(ctx context.Context, input interface{}, rawBody string
 	}
 	return response, nil
 }
+
+func (a *App) OmodInfoXML(ctx context.Context) (interface{}, error) {
+	var err error
+	var response datastructures.OmodInfoXMLResult
+	select {
+	case <-ctx.Done():
+		err = ErrContextWSReqExpired
+		a.logger.Error(err.Error())
+		return response, err
+	default:
+		SOAPMethod := "OmodInfoXML"
+		startNodeName := "OMO"
+		if a.permittedRequests.PermittedRequestMapLength() > 0 {
+			if a.permittedRequests.IsPermittedRequestInMap(SOAPMethod) {
+				return datastructures.OmodInfoXMLResult{}, ErrMethodProhibited
+			}
+		}
+
+		cachedData, ok := a.Appmemcache.GetCacheDataInCache(SOAPMethod)
+		if ok {
+			response, ok = cachedData.Payload.(datastructures.OmodInfoXMLResult)
+			if !ok {
+				err = ErrAssertionAfterGetCacheData
+				a.logger.Error(err.Error())
+			} else {
+				return response, nil
+			}
+		}
+
+		inputAsserted := datastructures.OmodInfoXML{}
+		inputAsserted.Init()
+
+		res, err := a.soapSender.SoapCall(ctx, SOAPMethod, inputAsserted)
+		if err != nil {
+			a.logger.Error(err.Error())
+			return response, err
+		}
+
+		err = a.XMLToStructDecoder(res, startNodeName, &response)
+		if err != nil {
+			a.logger.Error(err.Error())
+			return response, err
+		}
+
+		a.Appmemcache.AddOrUpdatePayloadInCache(SOAPMethod, response)
+	}
+	return response, nil
+}
