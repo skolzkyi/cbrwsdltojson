@@ -57,6 +57,7 @@ type Application interface {
 	MainInfoXML(ctx context.Context) (interface{}, error)
 	Mrrf7DXML(ctx context.Context, input interface{}, rawBody string) (interface{}, error)
 	MrrfXML(ctx context.Context, input interface{}, rawBody string) (interface{}, error)
+	NewsInfoXML(ctx context.Context, input interface{}, rawBody string) (interface{}, error)
 }
 
 func NewServer(logger Logger, app Application, config Config) *Server {

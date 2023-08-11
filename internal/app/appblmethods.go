@@ -580,7 +580,7 @@ func (a *App) MrrfXML(ctx context.Context, input interface{}, rawBody string) (i
 		startNodeName := "mmrf"
 		if a.permittedRequests.PermittedRequestMapLength() > 0 {
 			if a.permittedRequests.IsPermittedRequestInMap(SOAPMethod) {
-				return datastructures.MrrfXML{}, ErrMethodProhibited
+				return datastructures.MrrfXMLResult{}, ErrMethodProhibited
 			}
 		}
 
@@ -606,6 +606,66 @@ func (a *App) MrrfXML(ctx context.Context, input interface{}, rawBody string) (i
 			a.logger.Error(err.Error())
 			return response, err
 		}
+		err = a.AddOrUpdateDataInCache(SOAPMethod, input, response)
+		if err != nil {
+			a.logger.Error(err.Error())
+			return response, err
+		}
+	}
+	return response, nil
+}
+
+func (a *App) NewsInfoXML(ctx context.Context, input interface{}, rawBody string) (interface{}, error) {
+	var err error
+	var response datastructures.NewsInfoXMLResult
+	select {
+	case <-ctx.Done():
+		err = ErrContextWSReqExpired
+		a.logger.Error(err.Error())
+		return response, err
+	default:
+		SOAPMethod := "NewsInfoXML"
+		startNodeName := "NewsInfo"
+		if a.permittedRequests.PermittedRequestMapLength() > 0 {
+			if a.permittedRequests.IsPermittedRequestInMap(SOAPMethod) {
+				return datastructures.NewsInfoXMLResult{}, ErrMethodProhibited
+			}
+		}
+
+		cachedData, ok := a.GetDataInCacheIfExisting(SOAPMethod, rawBody)
+		if ok {
+			response, ok = cachedData.(datastructures.NewsInfoXMLResult)
+			if !ok {
+				err = ErrAssertionAfterGetCacheData
+				a.logger.Error(err.Error())
+			} else {
+				return response, nil
+			}
+		}
+
+		inputAsserted, ok := input.(*datastructures.NewsInfoXML)
+		if !ok {
+			err = ErrAssertionOfInputData
+			a.logger.Error(err.Error())
+			return response, err
+		}
+		res, err := a.soapSender.SoapCall(ctx, SOAPMethod, *inputAsserted)
+		if err != nil {
+			a.logger.Error(err.Error())
+			return response, err
+		}
+
+		err = a.XMLToStructDecoder(res, startNodeName, &response)
+		if err != nil {
+			a.logger.Error(err.Error())
+			return response, err
+		}
+
+		for i := range response.News {
+			response.News[i].Title = strings.TrimSpace(response.News[i].Title)
+			response.News[i].Url = strings.TrimSpace(response.News[i].Url)
+		}
+
 		err = a.AddOrUpdateDataInCache(SOAPMethod, input, response)
 		if err != nil {
 			a.logger.Error(err.Error())
