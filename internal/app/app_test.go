@@ -511,7 +511,7 @@ func initTestDataDVXML(t *testing.T) AppTestTable {
 // EnumReutersValutesXML.
 func initTestDataEnumReutersValutesXML(t *testing.T) AppTestTable {
 	t.Helper()
-	testDataDVXML := AppTestTable{
+	testDataEnumReutersValutesXML := AppTestTable{
 		MethodName: "EnumReutersValutesXML",
 		MethodWP:   (*app.App).EnumReutersValutesXML,
 		IsMethodWP: true,
@@ -542,9 +542,9 @@ func initTestDataEnumReutersValutesXML(t *testing.T) AppTestTable {
 	}
 
 	standartTestCacheCases := createStandartTestCacheCases(t, datastructures.EnumReutersValutesXML{}, testEnumReutersValutesXMLResult)
-	testDataDVXML.TestCases = append(testDataDVXML.TestCases, standartTestCacheCases...)
-	testDataDVXML.TestCases = testCases
-	return testDataDVXML
+	testDataEnumReutersValutesXML.TestCases = append(testDataEnumReutersValutesXML.TestCases, standartTestCacheCases...)
+	testDataEnumReutersValutesXML.TestCases = testCases
+	return testDataEnumReutersValutesXML
 }
 
 // EnumValutesXML.
@@ -854,9 +854,68 @@ func initTestDataNewsInfoXML(t *testing.T) AppTestTable {
 	return testDataNewsInfoXML
 }
 
+// EnumReutersValutesXML.
+func initTestDataOmodInfoXML(t *testing.T) AppTestTable {
+	t.Helper()
+	testDataOmodInfoXML := AppTestTable{
+		MethodName: "OmodInfoXML",
+		MethodWP:   (*app.App).OmodInfoXML,
+		IsMethodWP: true,
+	}
+	testOmodInfoXMLResult := datastructures.OmodInfoXMLResult{
+		Date: "05.03.2018",
+		DirectRepo: datastructures.DirectRepoElem{
+			Time:      "10:00",
+			Debt:      "0",
+			Rate:      "0",
+			Minrate1D: "7.5",
+			Minrate7D: "7.5",
+		},
+		RevRepo: datastructures.RevRepoElem{
+			Time:     "10:00",
+			Debt:     "0",
+			Rate:     "4.97",
+			Sum_debt: "0",
+		},
+		OBR: datastructures.OBRElem{
+			Time: "10:00",
+			Debt: "0",
+			Rate: "3.55",
+		},
+		Deposit:         "0",
+		Credit:          "0",
+		VolNom:          "6741.11",
+		TotalFixRepoVol: "3132.2",
+		FixRepoDate:     "02.03.2018",
+		FixRepo1D: datastructures.FixRepo1DElem{
+			Debt: "3130.1",
+			Rate: "8.5",
+		},
+		FixRepo7D: datastructures.FixRepo7DElem{
+			Debt: "0",
+			Rate: "8.5",
+		},
+		FixRepo1Y: datastructures.FixRepo1YElem{
+			Rate: "8.5",
+		},
+	}
+	testCases := make([]AppTestCase, 1)
+	testCases[0] = AppTestCase{
+		Name:   "Positive",
+		Input:  &datastructures.OmodInfoXML{},
+		Output: testOmodInfoXMLResult,
+		Error:  nil,
+	}
+
+	standartTestCacheCases := createStandartTestCacheCases(t, datastructures.EnumReutersValutesXML{}, testOmodInfoXMLResult)
+	testDataOmodInfoXML.TestCases = append(testDataOmodInfoXML.TestCases, standartTestCacheCases...)
+	testDataOmodInfoXML.TestCases = testCases
+	return testDataOmodInfoXML
+}
+
 func TestAllAppCases(t *testing.T) { //nolint:gocognit, nolintlint, gocyclo, funlen
 	acTable := AllCasesTable{}
-	acTable.CasesByMethod = make([]AppTestTable, 13)
+	acTable.CasesByMethod = make([]AppTestTable, 14)
 	acTable.CasesByMethod[0] = initTestDataGetCursOnDateXML(t)
 	acTable.CasesByMethod[1] = initTestDataBiCurBaseXML(t)
 	acTable.CasesByMethod[2] = initTestDataBliquidityXML(t)
@@ -870,6 +929,7 @@ func TestAllAppCases(t *testing.T) { //nolint:gocognit, nolintlint, gocyclo, fun
 	acTable.CasesByMethod[10] = initTestDataMrrf7DXML(t)
 	acTable.CasesByMethod[11] = initTestDataMrrfXML(t)
 	acTable.CasesByMethod[12] = initTestDataNewsInfoXML(t)
+	acTable.CasesByMethod[13] = initTestDataOmodInfoXML(t)
 	t.Parallel()
 	for _, curMethodTable := range acTable.CasesByMethod {
 		curMethodTable := curMethodTable
