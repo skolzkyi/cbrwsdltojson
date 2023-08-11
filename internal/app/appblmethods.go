@@ -606,7 +606,6 @@ func (a *App) MrrfXML(ctx context.Context, input interface{}, rawBody string) (i
 			a.logger.Error(err.Error())
 			return response, err
 		}
-
 		err = a.AddOrUpdateDataInCache(SOAPMethod, input, response)
 		if err != nil {
 			a.logger.Error(err.Error())

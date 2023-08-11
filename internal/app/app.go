@@ -126,6 +126,7 @@ func (a *App) ProcessRequest(ctx context.Context, SOAPMethod string, startNodeNa
 			a.logger.Error(err.Error())
 			return err
 		}
+
 		err = a.XMLToStructDecoder(res, startNodeName, pointerToResponseData)
 		if err != nil {
 			a.logger.Error(err.Error())

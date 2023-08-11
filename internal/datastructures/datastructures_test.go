@@ -1451,7 +1451,7 @@ func initTestCasesMrrfXML(t *testing.T) DatastructuresTestTable { // nolint:funl
 		Mr: make([]datastructures.MrrfXMLResultElem, 2),
 	}
 	testMrrfXMLResultElem := datastructures.MrrfXMLResultElem{
-		D0: time.Date(2023, time.May, 01, 0, 0, 0, 0, time.UTC),
+		D0: time.Date(2023, time.May, 0o1, 0, 0, 0, 0, time.UTC),
 		P1: "595787.00",
 		P2: "447187.00",
 		P3: "418628.00",
@@ -1461,7 +1461,7 @@ func initTestCasesMrrfXML(t *testing.T) DatastructuresTestTable { // nolint:funl
 	}
 	testMrrfXMLResult.Mr[0] = testMrrfXMLResultElem
 	testMrrfXMLResultElem = datastructures.MrrfXMLResultElem{
-		D0: time.Date(2023, time.June, 01, 0, 0, 0, 0, time.UTC),
+		D0: time.Date(2023, time.June, 0o1, 0, 0, 0, 0, time.UTC),
 		P1: "584175.00",
 		P2: "438344.00",
 		P3: "410313.00",

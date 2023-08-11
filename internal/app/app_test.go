@@ -3,6 +3,7 @@ package app_test
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"testing"
 	"time"
 
@@ -750,7 +751,7 @@ func initTestDataMrrfXML(t *testing.T) AppTestTable {
 		Mr: make([]datastructures.MrrfXMLResultElem, 2),
 	}
 	testMrrfXMLResultElem := datastructures.MrrfXMLResultElem{
-		D0: time.Date(2023, time.May, 01, 0, 0, 0, 0, time.UTC),
+		D0: time.Date(2023, time.May, 0o1, 0, 0, 0, 0, time.UTC),
 		P1: "595787.00",
 		P2: "447187.00",
 		P3: "418628.00",
@@ -760,7 +761,7 @@ func initTestDataMrrfXML(t *testing.T) AppTestTable {
 	}
 	testMrrfXMLResult.Mr[0] = testMrrfXMLResultElem
 	testMrrfXMLResultElem = datastructures.MrrfXMLResultElem{
-		D0: time.Date(2023, time.June, 01, 0, 0, 0, 0, time.UTC),
+		D0: time.Date(2023, time.June, 0o1, 0, 0, 0, 0, time.UTC),
 		P1: "584175.00",
 		P2: "438344.00",
 		P3: "410313.00",
@@ -831,6 +832,9 @@ func TestAllAppCases(t *testing.T) {
 					rawBody, err = json.Marshal(curTestCase.Input)
 					require.NoError(t, err)
 					testRes, err = curMethodTable.Method(testApp, context.Background(), curTestCase.Input, string(rawBody))
+					if curMethodTable.MethodName == "mrrfXML" && curTestCase.Name == "Positive" {
+						fmt.Println("testRes for mrrfXML-Positive: ", testRes, " err: ", err)
+					}
 				} else {
 					testRes, err = curMethodTable.MethodWP(testApp, context.Background())
 					require.NoError(t, err)
