@@ -73,6 +73,8 @@ func initAllDatastructuresTestTable(t *testing.T) AllDatastructuresTestTable {
 	AllDTTable = append(AllDTTable, curDatastructuresTestTable)
 	curDatastructuresTestTable = initTestCasesNewsInfoXML(t)
 	AllDTTable = append(AllDTTable, curDatastructuresTestTable)
+	curDatastructuresTestTable = initTestCasesOmodInfoXML(t)
+	AllDTTable = append(AllDTTable, curDatastructuresTestTable)
 	return AllDTTable
 }
 
@@ -1621,6 +1623,73 @@ func initTestCasesNewsInfoXML(t *testing.T) DatastructuresTestTable { // nolint:
 		DSAssert, ok := Datastructure.(datastructures.NewsInfoXMLResult)
 		if !ok {
 			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:NewsInfoXMLResult")
+		}
+		marshXMLres, err := xml.Marshal(DSAssert)
+		require.NoError(t, err)
+		require.Equal(t, XMLMarshalControl, string(marshXMLres))
+	}
+	newCase.ValidateControlTestFunc = func(_ *testing.T, _ interface{}, _ error) {}
+	DatastructuresTest.OutputDataCases[0] = newCase
+	return DatastructuresTest
+}
+
+func initTestCasesOmodInfoXML(t *testing.T) DatastructuresTestTable { // nolint:funlen, nolintlint
+	t.Helper()
+	DatastructuresTest := DatastructuresTestTable{}
+	DatastructuresTest.MethodName = "OmodInfoXML"
+	DatastructuresTest.InputDataCases = make([]DatastructuresTestCase, 0)
+	DatastructuresTest.OutputDataCases = make([]DatastructuresTestCase, 1)
+	var newCase DatastructuresTestCase
+	testOmodInfoXML := datastructures.OmodInfoXMLResult{
+		Date: "05.03.2018",
+		DirectRepo: datastructures.DirectRepoElem{
+			Time:      "10:00",
+			Debt:      "0",
+			Rate:      "0",
+			Minrate1D: "7.5",
+			Minrate7D: "7.5",
+		},
+		RevRepo: datastructures.RevRepoElem{
+			Time:     "10:00",
+			Debt:     "0",
+			Rate:     "4.97",
+			Sum_debt: "0",
+		},
+		OBR: datastructures.OBRElem{
+			Time: "10:00",
+			Debt: "0",
+			Rate: "3.55",
+		},
+		Deposit:         "0",
+		Credit:          "0",
+		VolNom:          "6741.11",
+		TotalFixRepoVol: "3132.2",
+		FixRepoDate:     "02.03.2018",
+		FixRepo1D: datastructures.FixRepo1DElem{
+			Debt: "3130.1",
+			Rate: "8.5",
+		},
+		FixRepo7D: datastructures.FixRepo7DElem{
+			Debt: "0",
+			Rate: "8.5",
+		},
+		FixRepo1Y: datastructures.FixRepo1YElem{
+			Rate: "8.5",
+		},
+	}
+
+	newCase = DatastructuresTestCase{
+		Name:              "XMLMarshalControlOut",
+		DataStructureType: "OmodInfoXML",
+		Datastructure:     testOmodInfoXML,
+		NeedXMLMarshal:    true,
+		XMLMarshalControl: `<OmodInfoXMLResult Date="05.03.2018"><DirectRepo Time="10:00"><debt>0</debt><rate>0</rate><minrate1D>7.5</minrate1D><minrate7D>7.5</minrate7D></DirectRepo><RevRepo Time="10:00"><debt>0</debt><rate>4.97</rate><sum_debt>0</sum_debt></RevRepo><OBR Time="10:00"><debt>0</debt><rate>3.55</rate></OBR><Deposit>0</Deposit><Credit>0</Credit><VolNom>6741.11</VolNom><TotalFixRepoVol>3132.2</TotalFixRepoVol><FixRepoDate>02.03.2018</FixRepoDate><FixRepo1D><debt>3130.1</debt><rate>8.5</rate></FixRepo1D><FixRepo7D><debt>0</debt><rate>8.5</rate></FixRepo7D><FixRepo1Y><rate>8.5</rate></FixRepo1Y></OmodInfoXMLResult>`,
+	}
+	newCase.MarshalXMLTestFunc = func(t *testing.T, Datastructure interface{}, XMLMarshalControl string) {
+		t.Helper()
+		DSAssert, ok := Datastructure.(datastructures.OmodInfoXMLResult)
+		if !ok {
+			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:OmodInfoXML")
 		}
 		marshXMLres, err := xml.Marshal(DSAssert)
 		require.NoError(t, err)

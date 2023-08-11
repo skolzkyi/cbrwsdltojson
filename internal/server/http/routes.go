@@ -22,6 +22,7 @@ func (s *Server) routes() *http.ServeMux {
 	mux.HandleFunc("/mrrf7DXML", loggingMiddleware(s.Mrrf7DXML, s.logg))
 	mux.HandleFunc("/mrrfXML", loggingMiddleware(s.MrrfXML, s.logg))
 	mux.HandleFunc("/NewsInfoXML", loggingMiddleware(s.NewsInfoXML, s.logg))
+	mux.HandleFunc("/OmodInfoXML", loggingMiddleware(s.OmodInfoXML, s.logg))
 
 	return mux
 }

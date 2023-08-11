@@ -151,6 +151,18 @@ func (atc *AllTestCases) Init() {
 		Mode:          0,
 	}
 	atc.Cases = append(atc.Cases, curCase)
+	curCase = TestCase{
+		Method:  "OmodInfoXML",
+		Handler: "/OmodInfoXML",
+		Request: "",
+		UnmControlMethod: func(t *testing.T, data []byte) {
+			t.Helper()
+			testStruct := datastructures.OmodInfoXMLResult{}
+			XMLToStructDecoder(t, data, "OMO", &testStruct)
+		},
+		Mode: 2,
+	}
+	atc.Cases = append(atc.Cases, curCase)
 }
 
 func XMLToStructDecoder(t *testing.T, data []byte, startNodeName string, pointerToStruct interface{}) {
