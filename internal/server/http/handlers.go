@@ -195,3 +195,8 @@ func (s *Server) Mrrf7DXML(w http.ResponseWriter, r *http.Request) {
 	newRequest := datastructures.Mrrf7DXML{}
 	s.universalMethodHandler(w, r, &newRequest, s.app.Mrrf7DXML)
 }
+
+func (s *Server) MrrfXML(w http.ResponseWriter, r *http.Request) {
+	newRequest := datastructures.MrrfXML{}
+	s.universalMethodHandler(w, r, &newRequest, s.app.MrrfXML)
+}

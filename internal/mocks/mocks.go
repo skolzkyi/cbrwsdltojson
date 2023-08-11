@@ -100,7 +100,7 @@ func (l *LoggerMock) Fatal(msg string) {
 
 type SoapRequestSenderMock struct{}
 
-func (srsm *SoapRequestSenderMock) SoapCall(_ context.Context, action string, input interface{}) ([]byte, error) { // nolint:gocognit, nolintlint, gocyclo
+func (srsm *SoapRequestSenderMock) SoapCall(_ context.Context, action string, input interface{}) ([]byte, error) { // nolint:gocognit, nolintlint, gocyclo, funlen
 	switch action {
 	case "GetCursOnDateXML":
 		inputData, ok := input.(datastructures.GetCursOnDateXML)
@@ -190,6 +190,15 @@ func (srsm *SoapRequestSenderMock) SoapCall(_ context.Context, action string, in
 		}
 		if inputData.FromDate == "2023-06-15" && inputData.ToDate == cToDate {
 			return []byte(`<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><soap:Body><mrrf7DXMLResponse xmlns="http://web.cbr.ru/"><mrrf7DXMLResult><mmrf7d xmlns=""><mr><D0>2023-06-16T00:00:00Z</D0><val>587.50</val></mr><mr><D0>2023-06-23T00:00:00Z</D0><val>586.90</val></mr></mmrf7d></mrrf7DXMLResult></mrrf7DXMLResponse></soap:Body></soap:Envelope>`), nil
+		}
+		return nil, customsoap.ErrContextWSReqExpired
+	case "mrrfXML":
+		inputData, ok := input.(datastructures.MrrfXML)
+		if !ok {
+			return nil, ErrAssertion
+		}
+		if inputData.FromDate == "2023-05-01" && inputData.ToDate == cToDate {
+			return []byte(`<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><soap:Body><mrrfXMLResponse xmlns="http://web.cbr.ru/"><mrrfXMLResult><mmrf xmlns=""><mr><D0>2023-05-01T00:00:00Z</D0><p1>595787.00</p1><p2>447187.00</p2><p3>418628.00</p3><p4>23559.00</p4><p5>5000.00</p5><p6>148599.00</p6></mr><mr><D0>2023-06-01T00:00:00Z</D0><p1>584175.00</p1><p2>438344.00</p2><p3>410313.00</p3><p4>23127.00</p4><p5>4903.00</p5><p6>145832.00</p6></mr></mmrf></mrrfXMLResult></mrrfXMLResponse></soap:Body></soap:Envelope>`), nil
 		}
 		return nil, customsoap.ErrContextWSReqExpired
 	default:

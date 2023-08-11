@@ -738,9 +738,70 @@ func initTestDataMrrf7DXML(t *testing.T) AppTestTable {
 	return testDataMrrf7DXML
 }
 
-func TestAllAppCases(t *testing.T) {
+// mrrfXML.
+func initTestDataMrrfXML(t *testing.T) AppTestTable {
+	t.Helper()
+	testDataMrrfXML := AppTestTable{
+		MethodName: "mrrfXML",
+		Method:     (*app.App).MrrfXML,
+	}
+
+	testMrrfXMLResult := datastructures.MrrfXMLResult{
+		Mr: make([]datastructures.MrrfXMLResultElem, 2),
+	}
+	testMrrfXMLResultElem := datastructures.MrrfXMLResultElem{
+		D0: time.Date(2023, time.May, 0o1, 0, 0, 0, 0, time.UTC),
+		P1: "595787.00",
+		P2: "447187.00",
+		P3: "418628.00",
+		P4: "23559.00",
+		P5: "5000.00",
+		P6: "148599.00",
+	}
+	testMrrfXMLResult.Mr[0] = testMrrfXMLResultElem
+	testMrrfXMLResultElem = datastructures.MrrfXMLResultElem{
+		D0: time.Date(2023, time.June, 0o1, 0, 0, 0, 0, time.UTC),
+		P1: "584175.00",
+		P2: "438344.00",
+		P3: "410313.00",
+		P4: "23127.00",
+		P5: "4903.00",
+		P6: "145832.00",
+	}
+	testMrrfXMLResult.Mr[1] = testMrrfXMLResultElem
+
+	testCases := make([]AppTestCase, 2)
+	testCases[0] = AppTestCase{
+		Name: "Positive",
+		Input: &datastructures.MrrfXML{
+			FromDate: "2023-05-01",
+			ToDate:   "2023-06-23",
+		},
+		Output: testMrrfXMLResult,
+		Error:  nil,
+	}
+
+	testCases[1] = AppTestCase{
+		Name: "Negative",
+		Input: &datastructures.MrrfXML{
+			FromDate: "022-14-22",
+			ToDate:   "2023-06-23",
+		},
+		Output: datastructures.MrrfXMLResult{},
+		Error:  customsoap.ErrContextWSReqExpired,
+	}
+	standartTestCacheCases := createStandartTestCacheCases(t, datastructures.MrrfXML{
+		FromDate: "2023-05-01",
+		ToDate:   "2023-06-23",
+	}, testMrrfXMLResult)
+	testDataMrrfXML.TestCases = append(testDataMrrfXML.TestCases, standartTestCacheCases...)
+	testDataMrrfXML.TestCases = testCases
+	return testDataMrrfXML
+}
+
+func TestAllAppCases(t *testing.T) { //nolint:gocognit, nolintlint, gocyclo, funlen
 	acTable := AllCasesTable{}
-	acTable.CasesByMethod = make([]AppTestTable, 11)
+	acTable.CasesByMethod = make([]AppTestTable, 12)
 	acTable.CasesByMethod[0] = initTestDataGetCursOnDateXML(t)
 	acTable.CasesByMethod[1] = initTestDataBiCurBaseXML(t)
 	acTable.CasesByMethod[2] = initTestDataBliquidityXML(t)
@@ -752,6 +813,7 @@ func TestAllAppCases(t *testing.T) {
 	acTable.CasesByMethod[8] = initTestDataKeyRateXML(t)
 	acTable.CasesByMethod[9] = initTestDataMainInfoXML(t)
 	acTable.CasesByMethod[10] = initTestDataMrrf7DXML(t)
+	acTable.CasesByMethod[11] = initTestDataMrrfXML(t)
 	t.Parallel()
 	for _, curMethodTable := range acTable.CasesByMethod {
 		curMethodTable := curMethodTable
