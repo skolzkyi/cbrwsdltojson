@@ -328,9 +328,9 @@ func (a *App) EnumReutersValutesXML(ctx context.Context) (interface{}, error) {
 			}
 		}
 
-		cachedData, ok := a.Appmemcache.GetCacheDataInCache(SOAPMethod)
+		cachedData, ok := a.GetDataInCacheIfExisting(SOAPMethod, "")
 		if ok {
-			response, ok = cachedData.Payload.(datastructures.EnumReutersValutesXMLResult)
+			response, ok = cachedData.(datastructures.EnumReutersValutesXMLResult)
 			if !ok {
 				err = ErrAssertionAfterGetCacheData
 				a.logger.Error(err.Error())
@@ -487,9 +487,9 @@ func (a *App) MainInfoXML(ctx context.Context) (interface{}, error) {
 			}
 		}
 
-		cachedData, ok := a.Appmemcache.GetCacheDataInCache(SOAPMethod)
+		cachedData, ok := a.GetDataInCacheIfExisting(SOAPMethod, "")
 		if ok {
-			response, ok = cachedData.Payload.(datastructures.MainInfoXMLResult)
+			response, ok = cachedData.(datastructures.MainInfoXMLResult)
 			if !ok {
 				err = ErrAssertionAfterGetCacheData
 				a.logger.Error(err.Error())
@@ -692,9 +692,9 @@ func (a *App) OmodInfoXML(ctx context.Context) (interface{}, error) {
 			}
 		}
 
-		cachedData, ok := a.Appmemcache.GetCacheDataInCache(SOAPMethod)
+		cachedData, ok := a.GetDataInCacheIfExisting(SOAPMethod, "")
 		if ok {
-			response, ok = cachedData.Payload.(datastructures.OmodInfoXMLResult)
+			response, ok = cachedData.(datastructures.OmodInfoXMLResult)
 			if !ok {
 				err = ErrAssertionAfterGetCacheData
 				a.logger.Error(err.Error())
@@ -719,6 +719,55 @@ func (a *App) OmodInfoXML(ctx context.Context) (interface{}, error) {
 		}
 
 		a.Appmemcache.AddOrUpdatePayloadInCache(SOAPMethod, response)
+	}
+	return response, nil
+}
+
+func (a *App) OstatDepoNewXML(ctx context.Context, input interface{}, rawBody string) (interface{}, error) {
+	var err error
+	var response datastructures.OstatDepoNewXMLResult
+	select {
+	case <-ctx.Done():
+		err = ErrContextWSReqExpired
+		a.logger.Error(err.Error())
+		return response, err
+	default:
+		SOAPMethod := "OstatDepoNewXML"
+		startNodeName := "OD"
+		if a.permittedRequests.PermittedRequestMapLength() > 0 {
+			if a.permittedRequests.IsPermittedRequestInMap(SOAPMethod) {
+				return datastructures.OstatDepoNewXMLResult{}, ErrMethodProhibited
+			}
+		}
+
+		cachedData, ok := a.GetDataInCacheIfExisting(SOAPMethod, rawBody)
+		if ok {
+			response, ok = cachedData.(datastructures.OstatDepoNewXMLResult)
+			if !ok {
+				err = ErrAssertionAfterGetCacheData
+				a.logger.Error(err.Error())
+			} else {
+				return response, nil
+			}
+		}
+
+		inputAsserted, ok := input.(*datastructures.OstatDepoNewXML)
+		if !ok {
+			err = ErrAssertionOfInputData
+			a.logger.Error(err.Error())
+			return response, err
+		}
+		err = a.ProcessRequest(ctx, SOAPMethod, startNodeName, *inputAsserted, &response)
+		if err != nil {
+			a.logger.Error(err.Error())
+			return response, err
+		}
+
+		err = a.AddOrUpdateDataInCache(SOAPMethod, input, response)
+		if err != nil {
+			a.logger.Error(err.Error())
+			return response, err
+		}
 	}
 	return response, nil
 }

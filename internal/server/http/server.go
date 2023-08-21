@@ -59,6 +59,7 @@ type Application interface {
 	MrrfXML(ctx context.Context, input interface{}, rawBody string) (interface{}, error)
 	NewsInfoXML(ctx context.Context, input interface{}, rawBody string) (interface{}, error)
 	OmodInfoXML(ctx context.Context) (interface{}, error)
+	OstatDepoNewXML(ctx context.Context, input interface{}, rawBody string) (interface{}, error)
 }
 
 func NewServer(logger Logger, app Application, config Config) *Server {

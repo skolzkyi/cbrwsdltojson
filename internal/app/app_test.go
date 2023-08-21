@@ -186,11 +186,12 @@ func initTestDataGetCursOnDateXML(t *testing.T) AppTestTable {
 		Output: datastructures.GetCursOnDateXMLResult{},
 		Error:  customsoap.ErrContextWSReqExpired,
 	}
-	standartTestCacheCases := createStandartTestCacheCases(t, datastructures.GetCursOnDateXML{
+	standartTestCacheCases := createStandartTestCacheCases(t, &datastructures.GetCursOnDateXML{
 		OnDate: "2023-06-22",
 	}, testGetCursOnDateXMLResult)
-	testDataGetCursOnDate.TestCases = append(testDataGetCursOnDate.TestCases, standartTestCacheCases...)
 	testDataGetCursOnDate.TestCases = testCases
+	testDataGetCursOnDate.TestCases = append(testDataGetCursOnDate.TestCases, standartTestCacheCases...)
+
 	return testDataGetCursOnDate
 }
 
@@ -235,12 +236,13 @@ func initTestDataBiCurBaseXML(t *testing.T) AppTestTable {
 		Output: datastructures.BiCurBaseXMLResult{},
 		Error:  customsoap.ErrContextWSReqExpired,
 	}
-	standartTestCacheCases := createStandartTestCacheCases(t, datastructures.BiCurBaseXML{
+	standartTestCacheCases := createStandartTestCacheCases(t, &datastructures.BiCurBaseXML{
 		FromDate: "2023-06-22",
 		ToDate:   "2023-06-23",
 	}, testBiCurBaseXMLResult)
-	testDataBiCurBaseXML.TestCases = append(testDataBiCurBaseXML.TestCases, standartTestCacheCases...)
 	testDataBiCurBaseXML.TestCases = testCases
+	testDataBiCurBaseXML.TestCases = append(testDataBiCurBaseXML.TestCases, standartTestCacheCases...)
+
 	return testDataBiCurBaseXML
 }
 
@@ -304,12 +306,13 @@ func initTestDataBliquidityXML(t *testing.T) AppTestTable {
 		Output: datastructures.BliquidityXMLResult{},
 		Error:  customsoap.ErrContextWSReqExpired,
 	}
-	standartTestCacheCases := createStandartTestCacheCases(t, datastructures.BliquidityXML{
+	standartTestCacheCases := createStandartTestCacheCases(t, &datastructures.BliquidityXML{
 		FromDate: "2023-06-22",
 		ToDate:   "2023-06-23",
 	}, testBliquidityXMLResult)
-	testDataBliquidityXML.TestCases = append(testDataBliquidityXML.TestCases, standartTestCacheCases...)
 	testDataBliquidityXML.TestCases = testCases
+	testDataBliquidityXML.TestCases = append(testDataBliquidityXML.TestCases, standartTestCacheCases...)
+
 	return testDataBliquidityXML
 }
 
@@ -353,12 +356,13 @@ func initTestDataDepoDynamicXML(t *testing.T) AppTestTable {
 		Output: datastructures.DepoDynamicXMLResult{},
 		Error:  customsoap.ErrContextWSReqExpired,
 	}
-	standartTestCacheCases := createStandartTestCacheCases(t, datastructures.DepoDynamicXML{
+	standartTestCacheCases := createStandartTestCacheCases(t, &datastructures.DepoDynamicXML{
 		FromDate: "2023-06-22",
 		ToDate:   "2023-06-23",
 	}, testDepoDynamicXMLResult)
-	testDataDepoDynamicXML.TestCases = append(testDataDepoDynamicXML.TestCases, standartTestCacheCases...)
 	testDataDepoDynamicXML.TestCases = testCases
+	testDataDepoDynamicXML.TestCases = append(testDataDepoDynamicXML.TestCases, standartTestCacheCases...)
+
 	return testDataDepoDynamicXML
 }
 
@@ -440,12 +444,13 @@ func initTestDragMetDynamicXML(t *testing.T) AppTestTable {
 		Output: datastructures.DragMetDynamicXMLResult{},
 		Error:  customsoap.ErrContextWSReqExpired,
 	}
-	standartTestCacheCases := createStandartTestCacheCases(t, datastructures.DragMetDynamicXML{
+	standartTestCacheCases := createStandartTestCacheCases(t, &datastructures.DragMetDynamicXML{
 		FromDate: "2023-06-22",
 		ToDate:   "2023-06-23",
 	}, testDragMetDynamicXMLResult)
-	testDataDragMetDynamicXML.TestCases = append(testDataDragMetDynamicXML.TestCases, standartTestCacheCases...)
 	testDataDragMetDynamicXML.TestCases = testCases
+	testDataDragMetDynamicXML.TestCases = append(testDataDragMetDynamicXML.TestCases, standartTestCacheCases...)
+
 	return testDataDragMetDynamicXML
 }
 
@@ -499,12 +504,13 @@ func initTestDataDVXML(t *testing.T) AppTestTable {
 		Output: datastructures.DVXMLResult{},
 		Error:  customsoap.ErrContextWSReqExpired,
 	}
-	standartTestCacheCases := createStandartTestCacheCases(t, datastructures.DVXML{
+	standartTestCacheCases := createStandartTestCacheCases(t, &datastructures.DVXML{
 		FromDate: "2023-06-22",
 		ToDate:   "2023-06-23",
 	}, testDVXMLResult)
-	testDataDVXML.TestCases = append(testDataDVXML.TestCases, standartTestCacheCases...)
 	testDataDVXML.TestCases = testCases
+	testDataDVXML.TestCases = append(testDataDVXML.TestCases, standartTestCacheCases...)
+
 	return testDataDVXML
 }
 
@@ -541,16 +547,17 @@ func initTestDataEnumReutersValutesXML(t *testing.T) AppTestTable {
 		Error:  nil,
 	}
 
-	standartTestCacheCases := createStandartTestCacheCases(t, datastructures.EnumReutersValutesXML{}, testEnumReutersValutesXMLResult)
-	testDataEnumReutersValutesXML.TestCases = append(testDataEnumReutersValutesXML.TestCases, standartTestCacheCases...)
+	standartTestCacheCases := createStandartTestCacheCases(t, &datastructures.EnumReutersValutesXML{}, testEnumReutersValutesXMLResult)
 	testDataEnumReutersValutesXML.TestCases = testCases
+	testDataEnumReutersValutesXML.TestCases = append(testDataEnumReutersValutesXML.TestCases, standartTestCacheCases...)
+
 	return testDataEnumReutersValutesXML
 }
 
 // EnumValutesXML.
 func initTestDataEnumValutesXML(t *testing.T) AppTestTable {
 	t.Helper()
-	testDataDVXML := AppTestTable{
+	testDataEnumValutesXML := AppTestTable{
 		MethodName: "EnumValutesXML",
 		Method:     (*app.App).EnumValutesXML,
 	}
@@ -588,10 +595,11 @@ func initTestDataEnumValutesXML(t *testing.T) AppTestTable {
 		Error:  nil,
 	}
 
-	standartTestCacheCases := createStandartTestCacheCases(t, datastructures.EnumValutesXML{}, testEnumValutesXMLResult)
-	testDataDVXML.TestCases = append(testDataDVXML.TestCases, standartTestCacheCases...)
-	testDataDVXML.TestCases = testCases
-	return testDataDVXML
+	standartTestCacheCases := createStandartTestCacheCases(t, &datastructures.EnumValutesXML{}, testEnumValutesXMLResult)
+	testDataEnumValutesXML.TestCases = testCases
+	testDataEnumValutesXML.TestCases = append(testDataEnumValutesXML.TestCases, standartTestCacheCases...)
+
+	return testDataEnumValutesXML
 }
 
 // KeyRateXML.
@@ -635,12 +643,13 @@ func initTestDataKeyRateXML(t *testing.T) AppTestTable {
 		Output: datastructures.KeyRateXMLResult{},
 		Error:  customsoap.ErrContextWSReqExpired,
 	}
-	standartTestCacheCases := createStandartTestCacheCases(t, datastructures.DVXML{
+	standartTestCacheCases := createStandartTestCacheCases(t, &datastructures.KeyRateXML{
 		FromDate: "2023-06-22",
 		ToDate:   "2023-06-23",
 	}, testKeyRateXMLResult)
-	testDataDVXML.TestCases = append(testDataDVXML.TestCases, standartTestCacheCases...)
 	testDataDVXML.TestCases = testCases
+	testDataDVXML.TestCases = append(testDataDVXML.TestCases, standartTestCacheCases...)
+
 	return testDataDVXML
 }
 
@@ -682,9 +691,10 @@ func initTestDataMainInfoXML(t *testing.T) AppTestTable {
 		Error:  nil,
 	}
 
-	standartTestCacheCases := createStandartTestCacheCases(t, datastructures.EnumReutersValutesXML{}, testMainInfoXMLResult)
-	testDataMainInfoXML.TestCases = append(testDataMainInfoXML.TestCases, standartTestCacheCases...)
+	standartTestCacheCases := createStandartTestCacheCases(t, &datastructures.MainInfoXML{}, testMainInfoXMLResult)
 	testDataMainInfoXML.TestCases = testCases
+	testDataMainInfoXML.TestCases = append(testDataMainInfoXML.TestCases, standartTestCacheCases...)
+
 	return testDataMainInfoXML
 }
 
@@ -729,12 +739,13 @@ func initTestDataMrrf7DXML(t *testing.T) AppTestTable {
 		Output: datastructures.Mrrf7DXMLResult{},
 		Error:  customsoap.ErrContextWSReqExpired,
 	}
-	standartTestCacheCases := createStandartTestCacheCases(t, datastructures.Mrrf7DXML{
+	standartTestCacheCases := createStandartTestCacheCases(t, &datastructures.Mrrf7DXML{
 		FromDate: "2023-06-15",
 		ToDate:   "2023-06-23",
 	}, testMrrf7DXMLResult)
-	testDataMrrf7DXML.TestCases = append(testDataMrrf7DXML.TestCases, standartTestCacheCases...)
 	testDataMrrf7DXML.TestCases = testCases
+	testDataMrrf7DXML.TestCases = append(testDataMrrf7DXML.TestCases, standartTestCacheCases...)
+
 	return testDataMrrf7DXML
 }
 
@@ -790,12 +801,13 @@ func initTestDataMrrfXML(t *testing.T) AppTestTable {
 		Output: datastructures.MrrfXMLResult{},
 		Error:  customsoap.ErrContextWSReqExpired,
 	}
-	standartTestCacheCases := createStandartTestCacheCases(t, datastructures.MrrfXML{
+	standartTestCacheCases := createStandartTestCacheCases(t, &datastructures.MrrfXML{
 		FromDate: "2023-05-01",
 		ToDate:   "2023-06-23",
 	}, testMrrfXMLResult)
-	testDataMrrfXML.TestCases = append(testDataMrrfXML.TestCases, standartTestCacheCases...)
 	testDataMrrfXML.TestCases = testCases
+	testDataMrrfXML.TestCases = append(testDataMrrfXML.TestCases, standartTestCacheCases...)
+
 	return testDataMrrfXML
 }
 
@@ -845,16 +857,17 @@ func initTestDataNewsInfoXML(t *testing.T) AppTestTable {
 		Output: datastructures.NewsInfoXMLResult{},
 		Error:  customsoap.ErrContextWSReqExpired,
 	}
-	standartTestCacheCases := createStandartTestCacheCases(t, datastructures.NewsInfoXML{
+	standartTestCacheCases := createStandartTestCacheCases(t, &datastructures.NewsInfoXML{
 		FromDate: "2023-06-22",
 		ToDate:   "2023-06-23",
 	}, testNewsInfoXMLResult)
-	testDataNewsInfoXML.TestCases = append(testDataNewsInfoXML.TestCases, standartTestCacheCases...)
 	testDataNewsInfoXML.TestCases = testCases
+	testDataNewsInfoXML.TestCases = append(testDataNewsInfoXML.TestCases, standartTestCacheCases...)
+
 	return testDataNewsInfoXML
 }
 
-// EnumReutersValutesXML.
+// OmodInfoXML.
 func initTestDataOmodInfoXML(t *testing.T) AppTestTable {
 	t.Helper()
 	testDataOmodInfoXML := AppTestTable{
@@ -907,15 +920,71 @@ func initTestDataOmodInfoXML(t *testing.T) AppTestTable {
 		Error:  nil,
 	}
 
-	standartTestCacheCases := createStandartTestCacheCases(t, datastructures.EnumReutersValutesXML{}, testOmodInfoXMLResult)
-	testDataOmodInfoXML.TestCases = append(testDataOmodInfoXML.TestCases, standartTestCacheCases...)
+	standartTestCacheCases := createStandartTestCacheCases(t, &datastructures.OmodInfoXML{}, testOmodInfoXMLResult)
 	testDataOmodInfoXML.TestCases = testCases
+	testDataOmodInfoXML.TestCases = append(testDataOmodInfoXML.TestCases, standartTestCacheCases...)
+
 	return testDataOmodInfoXML
+}
+
+// OstatDepoNewXML.
+func initTestDataOstatDepoNewXML(t *testing.T) AppTestTable {
+	t.Helper()
+	testDataOstatDepoNewXML := AppTestTable{
+		MethodName: "OstatDepoNewXML",
+		Method:     (*app.App).OstatDepoNewXML,
+	}
+	testOstatDepoNewXMLResult := datastructures.OstatDepoNewXMLResult{
+		Odn: make([]datastructures.OstatDepoNewXMLResultElem, 2),
+	}
+	testOstatDepoNewXMLElem := datastructures.OstatDepoNewXMLResultElem{
+		DT:     time.Date(2023, time.June, 22, 0, 0, 0, 0, time.UTC),
+		TOTAL:  "2872966.59",
+		AUC_1W: "1828340.00",
+		OV_P:   "1044626.59",
+	}
+	testOstatDepoNewXMLResult.Odn[0] = testOstatDepoNewXMLElem
+	testOstatDepoNewXMLElem = datastructures.OstatDepoNewXMLResultElem{
+		DT:     time.Date(2023, time.June, 23, 0, 0, 0, 0, time.UTC),
+		TOTAL:  "2890199.16",
+		AUC_1W: "1828340.00",
+		OV_P:   "1061859.16",
+	}
+	testOstatDepoNewXMLResult.Odn[1] = testOstatDepoNewXMLElem
+	testCases := make([]AppTestCase, 2)
+	testCases[0] = AppTestCase{
+		Name: "Positive",
+		Input: &datastructures.OstatDepoNewXML{
+			FromDate: "2023-06-22",
+			ToDate:   "2023-06-23",
+		},
+		Output: testOstatDepoNewXMLResult,
+		Error:  nil,
+	}
+
+	testCases[1] = AppTestCase{
+		Name: "Negative",
+		Input: &datastructures.OstatDepoNewXML{
+			FromDate: "022-14-22",
+			ToDate:   "2023-06-23",
+		},
+		Output: datastructures.OstatDepoNewXMLResult{},
+		Error:  customsoap.ErrContextWSReqExpired,
+	}
+	standartTestCacheCases := createStandartTestCacheCases(t, &datastructures.OstatDepoNewXML{
+		FromDate: "2023-06-22",
+		ToDate:   "2023-06-23",
+	}, testOstatDepoNewXMLResult)
+
+	testDataOstatDepoNewXML.TestCases = testCases
+	testDataOstatDepoNewXML.TestCases = append(testDataOstatDepoNewXML.TestCases, standartTestCacheCases...)
+
+	return testDataOstatDepoNewXML
 }
 
 func TestAllAppCases(t *testing.T) { //nolint:gocognit, nolintlint, gocyclo, funlen
 	acTable := AllCasesTable{}
-	acTable.CasesByMethod = make([]AppTestTable, 14)
+	acTable.CasesByMethod = make([]AppTestTable, 15)
 	acTable.CasesByMethod[0] = initTestDataGetCursOnDateXML(t)
 	acTable.CasesByMethod[1] = initTestDataBiCurBaseXML(t)
 	acTable.CasesByMethod[2] = initTestDataBliquidityXML(t)
@@ -930,6 +999,7 @@ func TestAllAppCases(t *testing.T) { //nolint:gocognit, nolintlint, gocyclo, fun
 	acTable.CasesByMethod[11] = initTestDataMrrfXML(t)
 	acTable.CasesByMethod[12] = initTestDataNewsInfoXML(t)
 	acTable.CasesByMethod[13] = initTestDataOmodInfoXML(t)
+	acTable.CasesByMethod[14] = initTestDataOstatDepoNewXML(t)
 	t.Parallel()
 	for _, curMethodTable := range acTable.CasesByMethod {
 		curMethodTable := curMethodTable
@@ -954,10 +1024,10 @@ func TestAllAppCases(t *testing.T) { //nolint:gocognit, nolintlint, gocyclo, fun
 				if err == nil {
 					// testApp.Appmemcache.PrintAllCacheKeys()
 					var cacheTag string
-					if !curMethodTable.IsMethodWP {
-						cacheTag = getTagForCache(t, curMethodTable.MethodName, curTestCase.Input)
-					} else {
+					if curMethodTable.IsMethodWP {
 						cacheTag = curMethodTable.MethodName
+					} else {
+						cacheTag = getTagForCache(t, curMethodTable.MethodName, curTestCase.Input)
 					}
 					cachedData, ok = testApp.Appmemcache.GetCacheDataInCache(cacheTag)
 					require.Equal(t, true, ok)
@@ -976,19 +1046,26 @@ func TestAllAppCases(t *testing.T) { //nolint:gocognit, nolintlint, gocyclo, fun
 
 func checkCashLogic(t *testing.T, testApp *app.App, methodTable *AppTestTable, testCase *AppTestCase, prevDataDTStamp time.Time) {
 	t.Helper()
+	var cacheTag string
 	if !testCase.IsCacheData {
-		time.Sleep(3 * time.Second)
+		time.Sleep(5 * time.Second)
 	}
 	rawBody, err := json.Marshal(testCase.Input)
 	require.NoError(t, err)
 	if methodTable.IsMethodWP {
-		_, err := methodTable.Method(testApp, context.Background(), testCase.Input, string(rawBody))
-		require.Equal(t, nil, err)
-	} else {
+		time.Sleep(time.Second)
 		_, err := methodTable.MethodWP(testApp, context.Background())
 		require.Equal(t, nil, err)
+	} else {
+		_, err := methodTable.Method(testApp, context.Background(), testCase.Input, string(rawBody))
+		require.Equal(t, nil, err)
 	}
-	cachedData2, ok := testApp.Appmemcache.GetCacheDataInCache(methodTable.MethodName)
+	if methodTable.IsMethodWP {
+		cacheTag = methodTable.MethodName
+	} else {
+		cacheTag = getTagForCache(t, methodTable.MethodName, testCase.Input)
+	}
+	cachedData2, ok := testApp.Appmemcache.GetCacheDataInCache(cacheTag)
 	require.Equal(t, true, ok)
 	if testCase.IsCacheData {
 		require.Equal(t, prevDataDTStamp, cachedData2.InfoDTStamp)

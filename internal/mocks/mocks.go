@@ -216,6 +216,15 @@ func (srsm *SoapRequestSenderMock) SoapCall(_ context.Context, action string, in
 			return nil, ErrAssertion
 		}
 		return []byte(`<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><soap:Body><OmodInfoXMLResponse xmlns="http://web.cbr.ru/"><OmodInfoXMLResult><OMO Date="05.03.2018" xmlns=""><DirectRepo Time="10:00"><debt>0</debt><rate>0</rate><minrate1D>7.5</minrate1D><minrate7D>7.5</minrate7D></DirectRepo><RevRepo Time="10:00"><debt>0</debt><rate>4.97</rate><sum_debt>0</sum_debt></RevRepo><OBR Time="10:00"><debt>0</debt><rate>3.55</rate></OBR><Deposit>0</Deposit><Credit>0</Credit><VolNom>6741.11</VolNom><TotalFixRepoVol>3132.2</TotalFixRepoVol><FixRepoDate>02.03.2018</FixRepoDate><FixRepo1D><debt>3130.1</debt><rate>8.5</rate></FixRepo1D><FixRepo7D><debt>0</debt><rate>8.5</rate></FixRepo7D><FixRepo1Y><rate>8.5</rate></FixRepo1Y></OMO></OmodInfoXMLResult></OmodInfoXMLResponse></soap:Body></soap:Envelope>`), nil
+	case "OstatDepoNewXML":
+		inputData, ok := input.(datastructures.OstatDepoNewXML)
+		if !ok {
+			return nil, ErrAssertion
+		}
+		if inputData.FromDate == cFromDate && inputData.ToDate == cToDate {
+			return []byte(`<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><soap:Body><OstatDepoNewXMLResponse xmlns="http://web.cbr.ru/"><OstatDepoNewXMLResult><OD xmlns=""><odn><DT>2023-06-22T00:00:00Z</DT><TOTAL>2872966.59</TOTAL><AUC_1W>1828340.00</AUC_1W><OV_P>1044626.59</OV_P></odn><odn><DT>2023-06-23T00:00:00Z</DT><TOTAL>2890199.16</TOTAL><AUC_1W>1828340.00</AUC_1W><OV_P>1061859.16</OV_P></odn></OD></OstatDepoNewXMLResult></OstatDepoNewXMLResponse></soap:Body></soap:Envelope>`), nil
+		}
+		return nil, customsoap.ErrContextWSReqExpired
 	default:
 		return nil, errors.New("SoapRequestSenderMock: unsupported action")
 	}

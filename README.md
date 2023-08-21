@@ -110,4 +110,10 @@
         <li>response: {"Date":"05.03.2018","DirectRepo":{"Time":"10:00","debt":"0","rate":"0","minrate1D":"7.5","minrate7D":"7.5"},"RevRepo":{"Time":"10:00","debt":"0","rate":"4.97","sum_debt":"0"},"OBR":{"Time":"10:00","debt":"0","rate":"3.55"},"Deposit":"0","Credit":"0","VolNom":"6741.11","TotalFixRepoVol":"3132.2","FixRepoDate":"02.03.2018","FixRepo1D":{"debt":"3130.1","rate":"8.5"},"FixRepo7D":{"debt":"0","rate":"8.5"},"FixRepo1Y":{"rate":"8.5"}}</li>
     </ul>
    </details>
+   <details><summary><b>OstatDepoNewXML</b></summary>
+    <ul>
+        <li>request: {"FromDate":"2023-06-22","ToDate":"2023-06-23"}</li>
+        <li>response: {"odn":[{"DT":"2023-06-22T00:00:00+03:00","TOTAL":"2872966.59","AUC_1W":"1828340.00","OV_P":"1044626.59"},{"DT":"2023-06-23T00:00:00+03:00","TOTAL":"2890199.16","AUC_1W":"1828340.00","OV_P":"1061859.16"}]}</li>
+    </ul>
+   </details>
   
