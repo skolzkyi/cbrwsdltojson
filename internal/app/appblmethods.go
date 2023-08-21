@@ -328,9 +328,9 @@ func (a *App) EnumReutersValutesXML(ctx context.Context) (interface{}, error) {
 			}
 		}
 
-		cachedData, ok := a.Appmemcache.GetCacheDataInCache(SOAPMethod)
+		cachedData, ok := a.GetDataInCacheIfExisting(SOAPMethod, "")
 		if ok {
-			response, ok = cachedData.Payload.(datastructures.EnumReutersValutesXMLResult)
+			response, ok = cachedData.(datastructures.EnumReutersValutesXMLResult)
 			if !ok {
 				err = ErrAssertionAfterGetCacheData
 				a.logger.Error(err.Error())
@@ -487,9 +487,9 @@ func (a *App) MainInfoXML(ctx context.Context) (interface{}, error) {
 			}
 		}
 
-		cachedData, ok := a.Appmemcache.GetCacheDataInCache(SOAPMethod)
+		cachedData, ok := a.GetDataInCacheIfExisting(SOAPMethod, "")
 		if ok {
-			response, ok = cachedData.Payload.(datastructures.MainInfoXMLResult)
+			response, ok = cachedData.(datastructures.MainInfoXMLResult)
 			if !ok {
 				err = ErrAssertionAfterGetCacheData
 				a.logger.Error(err.Error())
@@ -692,9 +692,9 @@ func (a *App) OmodInfoXML(ctx context.Context) (interface{}, error) {
 			}
 		}
 
-		cachedData, ok := a.Appmemcache.GetCacheDataInCache(SOAPMethod)
+		cachedData, ok := a.GetDataInCacheIfExisting(SOAPMethod, "")
 		if ok {
-			response, ok = cachedData.Payload.(datastructures.OmodInfoXMLResult)
+			response, ok = cachedData.(datastructures.OmodInfoXMLResult)
 			if !ok {
 				err = ErrAssertionAfterGetCacheData
 				a.logger.Error(err.Error())

@@ -163,6 +163,14 @@ func (atc *AllTestCases) Init() {
 		Mode: 2,
 	}
 	atc.Cases = append(atc.Cases, curCase)
+	curCase = TestCase{
+		Method:        "OstatDepoNewXML",
+		Handler:       "/OstatDepoNewXML",
+		Request:       `{"FromDate":"2023-06-22","ToDate":"2023-06-23"}`,
+		OutputControl: `{"odn":[{"DT":"2023-06-22T00:00:00+03:00","TOTAL":"2872966.59","AUC_1W":"1828340.00","OV_P":"1044626.59"},{"DT":"2023-06-23T00:00:00+03:00","TOTAL":"2890199.16","AUC_1W":"1828340.00","OV_P":"1061859.16"}]}`,
+		Mode:          0,
+	}
+	atc.Cases = append(atc.Cases, curCase)
 }
 
 func XMLToStructDecoder(t *testing.T, data []byte, startNodeName string, pointerToStruct interface{}) {
