@@ -209,3 +209,8 @@ func (s *Server) NewsInfoXML(w http.ResponseWriter, r *http.Request) {
 func (s *Server) OmodInfoXML(w http.ResponseWriter, r *http.Request) {
 	s.universalMethodHandlerWP(w, r, s.app.OmodInfoXML)
 }
+
+func (s *Server) OstatDepoNewXML(w http.ResponseWriter, r *http.Request) {
+	newRequest := datastructures.OstatDepoNewXML{}
+	s.universalMethodHandler(w, r, &newRequest, s.app.OstatDepoNewXML)
+}
