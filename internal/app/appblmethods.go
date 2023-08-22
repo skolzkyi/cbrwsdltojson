@@ -918,3 +918,52 @@ func (a *App) OvernightXML(ctx context.Context, input interface{}, rawBody strin
 	}
 	return response, nil
 }
+
+func (a *App) RepoDebtXML(ctx context.Context, input interface{}, rawBody string) (interface{}, error) {
+	var err error
+	var response datastructures.Repo_debtXMLResult
+	select {
+	case <-ctx.Done():
+		err = ErrContextWSReqExpired
+		a.logger.Error(err.Error())
+		return response, err
+	default:
+		SOAPMethod := "Repo_debtXML"
+		startNodeName := "Repo_debt"
+		if a.permittedRequests.PermittedRequestMapLength() > 0 {
+			if a.permittedRequests.IsPermittedRequestInMap(SOAPMethod) {
+				return datastructures.Repo_debtXMLResult{}, ErrMethodProhibited
+			}
+		}
+
+		cachedData, ok := a.GetDataInCacheIfExisting("RepoDebtXML", rawBody)
+		if ok {
+			response, ok = cachedData.(datastructures.Repo_debtXMLResult)
+			if !ok {
+				err = ErrAssertionAfterGetCacheData
+				a.logger.Error(err.Error())
+			} else {
+				return response, nil
+			}
+		}
+
+		inputAsserted, ok := input.(*datastructures.Repo_debtXML)
+		if !ok {
+			err = ErrAssertionOfInputData
+			a.logger.Error(err.Error())
+			return response, err
+		}
+		err = a.ProcessRequest(ctx, SOAPMethod, startNodeName, *inputAsserted, &response)
+		if err != nil {
+			a.logger.Error(err.Error())
+			return response, err
+		}
+
+		err = a.AddOrUpdateDataInCache("RepoDebtXML", input, response)
+		if err != nil {
+			a.logger.Error(err.Error())
+			return response, err
+		}
+	}
+	return response, nil
+}

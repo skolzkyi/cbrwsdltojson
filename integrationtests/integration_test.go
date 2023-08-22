@@ -195,6 +195,14 @@ func (atc *AllTestCases) Init() {
 		Mode:          0,
 	}
 	atc.Cases = append(atc.Cases, curCase)
+	curCase = TestCase{
+		Method:        "RepoDebtXML",
+		Handler:       "/RepoDebtXML",
+		Request:       `{"FromDate":"2023-06-22","ToDate":"2023-06-23"}`,
+		OutputControl: `{"RD":[{"Date":"2023-06-22T00:00:00+03:00","debt":"1378387.6","debt_auc":"1378387.6","debt_fix":"0.0"},{"Date":"2023-06-23T00:00:00+03:00","debt":"1378379.7","debt_auc":"1378379.7","debt_fix":"0.0"}]}`,
+		Mode:          0,
+	}
+	atc.Cases = append(atc.Cases, curCase)
 }
 
 func XMLToStructDecoder(t *testing.T, data []byte, startNodeName string, pointerToStruct interface{}) {

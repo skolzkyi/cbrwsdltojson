@@ -63,6 +63,7 @@ type Application interface {
 	OstatDepoXML(ctx context.Context, input interface{}, rawBody string) (interface{}, error)
 	OstatDynamicXML(ctx context.Context, input interface{}, rawBody string) (interface{}, error)
 	OvernightXML(ctx context.Context, input interface{}, rawBody string) (interface{}, error)
+	RepoDebtXML(ctx context.Context, input interface{}, rawBody string) (interface{}, error)
 }
 
 func NewServer(logger Logger, app Application, config Config) *Server {
