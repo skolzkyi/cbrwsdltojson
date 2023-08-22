@@ -171,6 +171,23 @@ func (atc *AllTestCases) Init() {
 		Mode:          0,
 	}
 	atc.Cases = append(atc.Cases, curCase)
+	curCase = TestCase{
+		Method:        "OstatDepoXML",
+		Handler:       "/OstatDepoXML",
+		Request:       `{"FromDate":"2022-12-29","ToDate":"2022-12-30"}`,
+		OutputControl: `{"odr":[{"D0":"2022-12-29T00:00:00+03:00","D1_7":"1747362.67","D8_30":"2515151.15","total":"4262513.81"},{"D0":"2022-12-30T00:00:00+03:00","D1_7":"1387715.38","D8_30":"2515151.15","total":"3897866.53"}]}`,
+		Mode:          0,
+	}
+	atc.Cases = append(atc.Cases, curCase)
+	atc.Cases = append(atc.Cases, curCase)
+	curCase = TestCase{
+		Method:        "OstatDynamicXML",
+		Handler:       "/OstatDynamicXML",
+		Request:       `{"FromDate":"2023-06-22","ToDate":"2023-06-23"}`,
+		OutputControl: `{"Ostat":[{"DateOst":"2023-06-22T00:00:00+03:00","InRuss":"3756300.00","InMoscow":"3528600.00"},{"DateOst":"2023-06-23T00:00:00+03:00","InRuss":"3688300.00","InMoscow":"3441000.00"}]}`,
+		Mode:          0,
+	}
+	atc.Cases = append(atc.Cases, curCase)
 }
 
 func XMLToStructDecoder(t *testing.T, data []byte, startNodeName string, pointerToStruct interface{}) {
