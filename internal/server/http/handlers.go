@@ -229,3 +229,8 @@ func (s *Server) OvernightXML(w http.ResponseWriter, r *http.Request) {
 	newRequest := datastructures.OvernightXML{}
 	s.universalMethodHandler(w, r, &newRequest, s.app.OvernightXML)
 }
+
+func (s *Server) RepoDebtXML(w http.ResponseWriter, r *http.Request) {
+	newRequest := datastructures.Repo_debtXML{}
+	s.universalMethodHandler(w, r, &newRequest, s.app.RepoDebtXML)
+}
