@@ -44,7 +44,7 @@ func (config *ConfigMock) GetCBRWSDLTimeout() time.Duration {
 }
 
 func (config *ConfigMock) GetInfoExpirTime() time.Duration {
-	return 3 * time.Second
+	return time.Second
 }
 
 func (config *ConfigMock) GetCBRWSDLAddress() string {
@@ -223,6 +223,15 @@ func (srsm *SoapRequestSenderMock) SoapCall(_ context.Context, action string, in
 		}
 		if inputData.FromDate == cFromDate && inputData.ToDate == cToDate {
 			return []byte(`<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><soap:Body><OstatDepoNewXMLResponse xmlns="http://web.cbr.ru/"><OstatDepoNewXMLResult><OD xmlns=""><odn><DT>2023-06-22T00:00:00Z</DT><TOTAL>2872966.59</TOTAL><AUC_1W>1828340.00</AUC_1W><OV_P>1044626.59</OV_P></odn><odn><DT>2023-06-23T00:00:00Z</DT><TOTAL>2890199.16</TOTAL><AUC_1W>1828340.00</AUC_1W><OV_P>1061859.16</OV_P></odn></OD></OstatDepoNewXMLResult></OstatDepoNewXMLResponse></soap:Body></soap:Envelope>`), nil
+		}
+		return nil, customsoap.ErrContextWSReqExpired
+	case "OstatDepoXML":
+		inputData, ok := input.(datastructures.OstatDepoXML)
+		if !ok {
+			return nil, ErrAssertion
+		}
+		if inputData.FromDate == "2022-12-29" && inputData.ToDate == "2022-12-30" {
+			return []byte(`<OstatDepoXMLResult><OD xmlns=""><odr><D0>2022-12-29T00:00:00Z</D0><D1_7>1747362.67</D1_7><D8_30>2515151.15</D8_30><total>4262513.81</total></odr><odr><D0>2022-12-30T00:00:00Z</D0><D1_7>1387715.38</D1_7><D8_30>2515151.15</D8_30><total>3897866.53</total></odr></OD></OstatDepoXMLResult>`), nil
 		}
 		return nil, customsoap.ErrContextWSReqExpired
 	default:

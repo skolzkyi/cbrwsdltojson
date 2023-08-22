@@ -38,7 +38,7 @@ type OstatDepoXMLResult struct {
 
 type OstatDepoXMLResultElem struct {
 	D0    time.Time `xml:"D0" json:"D0"`
-	D1_7  string    `xml:"D1_7" json:"D1_7"`   //nolint:revive, stylecheck
-	D8_30 string    `xml:"D8_30" json:"D8_30"` //nolint:revive, stylecheck
-	Total string    `xml:"total" json:"total"` //nolint:revive, stylecheck
+	D1_7  string    `xml:"D1_7" json:"D1_7"`   //nolint:revive, stylecheck, nolintlint
+	D8_30 string    `xml:"D8_30" json:"D8_30"` //nolint:revive, stylecheck, nolintlint
+	Total string    `xml:"total" json:"total"` //nolint:revive, stylecheck, nolintlint
 }
