@@ -81,6 +81,8 @@ func initAllDatastructuresTestTable(t *testing.T) AllDatastructuresTestTable {
 	AllDTTable = append(AllDTTable, curDatastructuresTestTable)
 	curDatastructuresTestTable = initTestCasesOstatDynamicXML(t)
 	AllDTTable = append(AllDTTable, curDatastructuresTestTable)
+	curDatastructuresTestTable = initTestCasesOvernightXML(t)
+	AllDTTable = append(AllDTTable, curDatastructuresTestTable)
 	return AllDTTable
 }
 
@@ -2099,6 +2101,137 @@ func initTestCasesOstatDynamicXML(t *testing.T) DatastructuresTestTable { // nol
 		DSAssert, ok := Datastructure.(datastructures.OstatDynamicXMLResult)
 		if !ok {
 			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:OstatDynamicXMLResult")
+		}
+		marshXMLres, err := xml.Marshal(DSAssert)
+		require.NoError(t, err)
+		require.Equal(t, XMLMarshalControl, string(marshXMLres))
+	}
+	newCase.ValidateControlTestFunc = func(_ *testing.T, _ interface{}, _ error) {}
+	DatastructuresTest.OutputDataCases[0] = newCase
+	return DatastructuresTest
+}
+
+func initTestCasesOvernightXML(t *testing.T) DatastructuresTestTable { // nolint:funlen, nolintlint
+	t.Helper()
+	DatastructuresTest := DatastructuresTestTable{}
+	DatastructuresTest.MethodName = "OvernightXML"
+	DatastructuresTest.InputDataCases = make([]DatastructuresTestCase, 4)
+	DatastructuresTest.OutputDataCases = make([]DatastructuresTestCase, 1)
+	var newCase DatastructuresTestCase
+	newCase = DatastructuresTestCase{
+		Name:              "XMLMarshalControlIn",
+		DataStructureType: "OvernightXML",
+		Datastructure: datastructures.OvernightXML{
+			FromDate: "2023-07-22",
+			ToDate:   "2023-08-16",
+			XMLNs:    "http://web.cbr.ru/",
+		},
+		NeedXMLMarshal:    true,
+		XMLMarshalControl: `<OvernightXML xmlns="http://web.cbr.ru/"><fromDate>2023-07-22</fromDate><ToDate>2023-08-16</ToDate></OvernightXML>`,
+	}
+	newCase.MarshalXMLTestFunc = func(t *testing.T, Datastructure interface{}, XMLMarshalControl string) {
+		t.Helper()
+		DSAssert, ok := Datastructure.(datastructures.OvernightXML)
+		if !ok {
+			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:OvernightXML")
+		}
+		marshXMLres, err := xml.Marshal(DSAssert)
+		require.NoError(t, err)
+		require.Equal(t, XMLMarshalControl, string(marshXMLres))
+	}
+	newCase.ValidateControlTestFunc = func(_ *testing.T, _ interface{}, _ error) {}
+	DatastructuresTest.InputDataCases[0] = newCase
+	newCase = DatastructuresTestCase{
+		Name:              "ValidateControlNegativeBadRawData",
+		DataStructureType: "OvernightXML",
+		Datastructure: datastructures.OvernightXML{
+			FromDate: "022-14-23",
+			ToDate:   "2023-08-16",
+			XMLNs:    "http://web.cbr.ru/",
+		},
+		NeedValidate:    true,
+		ValidateControl: datastructures.ErrBadRawData,
+	}
+	newCase.MarshalXMLTestFunc = func(_ *testing.T, _ interface{}, _ string) {}
+	newCase.ValidateControlTestFunc = func(t *testing.T, Datastructure interface{}, ValidateControl error) {
+		t.Helper()
+		DSAssert, ok := Datastructure.(datastructures.OvernightXML)
+		if !ok {
+			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:OvernightXML")
+		}
+		err := DSAssert.Validate()
+		require.Equal(t, ValidateControl, err)
+	}
+	DatastructuresTest.InputDataCases[1] = newCase
+	newCase = DatastructuresTestCase{
+		Name:              "ValidateControlNegativeFromDateAfterToDate",
+		DataStructureType: "OvernightXML",
+		Datastructure: datastructures.OvernightXML{
+			FromDate: "2023-08-16",
+			ToDate:   "2023-07-22",
+			XMLNs:    "http://web.cbr.ru/",
+		},
+		NeedValidate:    true,
+		ValidateControl: datastructures.ErrBadInputDateData,
+	}
+	newCase.MarshalXMLTestFunc = func(_ *testing.T, _ interface{}, _ string) {}
+	newCase.ValidateControlTestFunc = func(t *testing.T, Datastructure interface{}, ValidateControl error) {
+		t.Helper()
+		DSAssert, ok := Datastructure.(datastructures.OvernightXML)
+		if !ok {
+			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:OvernightXML")
+		}
+		err := DSAssert.Validate()
+		require.Equal(t, ValidateControl, err)
+	}
+	DatastructuresTest.InputDataCases[2] = newCase
+	newCase = DatastructuresTestCase{
+		Name:              "ValidateControlPositive",
+		DataStructureType: "OvernightXML",
+		Datastructure: datastructures.OvernightXML{
+			FromDate: "2023-07-22",
+			ToDate:   "2023-08-16",
+			XMLNs:    "http://web.cbr.ru/",
+		},
+		NeedValidate:    true,
+		ValidateControl: nil,
+	}
+	newCase.MarshalXMLTestFunc = func(_ *testing.T, _ interface{}, _ string) {}
+	newCase.ValidateControlTestFunc = func(t *testing.T, Datastructure interface{}, ValidateControl error) {
+		t.Helper()
+		DSAssert, ok := Datastructure.(datastructures.OvernightXML)
+		if !ok {
+			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:OvernightXML")
+		}
+		err := DSAssert.Validate()
+		require.Equal(t, ValidateControl, err)
+	}
+	DatastructuresTest.InputDataCases[3] = newCase
+	testOvernightXMLResult := datastructures.OvernightXMLResult{
+		OB: make([]datastructures.OvernightXMLResultElem, 2),
+	}
+	testOvernightXMLElem := datastructures.OvernightXMLResultElem{
+		Date:   time.Date(2023, time.July, 24, 0, 0, 0, 0, time.UTC),
+		Stavka: "9.50",
+	}
+	testOvernightXMLResult.OB[0] = testOvernightXMLElem
+	testOvernightXMLElem = datastructures.OvernightXMLResultElem{
+		Date:   time.Date(2023, time.August, 15, 0, 0, 0, 0, time.UTC),
+		Stavka: "13.00",
+	}
+	testOvernightXMLResult.OB[1] = testOvernightXMLElem
+	newCase = DatastructuresTestCase{
+		Name:              "XMLMarshalControlOut",
+		DataStructureType: "vernightXML",
+		Datastructure:     testOvernightXMLResult,
+		NeedXMLMarshal:    true,
+		XMLMarshalControl: `<OvernightXMLResult><OB><date>2023-07-24T00:00:00Z</date><stavka>9.50</stavka></OB><OB><date>2023-08-15T00:00:00Z</date><stavka>13.00</stavka></OB></OvernightXMLResult>`,
+	}
+	newCase.MarshalXMLTestFunc = func(t *testing.T, Datastructure interface{}, XMLMarshalControl string) {
+		t.Helper()
+		DSAssert, ok := Datastructure.(datastructures.OvernightXMLResult)
+		if !ok {
+			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:OvernightXMLResult")
 		}
 		marshXMLres, err := xml.Marshal(DSAssert)
 		require.NoError(t, err)
