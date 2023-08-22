@@ -135,6 +135,9 @@ func createStandartTestCacheCases(t *testing.T, input interface{}, output interf
 
 func getTagForCache(t *testing.T, SOAPMethod string, request interface{}) string { //nolint: gocritic
 	t.Helper()
+	if SOAPMethod == "Repo_debtXML" {
+		SOAPMethod = "RepoDebtXML" // fix changing name real SOAP method and Handlename TODO
+	}
 	jsonstring, err := json.Marshal(request)
 	require.NoError(t, err)
 	return SOAPMethod + string(jsonstring)
@@ -1141,9 +1144,64 @@ func initTestDataOvernightXML(t *testing.T) AppTestTable {
 	return testDataOvernightXML
 }
 
+// Repo_debtXML.
+func initTestDataRepo_debtXML(t *testing.T) AppTestTable { //nolint:revive, stylecheck, nolintlint
+	t.Helper()
+	testDataORepo_debtXML := AppTestTable{ //nolint:revive, stylecheck, nolintlint
+		MethodName: "Repo_debtXML",
+		Method:     (*app.App).RepoDebtXML,
+	}
+	testRepo_debtXMLResult := datastructures.Repo_debtXMLResult{ //nolint:revive, stylecheck, nolintlint
+		RD: make([]datastructures.Repo_debtXMLResultElem, 2),
+	}
+	testRepo_debtXMLElem := datastructures.Repo_debtXMLResultElem{ //nolint:revive, stylecheck, nolintlint
+		Date:     time.Date(2023, time.June, 22, 0, 0, 0, 0, time.UTC),
+		Debt:     "1378387.6",
+		Debt_auc: "1378387.6",
+		Debt_fix: "0.0",
+	}
+	testRepo_debtXMLResult.RD[0] = testRepo_debtXMLElem
+	testRepo_debtXMLElem = datastructures.Repo_debtXMLResultElem{
+		Date:     time.Date(2023, time.June, 23, 0, 0, 0, 0, time.UTC),
+		Debt:     "1378379.7",
+		Debt_auc: "1378379.7",
+		Debt_fix: "0.0",
+	}
+	testRepo_debtXMLResult.RD[1] = testRepo_debtXMLElem
+	testCases := make([]AppTestCase, 2)
+	testCases[0] = AppTestCase{
+		Name: "Positive",
+		Input: &datastructures.Repo_debtXML{
+			FromDate: "2023-06-22",
+			ToDate:   "2023-06-23",
+		},
+		Output: testRepo_debtXMLResult,
+		Error:  nil,
+	}
+
+	testCases[1] = AppTestCase{
+		Name: "Negative",
+		Input: &datastructures.Repo_debtXML{
+			FromDate: "022-14-22",
+			ToDate:   "2023-06-23",
+		},
+		Output: datastructures.Repo_debtXMLResult{},
+		Error:  customsoap.ErrContextWSReqExpired,
+	}
+	standartTestCacheCases := createStandartTestCacheCases(t, &datastructures.Repo_debtXML{
+		FromDate: "2023-06-22",
+		ToDate:   "2023-06-23",
+	}, testRepo_debtXMLResult)
+
+	testDataORepo_debtXML.TestCases = testCases
+	testDataORepo_debtXML.TestCases = append(testDataORepo_debtXML.TestCases, standartTestCacheCases...)
+
+	return testDataORepo_debtXML
+}
+
 func TestAllAppCases(t *testing.T) { //nolint:gocognit, nolintlint, gocyclo, funlen
 	acTable := AllCasesTable{}
-	acTable.CasesByMethod = make([]AppTestTable, 18)
+	acTable.CasesByMethod = make([]AppTestTable, 19)
 	acTable.CasesByMethod[0] = initTestDataGetCursOnDateXML(t)
 	acTable.CasesByMethod[1] = initTestDataBiCurBaseXML(t)
 	acTable.CasesByMethod[2] = initTestDataBliquidityXML(t)
@@ -1162,6 +1220,7 @@ func TestAllAppCases(t *testing.T) { //nolint:gocognit, nolintlint, gocyclo, fun
 	acTable.CasesByMethod[15] = initTestDataOstatDepoXML(t)
 	acTable.CasesByMethod[16] = initTestDataOstatDynamicXML(t)
 	acTable.CasesByMethod[17] = initTestDataOvernightXML(t)
+	acTable.CasesByMethod[18] = initTestDataRepo_debtXML(t)
 	t.Parallel()
 	for _, curMethodTable := range acTable.CasesByMethod {
 		curMethodTable := curMethodTable

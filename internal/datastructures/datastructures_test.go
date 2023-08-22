@@ -83,6 +83,8 @@ func initAllDatastructuresTestTable(t *testing.T) AllDatastructuresTestTable {
 	AllDTTable = append(AllDTTable, curDatastructuresTestTable)
 	curDatastructuresTestTable = initTestCasesOvernightXML(t)
 	AllDTTable = append(AllDTTable, curDatastructuresTestTable)
+	curDatastructuresTestTable = initTestCasesRepoDebtXML(t)
+	AllDTTable = append(AllDTTable, curDatastructuresTestTable)
 	return AllDTTable
 }
 
@@ -2222,7 +2224,7 @@ func initTestCasesOvernightXML(t *testing.T) DatastructuresTestTable { // nolint
 	testOvernightXMLResult.OB[1] = testOvernightXMLElem
 	newCase = DatastructuresTestCase{
 		Name:              "XMLMarshalControlOut",
-		DataStructureType: "vernightXML",
+		DataStructureType: "OvernightXML",
 		Datastructure:     testOvernightXMLResult,
 		NeedXMLMarshal:    true,
 		XMLMarshalControl: `<OvernightXMLResult><OB><date>2023-07-24T00:00:00Z</date><stavka>9.50</stavka></OB><OB><date>2023-08-15T00:00:00Z</date><stavka>13.00</stavka></OB></OvernightXMLResult>`,
@@ -2232,6 +2234,141 @@ func initTestCasesOvernightXML(t *testing.T) DatastructuresTestTable { // nolint
 		DSAssert, ok := Datastructure.(datastructures.OvernightXMLResult)
 		if !ok {
 			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:OvernightXMLResult")
+		}
+		marshXMLres, err := xml.Marshal(DSAssert)
+		require.NoError(t, err)
+		require.Equal(t, XMLMarshalControl, string(marshXMLres))
+	}
+	newCase.ValidateControlTestFunc = func(_ *testing.T, _ interface{}, _ error) {}
+	DatastructuresTest.OutputDataCases[0] = newCase
+	return DatastructuresTest
+}
+
+func initTestCasesRepoDebtXML(t *testing.T) DatastructuresTestTable { // nolint:funlen, nolintlint
+	t.Helper()
+	DatastructuresTest := DatastructuresTestTable{}
+	DatastructuresTest.MethodName = "Repo_debtXML"
+	DatastructuresTest.InputDataCases = make([]DatastructuresTestCase, 4)
+	DatastructuresTest.OutputDataCases = make([]DatastructuresTestCase, 1)
+	var newCase DatastructuresTestCase
+	newCase = DatastructuresTestCase{
+		Name:              "XMLMarshalControlIn",
+		DataStructureType: "Repo_debtXML",
+		Datastructure: datastructures.Repo_debtXML{
+			FromDate: "2023-07-22",
+			ToDate:   "2023-08-16",
+			XMLNs:    "http://web.cbr.ru/",
+		},
+		NeedXMLMarshal:    true,
+		XMLMarshalControl: `<Repo_debtXML xmlns="http://web.cbr.ru/"><fromDate>2023-07-22</fromDate><ToDate>2023-08-16</ToDate></Repo_debtXML>`,
+	}
+	newCase.MarshalXMLTestFunc = func(t *testing.T, Datastructure interface{}, XMLMarshalControl string) {
+		t.Helper()
+		DSAssert, ok := Datastructure.(datastructures.Repo_debtXML)
+		if !ok {
+			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:Repo_debtXML")
+		}
+		marshXMLres, err := xml.Marshal(DSAssert)
+		require.NoError(t, err)
+		require.Equal(t, XMLMarshalControl, string(marshXMLres))
+	}
+	newCase.ValidateControlTestFunc = func(_ *testing.T, _ interface{}, _ error) {}
+	DatastructuresTest.InputDataCases[0] = newCase
+	newCase = DatastructuresTestCase{
+		Name:              "ValidateControlNegativeBadRawData",
+		DataStructureType: "Repo_debtXML",
+		Datastructure: datastructures.Repo_debtXML{
+			FromDate: "022-14-23",
+			ToDate:   "2023-08-16",
+			XMLNs:    "http://web.cbr.ru/",
+		},
+		NeedValidate:    true,
+		ValidateControl: datastructures.ErrBadRawData,
+	}
+	newCase.MarshalXMLTestFunc = func(_ *testing.T, _ interface{}, _ string) {}
+	newCase.ValidateControlTestFunc = func(t *testing.T, Datastructure interface{}, ValidateControl error) {
+		t.Helper()
+		DSAssert, ok := Datastructure.(datastructures.Repo_debtXML)
+		if !ok {
+			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:Repo_debtXML")
+		}
+		err := DSAssert.Validate()
+		require.Equal(t, ValidateControl, err)
+	}
+	DatastructuresTest.InputDataCases[1] = newCase
+	newCase = DatastructuresTestCase{
+		Name:              "ValidateControlNegativeFromDateAfterToDate",
+		DataStructureType: "Repo_debtXML",
+		Datastructure: datastructures.Repo_debtXML{
+			FromDate: "2023-08-16",
+			ToDate:   "2023-07-22",
+			XMLNs:    "http://web.cbr.ru/",
+		},
+		NeedValidate:    true,
+		ValidateControl: datastructures.ErrBadInputDateData,
+	}
+	newCase.MarshalXMLTestFunc = func(_ *testing.T, _ interface{}, _ string) {}
+	newCase.ValidateControlTestFunc = func(t *testing.T, Datastructure interface{}, ValidateControl error) {
+		t.Helper()
+		DSAssert, ok := Datastructure.(datastructures.Repo_debtXML)
+		if !ok {
+			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:Repo_debtXML")
+		}
+		err := DSAssert.Validate()
+		require.Equal(t, ValidateControl, err)
+	}
+	DatastructuresTest.InputDataCases[2] = newCase
+	newCase = DatastructuresTestCase{
+		Name:              "ValidateControlPositive",
+		DataStructureType: "Repo_debtXML",
+		Datastructure: datastructures.Repo_debtXML{
+			FromDate: "2023-07-22",
+			ToDate:   "2023-08-16",
+			XMLNs:    "http://web.cbr.ru/",
+		},
+		NeedValidate:    true,
+		ValidateControl: nil,
+	}
+	newCase.MarshalXMLTestFunc = func(_ *testing.T, _ interface{}, _ string) {}
+	newCase.ValidateControlTestFunc = func(t *testing.T, Datastructure interface{}, ValidateControl error) {
+		t.Helper()
+		DSAssert, ok := Datastructure.(datastructures.Repo_debtXML)
+		if !ok {
+			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:Repo_debtXML")
+		}
+		err := DSAssert.Validate()
+		require.Equal(t, ValidateControl, err)
+	}
+	DatastructuresTest.InputDataCases[3] = newCase
+	testRepo_debtXMLResult := datastructures.Repo_debtXMLResult{ //nolint:revive, stylecheck, nolintlint
+		RD: make([]datastructures.Repo_debtXMLResultElem, 2),
+	}
+	testRepo_debtXMLElem := datastructures.Repo_debtXMLResultElem{ //nolint:revive, stylecheck, nolintlint
+		Date:     time.Date(2023, time.June, 22, 0, 0, 0, 0, time.UTC),
+		Debt:     "1378387.6",
+		Debt_auc: "1378387.6",
+		Debt_fix: "0.0",
+	}
+	testRepo_debtXMLResult.RD[0] = testRepo_debtXMLElem
+	testRepo_debtXMLElem = datastructures.Repo_debtXMLResultElem{
+		Date:     time.Date(2023, time.June, 23, 0, 0, 0, 0, time.UTC),
+		Debt:     "1378379.7",
+		Debt_auc: "1378379.7",
+		Debt_fix: "0.0",
+	}
+	testRepo_debtXMLResult.RD[1] = testRepo_debtXMLElem
+	newCase = DatastructuresTestCase{
+		Name:              "XMLMarshalControlOut",
+		DataStructureType: "Repo_debtXML",
+		Datastructure:     testRepo_debtXMLResult,
+		NeedXMLMarshal:    true,
+		XMLMarshalControl: `<Repo_debtXMLResult><RD><Date>2023-06-22T00:00:00Z</Date><debt>1378387.6</debt><debt_auc>1378387.6</debt_auc><debt_fix>0.0</debt_fix></RD><RD><Date>2023-06-23T00:00:00Z</Date><debt>1378379.7</debt><debt_auc>1378379.7</debt_auc><debt_fix>0.0</debt_fix></RD></Repo_debtXMLResult>`,
+	}
+	newCase.MarshalXMLTestFunc = func(t *testing.T, Datastructure interface{}, XMLMarshalControl string) {
+		t.Helper()
+		DSAssert, ok := Datastructure.(datastructures.Repo_debtXMLResult)
+		if !ok {
+			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:Repo_debtXMLResult")
 		}
 		marshXMLres, err := xml.Marshal(DSAssert)
 		require.NoError(t, err)

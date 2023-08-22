@@ -33,10 +33,10 @@ func (data *Repo_debtXML) Validate() error {
 
 type Repo_debtXMLResult struct { //nolint:revive, stylecheck, nolintlint
 	// Repo_debt node
-	RD []Repo_debtXMLResultElem `xml:"RD" json:"RD"`
+	RD []Repo_debtXMLResultElem `xml:"RD" json:"RD"` //nolint:revive, stylecheck, nolintlint
 }
 
-type Repo_debtXMLResultElem struct {
+type Repo_debtXMLResultElem struct { //nolint:revive, stylecheck, nolintlint
 	Date     time.Time `xml:"Date" json:"Date"`
 	Debt     string    `xml:"debt" json:"debt"`
 	Debt_auc string    `xml:"debt_auc" json:"debt_auc"` //nolint:revive, stylecheck, nolintlint
