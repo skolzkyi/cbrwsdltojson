@@ -134,3 +134,9 @@
         <li>response: {"OB":[{"date":"2023-07-24T00:00:00+03:00","stavka":"9.50"},{"date":"2023-08-15T00:00:00+03:00","stavka":"13.00"}]}</li>
     </ul>
    </details>
+   <details><summary><b>Repo_debtXML</b></summary>
+    <ul>
+        <li>request: {"FromDate":"2023-06-22","ToDate":"2023-06-23"}</li>
+        <li>response: {"RD":[{"Date":"2023-06-22T00:00:00+03:00","debt":"1378387.6","debt_auc":"1378387.6","debt_fix":"0.0"},{"Date":"2023-06-23T00:00:00+03:00","debt":"1378379.7","debt_auc":"1378379.7","debt_fix":"0.0"}]}</li>
+    </ul>
+   </details>
