@@ -224,3 +224,8 @@ func (s *Server) OstatDynamicXML(w http.ResponseWriter, r *http.Request) {
 	newRequest := datastructures.OstatDynamicXML{}
 	s.universalMethodHandler(w, r, &newRequest, s.app.OstatDynamicXML)
 }
+
+func (s *Server) OvernightXML(w http.ResponseWriter, r *http.Request) {
+	newRequest := datastructures.OvernightXML{}
+	s.universalMethodHandler(w, r, &newRequest, s.app.OvernightXML)
+}
