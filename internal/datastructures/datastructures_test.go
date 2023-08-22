@@ -79,6 +79,8 @@ func initAllDatastructuresTestTable(t *testing.T) AllDatastructuresTestTable {
 	AllDTTable = append(AllDTTable, curDatastructuresTestTable)
 	curDatastructuresTestTable = initTestCasesOstatDepoXML(t)
 	AllDTTable = append(AllDTTable, curDatastructuresTestTable)
+	curDatastructuresTestTable = initTestCasesOstatDynamicXML(t)
+	AllDTTable = append(AllDTTable, curDatastructuresTestTable)
 	return AllDTTable
 }
 
@@ -1964,6 +1966,139 @@ func initTestCasesOstatDepoXML(t *testing.T) DatastructuresTestTable { // nolint
 		DSAssert, ok := Datastructure.(datastructures.OstatDepoXMLResult)
 		if !ok {
 			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:OstatDepoXMLResult")
+		}
+		marshXMLres, err := xml.Marshal(DSAssert)
+		require.NoError(t, err)
+		require.Equal(t, XMLMarshalControl, string(marshXMLres))
+	}
+	newCase.ValidateControlTestFunc = func(_ *testing.T, _ interface{}, _ error) {}
+	DatastructuresTest.OutputDataCases[0] = newCase
+	return DatastructuresTest
+}
+
+func initTestCasesOstatDynamicXML(t *testing.T) DatastructuresTestTable { // nolint:funlen, nolintlint
+	t.Helper()
+	DatastructuresTest := DatastructuresTestTable{}
+	DatastructuresTest.MethodName = "OstatDynamicXML"
+	DatastructuresTest.InputDataCases = make([]DatastructuresTestCase, 4)
+	DatastructuresTest.OutputDataCases = make([]DatastructuresTestCase, 1)
+	var newCase DatastructuresTestCase
+	newCase = DatastructuresTestCase{
+		Name:              "XMLMarshalControlIn",
+		DataStructureType: "OstatDynamicXML",
+		Datastructure: datastructures.OstatDynamicXML{
+			FromDate: "2023-06-22",
+			ToDate:   "2023-06-23",
+			XMLNs:    "http://web.cbr.ru/",
+		},
+		NeedXMLMarshal:    true,
+		XMLMarshalControl: `<OstatDynamicXML xmlns="http://web.cbr.ru/"><fromDate>2023-06-22</fromDate><ToDate>2023-06-23</ToDate></OstatDynamicXML>`,
+	}
+	newCase.MarshalXMLTestFunc = func(t *testing.T, Datastructure interface{}, XMLMarshalControl string) {
+		t.Helper()
+		DSAssert, ok := Datastructure.(datastructures.OstatDynamicXML)
+		if !ok {
+			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:OstatDynamicXML")
+		}
+		marshXMLres, err := xml.Marshal(DSAssert)
+		require.NoError(t, err)
+		require.Equal(t, XMLMarshalControl, string(marshXMLres))
+	}
+	newCase.ValidateControlTestFunc = func(_ *testing.T, _ interface{}, _ error) {}
+	DatastructuresTest.InputDataCases[0] = newCase
+	newCase = DatastructuresTestCase{
+		Name:              "ValidateControlNegativeBadRawData",
+		DataStructureType: "OstatDynamicXML",
+		Datastructure: datastructures.OstatDynamicXML{
+			FromDate: "022-14-23",
+			ToDate:   "2023-06-23",
+			XMLNs:    "http://web.cbr.ru/",
+		},
+		NeedValidate:    true,
+		ValidateControl: datastructures.ErrBadRawData,
+	}
+	newCase.MarshalXMLTestFunc = func(_ *testing.T, _ interface{}, _ string) {}
+	newCase.ValidateControlTestFunc = func(t *testing.T, Datastructure interface{}, ValidateControl error) {
+		t.Helper()
+		DSAssert, ok := Datastructure.(datastructures.OstatDepoXML)
+		if !ok {
+			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:OstatDynamicXML")
+		}
+		err := DSAssert.Validate()
+		require.Equal(t, ValidateControl, err)
+	}
+	DatastructuresTest.InputDataCases[1] = newCase
+	newCase = DatastructuresTestCase{
+		Name:              "ValidateControlNegativeFromDateAfterToDate",
+		DataStructureType: "OstatDynamicXML",
+		Datastructure: datastructures.OstatDynamicXML{
+			FromDate: "2023-06-23",
+			ToDate:   "2023-06-22",
+			XMLNs:    "http://web.cbr.ru/",
+		},
+		NeedValidate:    true,
+		ValidateControl: datastructures.ErrBadInputDateData,
+	}
+	newCase.MarshalXMLTestFunc = func(_ *testing.T, _ interface{}, _ string) {}
+	newCase.ValidateControlTestFunc = func(t *testing.T, Datastructure interface{}, ValidateControl error) {
+		t.Helper()
+		DSAssert, ok := Datastructure.(datastructures.OstatDynamicXML)
+		if !ok {
+			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:OstatDynamicXML")
+		}
+		err := DSAssert.Validate()
+		require.Equal(t, ValidateControl, err)
+	}
+	DatastructuresTest.InputDataCases[2] = newCase
+	newCase = DatastructuresTestCase{
+		Name:              "ValidateControlPositive",
+		DataStructureType: "OstatDynamicXML",
+		Datastructure: datastructures.OstatDynamicXML{
+			FromDate: "2023-06-22",
+			ToDate:   "2023-06-23",
+			XMLNs:    "http://web.cbr.ru/",
+		},
+		NeedValidate:    true,
+		ValidateControl: nil,
+	}
+	newCase.MarshalXMLTestFunc = func(_ *testing.T, _ interface{}, _ string) {}
+	newCase.ValidateControlTestFunc = func(t *testing.T, Datastructure interface{}, ValidateControl error) {
+		t.Helper()
+		DSAssert, ok := Datastructure.(datastructures.OstatDynamicXML)
+		if !ok {
+			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:OstatDynamicXML")
+		}
+		err := DSAssert.Validate()
+		require.Equal(t, ValidateControl, err)
+	}
+	DatastructuresTest.InputDataCases[3] = newCase
+	testOstatDynamicXMLResult := datastructures.OstatDynamicXMLResult{
+		Ostat: make([]datastructures.OstatDynamicXMLResultElem, 2),
+	}
+	testOstatDynamicXMLElem := datastructures.OstatDynamicXMLResultElem{
+		DateOst:  time.Date(2023, time.June, 22, 0, 0, 0, 0, time.UTC),
+		InRuss:   "3756300.00",
+		InMoscow: "3528600.00",
+	}
+	testOstatDynamicXMLResult.Ostat[0] = testOstatDynamicXMLElem
+	testOstatDynamicXMLElem = datastructures.OstatDynamicXMLResultElem{
+		DateOst:  time.Date(2023, time.June, 23, 0, 0, 0, 0, time.UTC),
+		InRuss:   "3688300.00",
+		InMoscow: "3441000.00",
+	}
+	testOstatDynamicXMLResult.Ostat[1] = testOstatDynamicXMLElem
+	newCase = DatastructuresTestCase{
+		Name:              "XMLMarshalControlOut",
+		DataStructureType: "OstatDepoXML",
+		Datastructure:     testOstatDynamicXMLResult,
+		NeedXMLMarshal:    true,
+		XMLMarshalControl: `<OstatDynamicXMLResult><Ostat><DateOst>2023-06-22T00:00:00Z</DateOst><InRuss>3756300.00</InRuss><InMoscow>3528600.00</InMoscow></Ostat><Ostat><DateOst>2023-06-23T00:00:00Z</DateOst><InRuss>3688300.00</InRuss><InMoscow>3441000.00</InMoscow></Ostat></OstatDynamicXMLResult>`,
+	}
+	newCase.MarshalXMLTestFunc = func(t *testing.T, Datastructure interface{}, XMLMarshalControl string) {
+		t.Helper()
+		DSAssert, ok := Datastructure.(datastructures.OstatDynamicXMLResult)
+		if !ok {
+			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:OstatDynamicXMLResult")
 		}
 		marshXMLres, err := xml.Marshal(DSAssert)
 		require.NoError(t, err)

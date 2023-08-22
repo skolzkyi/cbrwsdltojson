@@ -1037,9 +1037,62 @@ func initTestDataOstatDepoXML(t *testing.T) AppTestTable {
 	return testDataOstatDepoXML
 }
 
+// OstatDynamicXML.
+func initTestDataOstatDynamicXML(t *testing.T) AppTestTable {
+	t.Helper()
+	testDataOstatDynamicXML := AppTestTable{
+		MethodName: "OstatDynamicXML",
+		Method:     (*app.App).OstatDynamicXML,
+	}
+	testOstatDynamicXMLResult := datastructures.OstatDynamicXMLResult{
+		Ostat: make([]datastructures.OstatDynamicXMLResultElem, 2),
+	}
+	testOstatDynamicXMLElem := datastructures.OstatDynamicXMLResultElem{
+		DateOst:  time.Date(2023, time.June, 22, 0, 0, 0, 0, time.UTC),
+		InRuss:   "3756300.00",
+		InMoscow: "3528600.00",
+	}
+	testOstatDynamicXMLResult.Ostat[0] = testOstatDynamicXMLElem
+	testOstatDynamicXMLElem = datastructures.OstatDynamicXMLResultElem{
+		DateOst:  time.Date(2023, time.June, 23, 0, 0, 0, 0, time.UTC),
+		InRuss:   "3688300.00",
+		InMoscow: "3441000.00",
+	}
+	testOstatDynamicXMLResult.Ostat[1] = testOstatDynamicXMLElem
+	testCases := make([]AppTestCase, 2)
+	testCases[0] = AppTestCase{
+		Name: "Positive",
+		Input: &datastructures.OstatDynamicXML{
+			FromDate: "2023-06-22",
+			ToDate:   "2023-06-23",
+		},
+		Output: testOstatDynamicXMLResult,
+		Error:  nil,
+	}
+
+	testCases[1] = AppTestCase{
+		Name: "Negative",
+		Input: &datastructures.OstatDynamicXML{
+			FromDate: "022-14-22",
+			ToDate:   "2023-06-23",
+		},
+		Output: datastructures.OstatDynamicXMLResult{},
+		Error:  customsoap.ErrContextWSReqExpired,
+	}
+	standartTestCacheCases := createStandartTestCacheCases(t, &datastructures.OstatDynamicXML{
+		FromDate: "2023-06-22",
+		ToDate:   "2023-06-23",
+	}, testOstatDynamicXMLResult)
+
+	testDataOstatDynamicXML.TestCases = testCases
+	testDataOstatDynamicXML.TestCases = append(testDataOstatDynamicXML.TestCases, standartTestCacheCases...)
+
+	return testDataOstatDynamicXML
+}
+
 func TestAllAppCases(t *testing.T) { //nolint:gocognit, nolintlint, gocyclo, funlen
 	acTable := AllCasesTable{}
-	acTable.CasesByMethod = make([]AppTestTable, 16)
+	acTable.CasesByMethod = make([]AppTestTable, 17)
 	acTable.CasesByMethod[0] = initTestDataGetCursOnDateXML(t)
 	acTable.CasesByMethod[1] = initTestDataBiCurBaseXML(t)
 	acTable.CasesByMethod[2] = initTestDataBliquidityXML(t)
@@ -1056,6 +1109,7 @@ func TestAllAppCases(t *testing.T) { //nolint:gocognit, nolintlint, gocyclo, fun
 	acTable.CasesByMethod[13] = initTestDataOmodInfoXML(t)
 	acTable.CasesByMethod[14] = initTestDataOstatDepoNewXML(t)
 	acTable.CasesByMethod[15] = initTestDataOstatDepoXML(t)
+	acTable.CasesByMethod[16] = initTestDataOstatDynamicXML(t)
 	t.Parallel()
 	for _, curMethodTable := range acTable.CasesByMethod {
 		curMethodTable := curMethodTable

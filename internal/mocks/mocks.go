@@ -234,6 +234,15 @@ func (srsm *SoapRequestSenderMock) SoapCall(_ context.Context, action string, in
 			return []byte(`<OstatDepoXMLResult><OD xmlns=""><odr><D0>2022-12-29T00:00:00Z</D0><D1_7>1747362.67</D1_7><D8_30>2515151.15</D8_30><total>4262513.81</total></odr><odr><D0>2022-12-30T00:00:00Z</D0><D1_7>1387715.38</D1_7><D8_30>2515151.15</D8_30><total>3897866.53</total></odr></OD></OstatDepoXMLResult>`), nil
 		}
 		return nil, customsoap.ErrContextWSReqExpired
+	case "OstatDynamicXML":
+		inputData, ok := input.(datastructures.OstatDynamicXML)
+		if !ok {
+			return nil, ErrAssertion
+		}
+		if inputData.FromDate == cFromDate && inputData.ToDate == cToDate {
+			return []byte(`<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><soap:Body><OstatDynamicXMLResponse xmlns="http://web.cbr.ru/"><OstatDynamicXMLResult><OstatDynamic xmlns=""><Ostat><DateOst>2023-06-22T00:00:00Z</DateOst><InRuss>3756300.00</InRuss><InMoscow>3528600.00</InMoscow></Ostat><Ostat><DateOst>2023-06-23T00:00:00Z</DateOst><InRuss>3688300.00</InRuss><InMoscow>3441000.00</InMoscow></Ostat></OstatDynamic></OstatDynamicXMLResult></OstatDynamicXMLResponse></soap:Body></soap:Envelope>`), nil
+		}
+		return nil, customsoap.ErrContextWSReqExpired
 	default:
 		return nil, errors.New("SoapRequestSenderMock: unsupported action")
 	}
