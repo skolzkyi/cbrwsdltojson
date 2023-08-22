@@ -214,3 +214,8 @@ func (s *Server) OstatDepoNewXML(w http.ResponseWriter, r *http.Request) {
 	newRequest := datastructures.OstatDepoNewXML{}
 	s.universalMethodHandler(w, r, &newRequest, s.app.OstatDepoNewXML)
 }
+
+func (s *Server) OstatDepoXML(w http.ResponseWriter, r *http.Request) {
+	newRequest := datastructures.OstatDepoXML{}
+	s.universalMethodHandler(w, r, &newRequest, s.app.OstatDepoXML)
+}

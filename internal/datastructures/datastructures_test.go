@@ -77,6 +77,8 @@ func initAllDatastructuresTestTable(t *testing.T) AllDatastructuresTestTable {
 	AllDTTable = append(AllDTTable, curDatastructuresTestTable)
 	curDatastructuresTestTable = initTestCasesOstatDepoNewXML(t)
 	AllDTTable = append(AllDTTable, curDatastructuresTestTable)
+	curDatastructuresTestTable = initTestCasesOstatDepoXML(t)
+	AllDTTable = append(AllDTTable, curDatastructuresTestTable)
 	return AllDTTable
 }
 
@@ -1827,6 +1829,141 @@ func initTestCasesOstatDepoNewXML(t *testing.T) DatastructuresTestTable { // nol
 		DSAssert, ok := Datastructure.(datastructures.OstatDepoNewXMLResult)
 		if !ok {
 			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:OstatDepoNewXMLResult")
+		}
+		marshXMLres, err := xml.Marshal(DSAssert)
+		require.NoError(t, err)
+		require.Equal(t, XMLMarshalControl, string(marshXMLres))
+	}
+	newCase.ValidateControlTestFunc = func(_ *testing.T, _ interface{}, _ error) {}
+	DatastructuresTest.OutputDataCases[0] = newCase
+	return DatastructuresTest
+}
+
+func initTestCasesOstatDepoXML(t *testing.T) DatastructuresTestTable { // nolint:funlen, nolintlint
+	t.Helper()
+	DatastructuresTest := DatastructuresTestTable{}
+	DatastructuresTest.MethodName = "OstatDepoXML"
+	DatastructuresTest.InputDataCases = make([]DatastructuresTestCase, 4)
+	DatastructuresTest.OutputDataCases = make([]DatastructuresTestCase, 1)
+	var newCase DatastructuresTestCase
+	newCase = DatastructuresTestCase{
+		Name:              "XMLMarshalControlIn",
+		DataStructureType: "OstatDepoXML",
+		Datastructure: datastructures.OstatDepoXML{
+			FromDate: "2022-12-29",
+			ToDate:   "2022-12-30",
+			XMLNs:    "http://web.cbr.ru/",
+		},
+		NeedXMLMarshal:    true,
+		XMLMarshalControl: `<OstatDepoXML xmlns="http://web.cbr.ru/"><fromDate>2022-12-29</fromDate><ToDate>2022-12-30</ToDate></OstatDepoXML>`,
+	}
+	newCase.MarshalXMLTestFunc = func(t *testing.T, Datastructure interface{}, XMLMarshalControl string) {
+		t.Helper()
+		DSAssert, ok := Datastructure.(datastructures.OstatDepoXML)
+		if !ok {
+			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:OstatDepoXML")
+		}
+		marshXMLres, err := xml.Marshal(DSAssert)
+		require.NoError(t, err)
+		require.Equal(t, XMLMarshalControl, string(marshXMLres))
+	}
+	newCase.ValidateControlTestFunc = func(_ *testing.T, _ interface{}, _ error) {}
+	DatastructuresTest.InputDataCases[0] = newCase
+	newCase = DatastructuresTestCase{
+		Name:              "ValidateControlNegativeBadRawData",
+		DataStructureType: "OstatDepoXML",
+		Datastructure: datastructures.OstatDepoXML{
+			FromDate: "022-14-22",
+			ToDate:   "2022-12-30",
+			XMLNs:    "http://web.cbr.ru/",
+		},
+		NeedValidate:    true,
+		ValidateControl: datastructures.ErrBadRawData,
+	}
+	newCase.MarshalXMLTestFunc = func(_ *testing.T, _ interface{}, _ string) {}
+	newCase.ValidateControlTestFunc = func(t *testing.T, Datastructure interface{}, ValidateControl error) {
+		t.Helper()
+		DSAssert, ok := Datastructure.(datastructures.OstatDepoXML)
+		if !ok {
+			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:OstatDepoXML")
+		}
+		err := DSAssert.Validate()
+		require.Equal(t, ValidateControl, err)
+	}
+	DatastructuresTest.InputDataCases[1] = newCase
+	newCase = DatastructuresTestCase{
+		Name:              "ValidateControlNegativeFromDateAfterToDate",
+		DataStructureType: "OstatDepoNewXML",
+		Datastructure: datastructures.OstatDepoXML{
+			FromDate: "2022-12-30",
+			ToDate:   "2022-12-29",
+			XMLNs:    "http://web.cbr.ru/",
+		},
+		NeedValidate:    true,
+		ValidateControl: datastructures.ErrBadInputDateData,
+	}
+	newCase.MarshalXMLTestFunc = func(_ *testing.T, _ interface{}, _ string) {}
+	newCase.ValidateControlTestFunc = func(t *testing.T, Datastructure interface{}, ValidateControl error) {
+		t.Helper()
+		DSAssert, ok := Datastructure.(datastructures.OstatDepoXML)
+		if !ok {
+			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:OstatDepoXML")
+		}
+		err := DSAssert.Validate()
+		require.Equal(t, ValidateControl, err)
+	}
+	DatastructuresTest.InputDataCases[2] = newCase
+	newCase = DatastructuresTestCase{
+		Name:              "ValidateControlPositive",
+		DataStructureType: "OstatDepoXML",
+		Datastructure: datastructures.OstatDepoXML{
+			FromDate: "2022-12-29",
+			ToDate:   "2022-12-30",
+			XMLNs:    "http://web.cbr.ru/",
+		},
+		NeedValidate:    true,
+		ValidateControl: nil,
+	}
+	newCase.MarshalXMLTestFunc = func(_ *testing.T, _ interface{}, _ string) {}
+	newCase.ValidateControlTestFunc = func(t *testing.T, Datastructure interface{}, ValidateControl error) {
+		t.Helper()
+		DSAssert, ok := Datastructure.(datastructures.OstatDepoXML)
+		if !ok {
+			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:OstatDepoXML")
+		}
+		err := DSAssert.Validate()
+		require.Equal(t, ValidateControl, err)
+	}
+	DatastructuresTest.InputDataCases[3] = newCase
+	testOstatDepoXMLResult := datastructures.OstatDepoXMLResult{
+		Odr: make([]datastructures.OstatDepoXMLResultElem, 2),
+	}
+	testOstatDepoXMLElem := datastructures.OstatDepoXMLResultElem{
+		D0:    time.Date(2022, time.December, 29, 0, 0, 0, 0, time.UTC),
+		D1_7:  "1747362.67",
+		D8_30: "2515151.15",
+		Total: "4262513.81",
+	}
+	testOstatDepoXMLResult.Odr[0] = testOstatDepoXMLElem
+	testOstatDepoXMLElem = datastructures.OstatDepoXMLResultElem{
+		D0:    time.Date(2022, time.December, 30, 0, 0, 0, 0, time.UTC),
+		D1_7:  "1387715.38",
+		D8_30: "2515151.15",
+		Total: "3897866.53",
+	}
+	testOstatDepoXMLResult.Odr[1] = testOstatDepoXMLElem
+	newCase = DatastructuresTestCase{
+		Name:              "XMLMarshalControlOut",
+		DataStructureType: "OstatDepoXML",
+		Datastructure:     testOstatDepoXMLResult,
+		NeedXMLMarshal:    true,
+		XMLMarshalControl: `<OstatDepoXMLResult><odr><D0>2022-12-29T00:00:00Z</D0><D1_7>1747362.67</D1_7><D8_30>2515151.15</D8_30><total>4262513.81</total></odr><odr><D0>2022-12-30T00:00:00Z</D0><D1_7>1387715.38</D1_7><D8_30>2515151.15</D8_30><total>3897866.53</total></odr></OstatDepoXMLResult>`,
+	}
+	newCase.MarshalXMLTestFunc = func(t *testing.T, Datastructure interface{}, XMLMarshalControl string) {
+		t.Helper()
+		DSAssert, ok := Datastructure.(datastructures.OstatDepoXMLResult)
+		if !ok {
+			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:OstatDepoXMLResult")
 		}
 		marshXMLres, err := xml.Marshal(DSAssert)
 		require.NoError(t, err)

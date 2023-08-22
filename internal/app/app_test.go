@@ -982,9 +982,64 @@ func initTestDataOstatDepoNewXML(t *testing.T) AppTestTable {
 	return testDataOstatDepoNewXML
 }
 
+// OstatDepoXML.
+func initTestDataOstatDepoXML(t *testing.T) AppTestTable {
+	t.Helper()
+	testDataOstatDepoXML := AppTestTable{
+		MethodName: "OstatDepoXML",
+		Method:     (*app.App).OstatDepoXML,
+	}
+	testOstatDepoXMLResult := datastructures.OstatDepoXMLResult{
+		Odr: make([]datastructures.OstatDepoXMLResultElem, 2),
+	}
+	testOstatDepoXMLElem := datastructures.OstatDepoXMLResultElem{
+		D0:    time.Date(2022, time.December, 29, 0, 0, 0, 0, time.UTC),
+		D1_7:  "1747362.67",
+		D8_30: "2515151.15",
+		Total: "4262513.81",
+	}
+	testOstatDepoXMLResult.Odr[0] = testOstatDepoXMLElem
+	testOstatDepoXMLElem = datastructures.OstatDepoXMLResultElem{
+		D0:    time.Date(2022, time.December, 30, 0, 0, 0, 0, time.UTC),
+		D1_7:  "1387715.38",
+		D8_30: "2515151.15",
+		Total: "3897866.53",
+	}
+	testOstatDepoXMLResult.Odr[1] = testOstatDepoXMLElem
+	testCases := make([]AppTestCase, 2)
+	testCases[0] = AppTestCase{
+		Name: "Positive",
+		Input: &datastructures.OstatDepoXML{
+			FromDate: "2022-12-29",
+			ToDate:   "2022-12-30",
+		},
+		Output: testOstatDepoXMLResult,
+		Error:  nil,
+	}
+
+	testCases[1] = AppTestCase{
+		Name: "Negative",
+		Input: &datastructures.OstatDepoXML{
+			FromDate: "022-14-22",
+			ToDate:   "2022-12-30",
+		},
+		Output: datastructures.OstatDepoXMLResult{},
+		Error:  customsoap.ErrContextWSReqExpired,
+	}
+	standartTestCacheCases := createStandartTestCacheCases(t, &datastructures.OstatDepoXML{
+		FromDate: "2022-12-29",
+		ToDate:   "2022-12-30",
+	}, testOstatDepoXMLResult)
+
+	testDataOstatDepoXML.TestCases = testCases
+	testDataOstatDepoXML.TestCases = append(testDataOstatDepoXML.TestCases, standartTestCacheCases...)
+
+	return testDataOstatDepoXML
+}
+
 func TestAllAppCases(t *testing.T) { //nolint:gocognit, nolintlint, gocyclo, funlen
 	acTable := AllCasesTable{}
-	acTable.CasesByMethod = make([]AppTestTable, 15)
+	acTable.CasesByMethod = make([]AppTestTable, 16)
 	acTable.CasesByMethod[0] = initTestDataGetCursOnDateXML(t)
 	acTable.CasesByMethod[1] = initTestDataBiCurBaseXML(t)
 	acTable.CasesByMethod[2] = initTestDataBliquidityXML(t)
@@ -1000,6 +1055,7 @@ func TestAllAppCases(t *testing.T) { //nolint:gocognit, nolintlint, gocyclo, fun
 	acTable.CasesByMethod[12] = initTestDataNewsInfoXML(t)
 	acTable.CasesByMethod[13] = initTestDataOmodInfoXML(t)
 	acTable.CasesByMethod[14] = initTestDataOstatDepoNewXML(t)
+	acTable.CasesByMethod[15] = initTestDataOstatDepoXML(t)
 	t.Parallel()
 	for _, curMethodTable := range acTable.CasesByMethod {
 		curMethodTable := curMethodTable
@@ -1048,12 +1104,11 @@ func checkCashLogic(t *testing.T, testApp *app.App, methodTable *AppTestTable, t
 	t.Helper()
 	var cacheTag string
 	if !testCase.IsCacheData {
-		time.Sleep(5 * time.Second)
+		time.Sleep(2 * time.Second)
 	}
 	rawBody, err := json.Marshal(testCase.Input)
 	require.NoError(t, err)
 	if methodTable.IsMethodWP {
-		time.Sleep(time.Second)
 		_, err := methodTable.MethodWP(testApp, context.Background())
 		require.Equal(t, nil, err)
 	} else {
