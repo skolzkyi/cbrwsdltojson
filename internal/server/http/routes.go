@@ -26,6 +26,7 @@ func (s *Server) routes() *http.ServeMux {
 	mux.HandleFunc("/OstatDepoNewXML", loggingMiddleware(s.OstatDepoNewXML, s.logg))
 	mux.HandleFunc("/OstatDepoXML", loggingMiddleware(s.OstatDepoXML, s.logg))
 	mux.HandleFunc("/OstatDynamicXML", loggingMiddleware(s.OstatDynamicXML, s.logg))
+	mux.HandleFunc("/OvernightXML", loggingMiddleware(s.OvernightXML, s.logg))
 
 	return mux
 }
