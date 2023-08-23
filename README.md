@@ -170,3 +170,9 @@
         <li>response: {"So":[{"Dt":"2023-06-22T00:00:00+03:00","DEADLINEBS":"1044.60"},{"Dt":"2023-06-23T00:00:00+03:00","DEADLINEBS":"1061.30"}]}</li>
     </ul>
    </details>
+   <details><summary><b>SwapDayTotalXML</b></summary>
+    <ul>
+        <li>request: {"FromDate":"2022-02-25","ToDate":"2022-02-28"}</li>
+        <li>response: {"SDT":[{"DT":"2022-02-28T00:00:00+03:00","Swap":"0.0"},{"DT":"2022-02-25T00:00:00+03:00","Swap":"24120.4"}]}</li>
+    </ul>
+   </details>
