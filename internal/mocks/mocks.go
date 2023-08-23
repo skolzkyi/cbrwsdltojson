@@ -306,6 +306,15 @@ func (srsm *SoapRequestSenderMock) SoapCall(_ context.Context, action string, in
 			return []byte(`<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><soap:Body><SaldoXMLResponse xmlns="http://web.cbr.ru/"><SaldoXMLResult><Saldo xmlns=""><So><Dt>2023-06-22T00:00:00Z</Dt><DEADLINEBS>1044.60</DEADLINEBS></So><So><Dt>2023-06-23T00:00:00Z</Dt><DEADLINEBS>1061.30</DEADLINEBS></So></Saldo></SaldoXMLResult></SaldoXMLResponse></soap:Body></soap:Envelope>`), nil
 		}
 		return nil, customsoap.ErrContextWSReqExpired
+	case "SwapDayTotalXML":
+		inputData, ok := input.(datastructures.SwapDayTotalXML)
+		if !ok {
+			return nil, ErrAssertion
+		}
+		if inputData.FromDate == "2022-02-25" && inputData.ToDate == "2022-02-28" {
+			return []byte(`<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><soap:Body><SwapDayTotalXMLResponse xmlns="http://web.cbr.ru/"><SwapDayTotalXMLResult><SwapDayTotal xmlns=""><SDT><DT>2022-02-28T00:00:00Z</DT><Swap>0.0</Swap></SDT><SDT><DT>2022-02-25T00:00:00Z</DT><Swap>24120.4</Swap></SDT></SwapDayTotal></SwapDayTotalXMLResult></SwapDayTotalXMLResponse></soap:Body></soap:Envelope>`), nil
+		}
+		return nil, customsoap.ErrContextWSReqExpired
 	default:
 		return nil, errors.New("SoapRequestSenderMock: unsupported action")
 	}
