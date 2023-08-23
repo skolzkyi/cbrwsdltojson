@@ -164,3 +164,9 @@
         <li>response: {"ro":[{"D0":"2023-06-22T00:00:00+03:00","ruo":"7.1500","vol":"367.9500","DateUpdate":"2023-06-23T14:09:39.6+03:00"},{"D0":"2023-06-23T00:00:00+03:00","ruo":"7.1300","vol":"388.4500","DateUpdate":"2023-06-26T14:08:26.15+03:00"}]}</li>
     </ul>
    </details>
+   <details><summary><b>SaldoXML</b></summary>
+    <ul>
+        <li>request: {"FromDate":"2023-06-22","ToDate":"2023-06-23"}</li>
+        <li>response: {"So":[{"Dt":"2023-06-22T00:00:00+03:00","DEADLINEBS":"1044.60"},{"Dt":"2023-06-23T00:00:00+03:00","DEADLINEBS":"1061.30"}]}</li>
+    </ul>
+   </details>
