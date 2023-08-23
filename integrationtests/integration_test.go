@@ -235,6 +235,14 @@ func (atc *AllTestCases) Init() {
 		Mode:          0,
 	}
 	atc.Cases = append(atc.Cases, curCase)
+	curCase = TestCase{
+		Method:        "SaldoXML",
+		Handler:       "/SaldoXML",
+		Request:       `{"FromDate":"2023-06-22","ToDate":"2023-06-23"}`,
+		OutputControl: `{"So":[{"Dt":"2023-06-22T00:00:00+03:00","DEADLINEBS":"1044.60"},{"Dt":"2023-06-23T00:00:00+03:00","DEADLINEBS":"1061.30"}]}`,
+		Mode:          0,
+	}
+	atc.Cases = append(atc.Cases, curCase)
 }
 
 func XMLToStructDecoder(t *testing.T, data []byte, startNodeName string, pointerToStruct interface{}) {

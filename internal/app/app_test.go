@@ -1433,9 +1433,60 @@ func initTestDataRuoniaXML(t *testing.T) AppTestTable {
 	return testDataRuoniaXML
 }
 
+// SaldoXML.
+func initTestDataSaldoXML(t *testing.T) AppTestTable {
+	t.Helper()
+	testDataSaldoXML := AppTestTable{
+		MethodName: "SaldoXML",
+		Method:     (*app.App).SaldoXML,
+	}
+	testSaldoXMLResult := datastructures.SaldoXMLResult{
+		So: make([]datastructures.SaldoXMLResultElem, 2),
+	}
+	testSaldoXMLElem := datastructures.SaldoXMLResultElem{
+		Dt:         time.Date(2023, time.June, 22, 0, 0, 0, 0, time.UTC),
+		DEADLINEBS: "1044.60",
+	}
+	testSaldoXMLResult.So[0] = testSaldoXMLElem
+	testSaldoXMLElem = datastructures.SaldoXMLResultElem{
+		Dt:         time.Date(2023, time.June, 23, 0, 0, 0, 0, time.UTC),
+		DEADLINEBS: "1061.30",
+	}
+	testSaldoXMLResult.So[1] = testSaldoXMLElem
+	testCases := make([]AppTestCase, 2)
+	testCases[0] = AppTestCase{
+		Name: "Positive",
+		Input: &datastructures.SaldoXML{
+			FromDate: "2023-06-22",
+			ToDate:   "2023-06-23",
+		},
+		Output: testSaldoXMLResult,
+		Error:  nil,
+	}
+
+	testCases[1] = AppTestCase{
+		Name: "Negative",
+		Input: &datastructures.SaldoXML{
+			FromDate: "022-14-22",
+			ToDate:   "2023-06-23",
+		},
+		Output: datastructures.SaldoXMLResult{},
+		Error:  customsoap.ErrContextWSReqExpired,
+	}
+	standartTestCacheCases := createStandartTestCacheCases(t, &datastructures.SaldoXML{
+		FromDate: "2023-06-22",
+		ToDate:   "2023-06-23",
+	}, testSaldoXMLResult)
+
+	testDataSaldoXML.TestCases = testCases
+	testDataSaldoXML.TestCases = append(testDataSaldoXML.TestCases, standartTestCacheCases...)
+
+	return testDataSaldoXML
+}
+
 func TestAllAppCases(t *testing.T) { //nolint:gocognit, nolintlint, gocyclo, funlen
 	acTable := AllCasesTable{}
-	acTable.CasesByMethod = make([]AppTestTable, 23)
+	acTable.CasesByMethod = make([]AppTestTable, 24)
 	acTable.CasesByMethod[0] = initTestDataGetCursOnDateXML(t)
 	acTable.CasesByMethod[1] = initTestDataBiCurBaseXML(t)
 	acTable.CasesByMethod[2] = initTestDataBliquidityXML(t)
@@ -1459,6 +1510,7 @@ func TestAllAppCases(t *testing.T) { //nolint:gocognit, nolintlint, gocyclo, fun
 	acTable.CasesByMethod[20] = initTestDataROISfixXML(t)
 	acTable.CasesByMethod[21] = initTestDataRuoniaSVXML(t)
 	acTable.CasesByMethod[22] = initTestDataRuoniaXML(t)
+	acTable.CasesByMethod[23] = initTestDataSaldoXML(t)
 	t.Parallel()
 	for _, curMethodTable := range acTable.CasesByMethod {
 		curMethodTable := curMethodTable

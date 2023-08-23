@@ -254,3 +254,8 @@ func (s *Server) RuoniaXML(w http.ResponseWriter, r *http.Request) {
 	newRequest := datastructures.RuoniaXML{}
 	s.universalMethodHandler(w, r, &newRequest, s.app.RuoniaXML)
 }
+
+func (s *Server) SaldoXML(w http.ResponseWriter, r *http.Request) {
+	newRequest := datastructures.SaldoXML{}
+	s.universalMethodHandler(w, r, &newRequest, s.app.SaldoXML)
+}
