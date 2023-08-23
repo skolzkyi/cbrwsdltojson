@@ -1199,9 +1199,70 @@ func initTestDataRepo_debtXML(t *testing.T) AppTestTable { //nolint:revive, styl
 	return testDataORepo_debtXML
 }
 
+// RepoDebtUSDXML.
+func initTestDataRepoDebtUSDXML(t *testing.T) AppTestTable {
+	t.Helper()
+	testDataRepoDebtUSDXML := AppTestTable{
+		MethodName: "RepoDebtUSDXML",
+		Method:     (*app.App).RepoDebtUSDXML,
+	}
+	testRepoDebtUSDXMLResult := datastructures.RepoDebtUSDXMLResult{
+		Rd: make([]datastructures.RepoDebtUSDXMLResultElem, 4),
+	}
+	testRepoDebtUSDXMLElem := datastructures.RepoDebtUSDXMLResultElem{
+		D0: time.Date(2023, time.June, 22, 0, 0, 0, 0, time.UTC),
+		TP: 0,
+	}
+	testRepoDebtUSDXMLResult.Rd[0] = testRepoDebtUSDXMLElem
+	testRepoDebtUSDXMLElem = datastructures.RepoDebtUSDXMLResultElem{
+		D0: time.Date(2023, time.June, 22, 0, 0, 0, 0, time.UTC),
+		TP: 1,
+	}
+	testRepoDebtUSDXMLResult.Rd[1] = testRepoDebtUSDXMLElem
+	testRepoDebtUSDXMLElem = datastructures.RepoDebtUSDXMLResultElem{
+		D0: time.Date(2023, time.June, 23, 0, 0, 0, 0, time.UTC),
+		TP: 0,
+	}
+	testRepoDebtUSDXMLResult.Rd[2] = testRepoDebtUSDXMLElem
+	testRepoDebtUSDXMLElem = datastructures.RepoDebtUSDXMLResultElem{
+		D0: time.Date(2023, time.June, 23, 0, 0, 0, 0, time.UTC),
+		TP: 1,
+	}
+	testRepoDebtUSDXMLResult.Rd[3] = testRepoDebtUSDXMLElem
+	testCases := make([]AppTestCase, 2)
+	testCases[0] = AppTestCase{
+		Name: "Positive",
+		Input: &datastructures.RepoDebtUSDXML{
+			FromDate: "2023-06-22",
+			ToDate:   "2023-06-23",
+		},
+		Output: testRepoDebtUSDXMLResult,
+		Error:  nil,
+	}
+
+	testCases[1] = AppTestCase{
+		Name: "Negative",
+		Input: &datastructures.RepoDebtUSDXML{
+			FromDate: "022-14-22",
+			ToDate:   "2023-06-23",
+		},
+		Output: datastructures.RepoDebtUSDXMLResult{},
+		Error:  customsoap.ErrContextWSReqExpired,
+	}
+	standartTestCacheCases := createStandartTestCacheCases(t, &datastructures.RepoDebtUSDXML{
+		FromDate: "2023-06-22",
+		ToDate:   "2023-06-23",
+	}, testRepoDebtUSDXMLResult)
+
+	testDataRepoDebtUSDXML.TestCases = testCases
+	testDataRepoDebtUSDXML.TestCases = append(testDataRepoDebtUSDXML.TestCases, standartTestCacheCases...)
+
+	return testDataRepoDebtUSDXML
+}
+
 func TestAllAppCases(t *testing.T) { //nolint:gocognit, nolintlint, gocyclo, funlen
 	acTable := AllCasesTable{}
-	acTable.CasesByMethod = make([]AppTestTable, 19)
+	acTable.CasesByMethod = make([]AppTestTable, 20)
 	acTable.CasesByMethod[0] = initTestDataGetCursOnDateXML(t)
 	acTable.CasesByMethod[1] = initTestDataBiCurBaseXML(t)
 	acTable.CasesByMethod[2] = initTestDataBliquidityXML(t)
@@ -1221,6 +1282,7 @@ func TestAllAppCases(t *testing.T) { //nolint:gocognit, nolintlint, gocyclo, fun
 	acTable.CasesByMethod[16] = initTestDataOstatDynamicXML(t)
 	acTable.CasesByMethod[17] = initTestDataOvernightXML(t)
 	acTable.CasesByMethod[18] = initTestDataRepo_debtXML(t)
+	acTable.CasesByMethod[19] = initTestDataRepoDebtUSDXML(t)
 	t.Parallel()
 	for _, curMethodTable := range acTable.CasesByMethod {
 		curMethodTable := curMethodTable
