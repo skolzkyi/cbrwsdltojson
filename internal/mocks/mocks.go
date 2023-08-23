@@ -261,6 +261,15 @@ func (srsm *SoapRequestSenderMock) SoapCall(_ context.Context, action string, in
 			return []byte(`<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><soap:Body><Repo_debtXMLResponse xmlns="http://web.cbr.ru/"><Repo_debtXMLResult><Repo_debt xmlns=""><RD><Date>2023-06-22T00:00:00Z</Date><debt>1378387.6</debt><debt_auc>1378387.6</debt_auc><debt_fix>0.0</debt_fix></RD><RD><Date>2023-06-23T00:00:00Z</Date><debt>1378379.7</debt><debt_auc>1378379.7</debt_auc><debt_fix>0.0</debt_fix></RD></Repo_debt></Repo_debtXMLResult></Repo_debtXMLResponse></soap:Body></soap:Envelope>`), nil
 		}
 		return nil, customsoap.ErrContextWSReqExpired
+	case "RepoDebtUSDXML":
+		inputData, ok := input.(datastructures.RepoDebtUSDXML)
+		if !ok {
+			return nil, ErrAssertion
+		}
+		if inputData.FromDate == cFromDate && inputData.ToDate == cToDate {
+			return []byte(`<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><soap:Body><RepoDebtUSDXMLResponse xmlns="http://web.cbr.ru/"><RepoDebtUSDXMLResult><RepoDebtUSD xmlns=""><rd><D0>2023-06-22T00:00:00Z</D0><TP>0</TP></rd><rd><D0>2023-06-22T00:00:00Z</D0><TP>1</TP></rd><rd><D0>2023-06-23T00:00:00Z</D0><TP>0</TP></rd><rd><D0>2023-06-23T00:00:00Z</D0><TP>1</TP></rd></RepoDebtUSD></RepoDebtUSDXMLResult></RepoDebtUSDXMLResponse></soap:Body></soap:Envelope>`), nil
+		}
+		return nil, customsoap.ErrContextWSReqExpired
 	default:
 		return nil, errors.New("SoapRequestSenderMock: unsupported action")
 	}

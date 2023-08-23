@@ -234,3 +234,8 @@ func (s *Server) RepoDebtXML(w http.ResponseWriter, r *http.Request) {
 	newRequest := datastructures.Repo_debtXML{}
 	s.universalMethodHandler(w, r, &newRequest, s.app.RepoDebtXML)
 }
+
+func (s *Server) RepoDebtUSDXML(w http.ResponseWriter, r *http.Request) {
+	newRequest := datastructures.RepoDebtUSDXML{}
+	s.universalMethodHandler(w, r, &newRequest, s.app.RepoDebtUSDXML)
+}
