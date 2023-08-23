@@ -67,6 +67,7 @@ type Application interface {
 	RepoDebtUSDXML(ctx context.Context, input interface{}, rawBody string) (interface{}, error)
 	ROISfixXML(ctx context.Context, input interface{}, rawBody string) (interface{}, error)
 	RuoniaSVXML(ctx context.Context, input interface{}, rawBody string) (interface{}, error)
+	RuoniaXML(ctx context.Context, input interface{}, rawBody string) (interface{}, error)
 }
 
 func NewServer(logger Logger, app Application, config Config) *Server {

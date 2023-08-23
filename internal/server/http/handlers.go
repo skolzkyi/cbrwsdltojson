@@ -249,3 +249,8 @@ func (s *Server) RuoniaSVXML(w http.ResponseWriter, r *http.Request) {
 	newRequest := datastructures.RuoniaSVXML{}
 	s.universalMethodHandler(w, r, &newRequest, s.app.RuoniaSVXML)
 }
+
+func (s *Server) RuoniaXML(w http.ResponseWriter, r *http.Request) {
+	newRequest := datastructures.RuoniaXML{}
+	s.universalMethodHandler(w, r, &newRequest, s.app.RuoniaXML)
+}

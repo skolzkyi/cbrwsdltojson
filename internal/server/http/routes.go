@@ -31,6 +31,7 @@ func (s *Server) routes() *http.ServeMux {
 	mux.HandleFunc("/RepoDebtUSDXML", loggingMiddleware(s.RepoDebtUSDXML, s.logg))
 	mux.HandleFunc("/ROISfixXML", loggingMiddleware(s.ROISfixXML, s.logg))
 	mux.HandleFunc("/RuoniaSVXML", loggingMiddleware(s.RuoniaSVXML, s.logg))
+	mux.HandleFunc("/RuoniaXML", loggingMiddleware(s.RuoniaXML, s.logg))
 
 	return mux
 }
