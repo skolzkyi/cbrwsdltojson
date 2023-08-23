@@ -279,6 +279,15 @@ func (srsm *SoapRequestSenderMock) SoapCall(_ context.Context, action string, in
 			return []byte(`<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><soap:Body><ROISfixXMLResponse xmlns="http://web.cbr.ru/"><ROISfixXMLResult><ROISfix xmlns=""><rf><D0>2022-02-28T00:00:00Z</D0><R1W>17.83</R1W><R2W>18.00</R2W><R1M>20.65</R1M><R2M>21.96</R2M><R3M>23.23</R3M><R6M>24.52</R6M></rf><rf><D0>2022-03-01T00:00:00Z</D0><R1W>19.85</R1W><R2W>19.91</R2W><R1M>22.63</R1M><R2M>23.79</R2M><R3M>24.49</R3M><R6M>25.71</R6M></rf></ROISfix></ROISfixXMLResult></ROISfixXMLResponse></soap:Body></soap:Envelope>`), nil
 		}
 		return nil, customsoap.ErrContextWSReqExpired
+	case "RuoniaSVXML":
+		inputData, ok := input.(datastructures.RuoniaSVXML)
+		if !ok {
+			return nil, ErrAssertion
+		}
+		if inputData.FromDate == cFromDate && inputData.ToDate == cToDate {
+			return []byte(`<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><soap:Body><RuoniaSVXMLResponse xmlns="http://web.cbr.ru/"><RuoniaSVXMLResult><RuoniaSV xmlns=""><ra><DT>2023-06-22T00:00:00Z</DT><RUONIA_Index>2.65003371140540</RUONIA_Index><RUONIA_AVG_1M>7.33031817626889</RUONIA_AVG_1M><RUONIA_AVG_3M>7.28023580262342</RUONIA_AVG_3M><RUONIA_AVG_6M>7.34479164787354</RUONIA_AVG_6M></ra><ra><DT>2023-06-23T00:00:00Z</DT><RUONIA_Index>2.65055282759819</RUONIA_Index><RUONIA_AVG_1M>7.32512579295002</RUONIA_AVG_1M><RUONIA_AVG_3M>7.27890778428907</RUONIA_AVG_3M><RUONIA_AVG_6M>7.34359578515310</RUONIA_AVG_6M></ra></RuoniaSV></RuoniaSVXMLResult></RuoniaSVXMLResponse></soap:Body></soap:Envelope>`), nil
+		}
+		return nil, customsoap.ErrContextWSReqExpired
 	default:
 		return nil, errors.New("SoapRequestSenderMock: unsupported action")
 	}

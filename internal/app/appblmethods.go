@@ -1065,3 +1065,52 @@ func (a *App) ROISfixXML(ctx context.Context, input interface{}, rawBody string)
 	}
 	return response, nil
 }
+
+func (a *App) RuoniaSVXML(ctx context.Context, input interface{}, rawBody string) (interface{}, error) {
+	var err error
+	var response datastructures.RuoniaSVXMLResult
+	select {
+	case <-ctx.Done():
+		err = ErrContextWSReqExpired
+		a.logger.Error(err.Error())
+		return response, err
+	default:
+		SOAPMethod := "RuoniaSVXML"
+		startNodeName := "RuoniaSV"
+		if a.permittedRequests.PermittedRequestMapLength() > 0 {
+			if a.permittedRequests.IsPermittedRequestInMap(SOAPMethod) {
+				return datastructures.RuoniaSVXMLResult{}, ErrMethodProhibited
+			}
+		}
+
+		cachedData, ok := a.GetDataInCacheIfExisting(SOAPMethod, rawBody)
+		if ok {
+			response, ok = cachedData.(datastructures.RuoniaSVXMLResult)
+			if !ok {
+				err = ErrAssertionAfterGetCacheData
+				a.logger.Error(err.Error())
+			} else {
+				return response, nil
+			}
+		}
+
+		inputAsserted, ok := input.(*datastructures.RuoniaSVXML)
+		if !ok {
+			err = ErrAssertionOfInputData
+			a.logger.Error(err.Error())
+			return response, err
+		}
+		err = a.ProcessRequest(ctx, SOAPMethod, startNodeName, *inputAsserted, &response)
+		if err != nil {
+			a.logger.Error(err.Error())
+			return response, err
+		}
+
+		err = a.AddOrUpdateDataInCache(SOAPMethod, input, response)
+		if err != nil {
+			a.logger.Error(err.Error())
+			return response, err
+		}
+	}
+	return response, nil
+}

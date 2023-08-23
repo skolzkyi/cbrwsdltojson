@@ -89,6 +89,8 @@ func initAllDatastructuresTestTable(t *testing.T) AllDatastructuresTestTable {
 	AllDTTable = append(AllDTTable, curDatastructuresTestTable)
 	curDatastructuresTestTable = initTestCasesROISfixXML(t)
 	AllDTTable = append(AllDTTable, curDatastructuresTestTable)
+	curDatastructuresTestTable = initTestCasesRuoniaSVXML(t)
+	AllDTTable = append(AllDTTable, curDatastructuresTestTable)
 	return AllDTTable
 }
 
@@ -2655,6 +2657,143 @@ func initTestCasesROISfixXML(t *testing.T) DatastructuresTestTable { // nolint:f
 		DSAssert, ok := Datastructure.(datastructures.ROISfixXMLResult)
 		if !ok {
 			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:ROISfixXMLResult")
+		}
+		marshXMLres, err := xml.Marshal(DSAssert)
+		require.NoError(t, err)
+		require.Equal(t, XMLMarshalControl, string(marshXMLres))
+	}
+	newCase.ValidateControlTestFunc = func(_ *testing.T, _ interface{}, _ error) {}
+	DatastructuresTest.OutputDataCases[0] = newCase
+	return DatastructuresTest
+}
+
+func initTestCasesRuoniaSVXML(t *testing.T) DatastructuresTestTable { // nolint:funlen, nolintlint
+	t.Helper()
+	DatastructuresTest := DatastructuresTestTable{}
+	DatastructuresTest.MethodName = "RuoniaSVXML"
+	DatastructuresTest.InputDataCases = make([]DatastructuresTestCase, 4)
+	DatastructuresTest.OutputDataCases = make([]DatastructuresTestCase, 1)
+	var newCase DatastructuresTestCase
+	newCase = DatastructuresTestCase{
+		Name:              "XMLMarshalControlIn",
+		DataStructureType: "RuoniaSVXML",
+		Datastructure: datastructures.RuoniaSVXML{
+			FromDate: "2023-06-22",
+			ToDate:   "2023-06-23",
+			XMLNs:    "http://web.cbr.ru/",
+		},
+		NeedXMLMarshal:    true,
+		XMLMarshalControl: `<RuoniaSVXML xmlns="http://web.cbr.ru/"><fromDate>2023-06-22</fromDate><ToDate>2023-06-23</ToDate></RuoniaSVXML>`,
+	}
+	newCase.MarshalXMLTestFunc = func(t *testing.T, Datastructure interface{}, XMLMarshalControl string) {
+		t.Helper()
+		DSAssert, ok := Datastructure.(datastructures.RuoniaSVXML)
+		if !ok {
+			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:RuoniaSVXML")
+		}
+		marshXMLres, err := xml.Marshal(DSAssert)
+		require.NoError(t, err)
+		require.Equal(t, XMLMarshalControl, string(marshXMLres))
+	}
+	newCase.ValidateControlTestFunc = func(_ *testing.T, _ interface{}, _ error) {}
+	DatastructuresTest.InputDataCases[0] = newCase
+	newCase = DatastructuresTestCase{
+		Name:              "ValidateControlNegativeBadRawData",
+		DataStructureType: "RuoniaSVXML",
+		Datastructure: datastructures.RuoniaSVXML{
+			FromDate: "022-14-23",
+			ToDate:   "2023-06-23",
+			XMLNs:    "http://web.cbr.ru/",
+		},
+		NeedValidate:    true,
+		ValidateControl: datastructures.ErrBadRawData,
+	}
+	newCase.MarshalXMLTestFunc = func(_ *testing.T, _ interface{}, _ string) {}
+	newCase.ValidateControlTestFunc = func(t *testing.T, Datastructure interface{}, ValidateControl error) {
+		t.Helper()
+		DSAssert, ok := Datastructure.(datastructures.RuoniaSVXML)
+		if !ok {
+			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:RuoniaSVXML")
+		}
+		err := DSAssert.Validate()
+		require.Equal(t, ValidateControl, err)
+	}
+	DatastructuresTest.InputDataCases[1] = newCase
+	newCase = DatastructuresTestCase{
+		Name:              "ValidateControlNegativeFromDateAfterToDate",
+		DataStructureType: "RuoniaSVXML",
+		Datastructure: datastructures.RuoniaSVXML{
+			FromDate: "2023-06-23",
+			ToDate:   "2023-06-22",
+			XMLNs:    "http://web.cbr.ru/",
+		},
+		NeedValidate:    true,
+		ValidateControl: datastructures.ErrBadInputDateData,
+	}
+	newCase.MarshalXMLTestFunc = func(_ *testing.T, _ interface{}, _ string) {}
+	newCase.ValidateControlTestFunc = func(t *testing.T, Datastructure interface{}, ValidateControl error) {
+		t.Helper()
+		DSAssert, ok := Datastructure.(datastructures.RuoniaSVXML)
+		if !ok {
+			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:RuoniaSVXML")
+		}
+		err := DSAssert.Validate()
+		require.Equal(t, ValidateControl, err)
+	}
+	DatastructuresTest.InputDataCases[2] = newCase
+	newCase = DatastructuresTestCase{
+		Name:              "ValidateControlPositive",
+		DataStructureType: "RuoniaSVXML",
+		Datastructure: datastructures.RuoniaSVXML{
+			FromDate: "2023-06-22",
+			ToDate:   "2023-06-23",
+			XMLNs:    "http://web.cbr.ru/",
+		},
+		NeedValidate:    true,
+		ValidateControl: nil,
+	}
+	newCase.MarshalXMLTestFunc = func(_ *testing.T, _ interface{}, _ string) {}
+	newCase.ValidateControlTestFunc = func(t *testing.T, Datastructure interface{}, ValidateControl error) {
+		t.Helper()
+		DSAssert, ok := Datastructure.(datastructures.RuoniaSVXML)
+		if !ok {
+			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:RuoniaSVXML")
+		}
+		err := DSAssert.Validate()
+		require.Equal(t, ValidateControl, err)
+	}
+	DatastructuresTest.InputDataCases[3] = newCase
+	testRuoniaSVXMLResult := datastructures.RuoniaSVXMLResult{
+		Ra: make([]datastructures.RuoniaSVXMLResultElem, 2),
+	}
+	testRuoniaSVXMLElem := datastructures.RuoniaSVXMLResultElem{
+		DT:            time.Date(2023, time.June, 22, 0, 0, 0, 0, time.UTC),
+		RUONIA_Index:  "2.65003371140540",
+		RUONIA_AVG_1M: "7.33031817626889",
+		RUONIA_AVG_3M: "7.28023580262342",
+		RUONIA_AVG_6M: "7.34479164787354",
+	}
+	testRuoniaSVXMLResult.Ra[0] = testRuoniaSVXMLElem
+	testRuoniaSVXMLElem = datastructures.RuoniaSVXMLResultElem{
+		DT:            time.Date(2023, time.June, 23, 0, 0, 0, 0, time.UTC),
+		RUONIA_Index:  "2.65055282759819",
+		RUONIA_AVG_1M: "7.32512579295002",
+		RUONIA_AVG_3M: "7.27890778428907",
+		RUONIA_AVG_6M: "7.34359578515310",
+	}
+	testRuoniaSVXMLResult.Ra[1] = testRuoniaSVXMLElem
+	newCase = DatastructuresTestCase{
+		Name:              "XMLMarshalControlOut",
+		DataStructureType: "RuoniaSVXMLResult",
+		Datastructure:     testRuoniaSVXMLResult,
+		NeedXMLMarshal:    true,
+		XMLMarshalControl: `<RuoniaSVXMLResult><ra><DT>2023-06-22T00:00:00Z</DT><RUONIA_Index>2.65003371140540</RUONIA_Index><RUONIA_AVG_1M>7.33031817626889</RUONIA_AVG_1M><RUONIA_AVG_3M>7.28023580262342</RUONIA_AVG_3M><RUONIA_AVG_6M>7.34479164787354</RUONIA_AVG_6M></ra><ra><DT>2023-06-23T00:00:00Z</DT><RUONIA_Index>2.65055282759819</RUONIA_Index><RUONIA_AVG_1M>7.32512579295002</RUONIA_AVG_1M><RUONIA_AVG_3M>7.27890778428907</RUONIA_AVG_3M><RUONIA_AVG_6M>7.34359578515310</RUONIA_AVG_6M></ra></RuoniaSVXMLResult>`,
+	}
+	newCase.MarshalXMLTestFunc = func(t *testing.T, Datastructure interface{}, XMLMarshalControl string) {
+		t.Helper()
+		DSAssert, ok := Datastructure.(datastructures.RuoniaSVXMLResult)
+		if !ok {
+			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:RuoniaSVXMLResult")
 		}
 		marshXMLres, err := xml.Marshal(DSAssert)
 		require.NoError(t, err)
