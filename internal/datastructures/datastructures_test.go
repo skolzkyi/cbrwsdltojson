@@ -87,6 +87,8 @@ func initAllDatastructuresTestTable(t *testing.T) AllDatastructuresTestTable {
 	AllDTTable = append(AllDTTable, curDatastructuresTestTable)
 	curDatastructuresTestTable = initTestCasesRepoDebtUSDXML(t)
 	AllDTTable = append(AllDTTable, curDatastructuresTestTable)
+	curDatastructuresTestTable = initTestCasesROISfixXML(t)
+	AllDTTable = append(AllDTTable, curDatastructuresTestTable)
 	return AllDTTable
 }
 
@@ -2512,6 +2514,147 @@ func initTestCasesRepoDebtXML(t *testing.T) DatastructuresTestTable { // nolint:
 		DSAssert, ok := Datastructure.(datastructures.Repo_debtXMLResult)
 		if !ok {
 			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:Repo_debtXMLResult")
+		}
+		marshXMLres, err := xml.Marshal(DSAssert)
+		require.NoError(t, err)
+		require.Equal(t, XMLMarshalControl, string(marshXMLres))
+	}
+	newCase.ValidateControlTestFunc = func(_ *testing.T, _ interface{}, _ error) {}
+	DatastructuresTest.OutputDataCases[0] = newCase
+	return DatastructuresTest
+}
+
+func initTestCasesROISfixXML(t *testing.T) DatastructuresTestTable { // nolint:funlen, nolintlint
+	t.Helper()
+	DatastructuresTest := DatastructuresTestTable{}
+	DatastructuresTest.MethodName = "ROISfixXML"
+	DatastructuresTest.InputDataCases = make([]DatastructuresTestCase, 4)
+	DatastructuresTest.OutputDataCases = make([]DatastructuresTestCase, 1)
+	var newCase DatastructuresTestCase
+	newCase = DatastructuresTestCase{
+		Name:              "XMLMarshalControlIn",
+		DataStructureType: "ROISfixXML",
+		Datastructure: datastructures.ROISfixXML{
+			FromDate: "2022-02-27",
+			ToDate:   "2022-03-02",
+			XMLNs:    "http://web.cbr.ru/",
+		},
+		NeedXMLMarshal:    true,
+		XMLMarshalControl: `<ROISfixXML xmlns="http://web.cbr.ru/"><fromDate>2022-02-27</fromDate><ToDate>2022-03-02</ToDate></ROISfixXML>`,
+	}
+	newCase.MarshalXMLTestFunc = func(t *testing.T, Datastructure interface{}, XMLMarshalControl string) {
+		t.Helper()
+		DSAssert, ok := Datastructure.(datastructures.ROISfixXML)
+		if !ok {
+			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:ROISfixXML")
+		}
+		marshXMLres, err := xml.Marshal(DSAssert)
+		require.NoError(t, err)
+		require.Equal(t, XMLMarshalControl, string(marshXMLres))
+	}
+	newCase.ValidateControlTestFunc = func(_ *testing.T, _ interface{}, _ error) {}
+	DatastructuresTest.InputDataCases[0] = newCase
+	newCase = DatastructuresTestCase{
+		Name:              "ValidateControlNegativeBadRawData",
+		DataStructureType: "ROISfixXML",
+		Datastructure: datastructures.ROISfixXML{
+			FromDate: "022-14-23",
+			ToDate:   "2022-03-02",
+			XMLNs:    "http://web.cbr.ru/",
+		},
+		NeedValidate:    true,
+		ValidateControl: datastructures.ErrBadRawData,
+	}
+	newCase.MarshalXMLTestFunc = func(_ *testing.T, _ interface{}, _ string) {}
+	newCase.ValidateControlTestFunc = func(t *testing.T, Datastructure interface{}, ValidateControl error) {
+		t.Helper()
+		DSAssert, ok := Datastructure.(datastructures.ROISfixXML)
+		if !ok {
+			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:ROISfixXML")
+		}
+		err := DSAssert.Validate()
+		require.Equal(t, ValidateControl, err)
+	}
+	DatastructuresTest.InputDataCases[1] = newCase
+	newCase = DatastructuresTestCase{
+		Name:              "ValidateControlNegativeFromDateAfterToDate",
+		DataStructureType: "ROISfixXML",
+		Datastructure: datastructures.ROISfixXML{
+			FromDate: "2022-03-02",
+			ToDate:   "2022-02-27",
+			XMLNs:    "http://web.cbr.ru/",
+		},
+		NeedValidate:    true,
+		ValidateControl: datastructures.ErrBadInputDateData,
+	}
+	newCase.MarshalXMLTestFunc = func(_ *testing.T, _ interface{}, _ string) {}
+	newCase.ValidateControlTestFunc = func(t *testing.T, Datastructure interface{}, ValidateControl error) {
+		t.Helper()
+		DSAssert, ok := Datastructure.(datastructures.ROISfixXML)
+		if !ok {
+			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:ROISfixXML")
+		}
+		err := DSAssert.Validate()
+		require.Equal(t, ValidateControl, err)
+	}
+	DatastructuresTest.InputDataCases[2] = newCase
+	newCase = DatastructuresTestCase{
+		Name:              "ValidateControlPositive",
+		DataStructureType: "ROISfixXML",
+		Datastructure: datastructures.ROISfixXML{
+			FromDate: "2022-02-27",
+			ToDate:   "2022-03-02",
+			XMLNs:    "http://web.cbr.ru/",
+		},
+		NeedValidate:    true,
+		ValidateControl: nil,
+	}
+	newCase.MarshalXMLTestFunc = func(_ *testing.T, _ interface{}, _ string) {}
+	newCase.ValidateControlTestFunc = func(t *testing.T, Datastructure interface{}, ValidateControl error) {
+		t.Helper()
+		DSAssert, ok := Datastructure.(datastructures.ROISfixXML)
+		if !ok {
+			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:ROISfixXML")
+		}
+		err := DSAssert.Validate()
+		require.Equal(t, ValidateControl, err)
+	}
+	DatastructuresTest.InputDataCases[3] = newCase
+	testROISfixXMLResult := datastructures.ROISfixXMLResult{
+		Rf: make([]datastructures.ROISfixXMLResultElem, 2),
+	}
+	testROISfixXMLElem := datastructures.ROISfixXMLResultElem{
+		D0:  time.Date(2022, time.February, 28, 0, 0, 0, 0, time.UTC),
+		R1W: "17.83",
+		R2W: "18.00",
+		R1M: "20.65",
+		R2M: "21.96",
+		R3M: "23.23",
+		R6M: "24.52",
+	}
+	testROISfixXMLResult.Rf[0] = testROISfixXMLElem
+	testROISfixXMLElem = datastructures.ROISfixXMLResultElem{
+		D0:  time.Date(2022, time.March, 0o1, 0, 0, 0, 0, time.UTC),
+		R1W: "19.85",
+		R2W: "19.91",
+		R1M: "22.63",
+		R2M: "23.79",
+		R3M: "24.49",
+		R6M: "25.71",
+	}
+	testROISfixXMLResult.Rf[1] = testROISfixXMLElem
+	newCase = DatastructuresTestCase{
+		Name:              "XMLMarshalControlOut",
+		DataStructureType: "ROISfixXML",
+		Datastructure:     testROISfixXMLResult,
+		NeedXMLMarshal:    true,
+		XMLMarshalControl: `<ROISfixXMLResult><rf><D0>2022-02-28T00:00:00Z</D0><R1W>17.83</R1W><R2W>18.00</R2W><R1M>20.65</R1M><R2M>21.96</R2M><R3M>23.23</R3M><R6M>24.52</R6M></rf><rf><D0>2022-03-01T00:00:00Z</D0><R1W>19.85</R1W><R2W>19.91</R2W><R1M>22.63</R1M><R2M>23.79</R2M><R3M>24.49</R3M><R6M>25.71</R6M></rf></ROISfixXMLResult>`,
+	}
+	newCase.MarshalXMLTestFunc = func(t *testing.T, Datastructure interface{}, XMLMarshalControl string) {
+		t.Helper()
+		DSAssert, ok := Datastructure.(datastructures.ROISfixXMLResult)
+		if !ok {
+			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:ROISfixXMLResult")
 		}
 		marshXMLres, err := xml.Marshal(DSAssert)
 		require.NoError(t, err)

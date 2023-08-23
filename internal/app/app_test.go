@@ -1260,9 +1260,70 @@ func initTestDataRepoDebtUSDXML(t *testing.T) AppTestTable {
 	return testDataRepoDebtUSDXML
 }
 
+// ROISfixXML.
+func initTestDataROISfixXML(t *testing.T) AppTestTable {
+	t.Helper()
+	testDataROISfixXML := AppTestTable{
+		MethodName: "ROISfixXML",
+		Method:     (*app.App).ROISfixXML,
+	}
+	testROISfixXMLResult := datastructures.ROISfixXMLResult{
+		Rf: make([]datastructures.ROISfixXMLResultElem, 2),
+	}
+	testROISfixXMLElem := datastructures.ROISfixXMLResultElem{
+		D0:  time.Date(2022, time.February, 28, 0, 0, 0, 0, time.UTC),
+		R1W: "17.83",
+		R2W: "18.00",
+		R1M: "20.65",
+		R2M: "21.96",
+		R3M: "23.23",
+		R6M: "24.52",
+	}
+	testROISfixXMLResult.Rf[0] = testROISfixXMLElem
+	testROISfixXMLElem = datastructures.ROISfixXMLResultElem{
+		D0:  time.Date(2022, time.March, 0o1, 0, 0, 0, 0, time.UTC),
+		R1W: "19.85",
+		R2W: "19.91",
+		R1M: "22.63",
+		R2M: "23.79",
+		R3M: "24.49",
+		R6M: "25.71",
+	}
+	testROISfixXMLResult.Rf[1] = testROISfixXMLElem
+	testCases := make([]AppTestCase, 2)
+	testCases[0] = AppTestCase{
+		Name: "Positive",
+		Input: &datastructures.ROISfixXML{
+			FromDate: "2022-02-27",
+			ToDate:   "2022-03-02",
+		},
+		Output: testROISfixXMLResult,
+		Error:  nil,
+	}
+
+	testCases[1] = AppTestCase{
+		Name: "Negative",
+		Input: &datastructures.ROISfixXML{
+			FromDate: "022-14-22",
+			ToDate:   "2022-03-02",
+		},
+		Output: datastructures.ROISfixXMLResult{},
+		Error:  customsoap.ErrContextWSReqExpired,
+	}
+	standartTestCacheCases := createStandartTestCacheCases(t, &datastructures.ROISfixXML{
+		FromDate: "2022-02-27",
+		ToDate:   "2022-03-02",
+	}, testROISfixXMLResult)
+
+	testDataROISfixXML.TestCases = testCases
+	testDataROISfixXML.TestCases = append(testDataROISfixXML.TestCases, standartTestCacheCases...)
+
+	return testDataROISfixXML
+}
+
 func TestAllAppCases(t *testing.T) { //nolint:gocognit, nolintlint, gocyclo, funlen
 	acTable := AllCasesTable{}
-	acTable.CasesByMethod = make([]AppTestTable, 20)
+	acTable.CasesByMethod = make([]AppTestTable, 21)
 	acTable.CasesByMethod[0] = initTestDataGetCursOnDateXML(t)
 	acTable.CasesByMethod[1] = initTestDataBiCurBaseXML(t)
 	acTable.CasesByMethod[2] = initTestDataBliquidityXML(t)
@@ -1283,6 +1344,7 @@ func TestAllAppCases(t *testing.T) { //nolint:gocognit, nolintlint, gocyclo, fun
 	acTable.CasesByMethod[17] = initTestDataOvernightXML(t)
 	acTable.CasesByMethod[18] = initTestDataRepo_debtXML(t)
 	acTable.CasesByMethod[19] = initTestDataRepoDebtUSDXML(t)
+	acTable.CasesByMethod[20] = initTestDataROISfixXML(t)
 	t.Parallel()
 	for _, curMethodTable := range acTable.CasesByMethod {
 		curMethodTable := curMethodTable
