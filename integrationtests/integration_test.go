@@ -211,6 +211,14 @@ func (atc *AllTestCases) Init() {
 		Mode:          0,
 	}
 	atc.Cases = append(atc.Cases, curCase)
+	curCase = TestCase{
+		Method:        "ROISfixXML",
+		Handler:       "/ROISfixXML",
+		Request:       `{"FromDate":"2022-02-27","ToDate":"2023-03-02"}`,
+		OutputControl: `{"rf":[{"D0":"2022-02-28T00:00:00+03:00","R1W":"17.83","R2W":"18.00","R1M":"20.65","R2M":"21.96","R3M":"23.23","R6M":"24.52"},{"D0":"2022-03-01T00:00:00+03:00","R1W":"19.85","R2W":"19.91","R1M":"22.63","R2M":"23.79","R3M":"24.49","R6M":"25.71"}]}`,
+		Mode:          0,
+	}
+	atc.Cases = append(atc.Cases, curCase)
 }
 
 func XMLToStructDecoder(t *testing.T, data []byte, startNodeName string, pointerToStruct interface{}) {
