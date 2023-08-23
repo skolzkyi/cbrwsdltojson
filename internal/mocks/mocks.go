@@ -297,6 +297,15 @@ func (srsm *SoapRequestSenderMock) SoapCall(_ context.Context, action string, in
 			return []byte(`<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><soap:Body><RuoniaXMLResponse xmlns="http://web.cbr.ru/"><RuoniaXMLResult><Ruonia xmlns=""><ro><D0>2023-06-22T00:00:00Z</D0><ruo>7.1500</ruo><vol>367.9500</vol><DateUpdate>2023-06-23T00:00:00Z</DateUpdate></ro><ro><D0>2023-06-23T00:00:00Z</D0><ruo>7.1300</ruo><vol>388.4500</vol><DateUpdate>2023-06-26T00:00:00Z</DateUpdate></ro></Ruonia></RuoniaXMLResult></RuoniaXMLResponse></soap:Body></soap:Envelope>`), nil
 		}
 		return nil, customsoap.ErrContextWSReqExpired
+	case "SaldoXML":
+		inputData, ok := input.(datastructures.SaldoXML)
+		if !ok {
+			return nil, ErrAssertion
+		}
+		if inputData.FromDate == cFromDate && inputData.ToDate == cToDate {
+			return []byte(`<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><soap:Body><SaldoXMLResponse xmlns="http://web.cbr.ru/"><SaldoXMLResult><Saldo xmlns=""><So><Dt>2023-06-22T00:00:00Z</Dt><DEADLINEBS>1044.60</DEADLINEBS></So><So><Dt>2023-06-23T00:00:00Z</Dt><DEADLINEBS>1061.30</DEADLINEBS></So></Saldo></SaldoXMLResult></SaldoXMLResponse></soap:Body></soap:Envelope>`), nil
+		}
+		return nil, customsoap.ErrContextWSReqExpired
 	default:
 		return nil, errors.New("SoapRequestSenderMock: unsupported action")
 	}
