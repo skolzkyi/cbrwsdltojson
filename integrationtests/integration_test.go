@@ -219,6 +219,14 @@ func (atc *AllTestCases) Init() {
 		Mode:          0,
 	}
 	atc.Cases = append(atc.Cases, curCase)
+	curCase = TestCase{
+		Method:        "RuoniaSVXML",
+		Handler:       "/RuoniaSVXML",
+		Request:       `{"FromDate":"2023-06-22","ToDate":"2023-06-23"}`,
+		OutputControl: `{"ra":[{"DT":"2023-06-22T00:00:00+03:00","RUONIA_Index":"2.65003371140540","RUONIA_AVG_1M":"7.33031817626889","RUONIA_AVG_3M":"7.28023580262342","RUONIA_AVG_6M":"7.34479164787354"},{"DT":"2023-06-23T00:00:00+03:00","RUONIA_Index":"2.65055282759819","RUONIA_AVG_1M":"7.32512579295002","RUONIA_AVG_3M":"7.27890778428907","RUONIA_AVG_6M":"7.34359578515310"}]}`,
+		Mode:          0,
+	}
+	atc.Cases = append(atc.Cases, curCase)
 }
 
 func XMLToStructDecoder(t *testing.T, data []byte, startNodeName string, pointerToStruct interface{}) {

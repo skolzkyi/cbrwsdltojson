@@ -1321,9 +1321,66 @@ func initTestDataROISfixXML(t *testing.T) AppTestTable {
 	return testDataROISfixXML
 }
 
+// RuoniaSVXML.
+func initTestDataRuoniaSVXML(t *testing.T) AppTestTable {
+	t.Helper()
+	testDataRuoniaSVXML := AppTestTable{
+		MethodName: "RuoniaSVXML",
+		Method:     (*app.App).RuoniaSVXML,
+	}
+	testRuoniaSVXMLResult := datastructures.RuoniaSVXMLResult{
+		Ra: make([]datastructures.RuoniaSVXMLResultElem, 2),
+	}
+	testRuoniaSVXMLElem := datastructures.RuoniaSVXMLResultElem{
+		DT:            time.Date(2023, time.June, 22, 0, 0, 0, 0, time.UTC),
+		RUONIA_Index:  "2.65003371140540",
+		RUONIA_AVG_1M: "7.33031817626889",
+		RUONIA_AVG_3M: "7.28023580262342",
+		RUONIA_AVG_6M: "7.34479164787354",
+	}
+	testRuoniaSVXMLResult.Ra[0] = testRuoniaSVXMLElem
+	testRuoniaSVXMLElem = datastructures.RuoniaSVXMLResultElem{
+		DT:            time.Date(2023, time.June, 23, 0, 0, 0, 0, time.UTC),
+		RUONIA_Index:  "2.65055282759819",
+		RUONIA_AVG_1M: "7.32512579295002",
+		RUONIA_AVG_3M: "7.27890778428907",
+		RUONIA_AVG_6M: "7.34359578515310",
+	}
+	testRuoniaSVXMLResult.Ra[1] = testRuoniaSVXMLElem
+	testCases := make([]AppTestCase, 2)
+	testCases[0] = AppTestCase{
+		Name: "Positive",
+		Input: &datastructures.RuoniaSVXML{
+			FromDate: "2023-06-22",
+			ToDate:   "2023-06-23",
+		},
+		Output: testRuoniaSVXMLResult,
+		Error:  nil,
+	}
+
+	testCases[1] = AppTestCase{
+		Name: "Negative",
+		Input: &datastructures.RuoniaSVXML{
+			FromDate: "022-14-22",
+			ToDate:   "2023-06-23",
+		},
+		Output: datastructures.RuoniaSVXMLResult{},
+		Error:  customsoap.ErrContextWSReqExpired,
+	}
+	standartTestCacheCases := createStandartTestCacheCases(t, &datastructures.RuoniaSVXML{
+		FromDate: "2023-06-22",
+		ToDate:   "2023-06-23",
+	}, testRuoniaSVXMLResult)
+
+	testDataRuoniaSVXML.TestCases = testCases
+	testDataRuoniaSVXML.TestCases = append(testDataRuoniaSVXML.TestCases, standartTestCacheCases...)
+
+	return testDataRuoniaSVXML
+}
+
 func TestAllAppCases(t *testing.T) { //nolint:gocognit, nolintlint, gocyclo, funlen
 	acTable := AllCasesTable{}
-	acTable.CasesByMethod = make([]AppTestTable, 21)
+	acTable.CasesByMethod = make([]AppTestTable, 22)
 	acTable.CasesByMethod[0] = initTestDataGetCursOnDateXML(t)
 	acTable.CasesByMethod[1] = initTestDataBiCurBaseXML(t)
 	acTable.CasesByMethod[2] = initTestDataBliquidityXML(t)
@@ -1345,6 +1402,7 @@ func TestAllAppCases(t *testing.T) { //nolint:gocognit, nolintlint, gocyclo, fun
 	acTable.CasesByMethod[18] = initTestDataRepo_debtXML(t)
 	acTable.CasesByMethod[19] = initTestDataRepoDebtUSDXML(t)
 	acTable.CasesByMethod[20] = initTestDataROISfixXML(t)
+	acTable.CasesByMethod[21] = initTestDataRuoniaSVXML(t)
 	t.Parallel()
 	for _, curMethodTable := range acTable.CasesByMethod {
 		curMethodTable := curMethodTable

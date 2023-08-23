@@ -42,5 +42,4 @@ type RuoniaSVXMLResultElem struct {
 	RUONIA_AVG_1M string    `xml:"RUONIA_AVG_1M" json:"RUONIA_AVG_1M"` //nolint:revive, stylecheck, nolintlint
 	RUONIA_AVG_3M string    `xml:"RUONIA_AVG_3M" json:"RUONIA_AVG_3M"` //nolint:revive, stylecheck, nolintlint
 	RUONIA_AVG_6M string    `xml:"RUONIA_AVG_6M" json:"RUONIA_AVG_6M"` //nolint:revive, stylecheck, nolintlint
-
 }
