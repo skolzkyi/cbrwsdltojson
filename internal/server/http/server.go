@@ -65,6 +65,7 @@ type Application interface {
 	OvernightXML(ctx context.Context, input interface{}, rawBody string) (interface{}, error)
 	RepoDebtXML(ctx context.Context, input interface{}, rawBody string) (interface{}, error)
 	RepoDebtUSDXML(ctx context.Context, input interface{}, rawBody string) (interface{}, error)
+	ROISfixXML(ctx context.Context, input interface{}, rawBody string) (interface{}, error)
 }
 
 func NewServer(logger Logger, app Application, config Config) *Server {
