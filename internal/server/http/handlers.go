@@ -259,3 +259,8 @@ func (s *Server) SaldoXML(w http.ResponseWriter, r *http.Request) {
 	newRequest := datastructures.SaldoXML{}
 	s.universalMethodHandler(w, r, &newRequest, s.app.SaldoXML)
 }
+
+func (s *Server) SwapDayTotalXML(w http.ResponseWriter, r *http.Request) {
+	newRequest := datastructures.SwapDayTotalXML{}
+	s.universalMethodHandler(w, r, &newRequest, s.app.SwapDayTotalXML)
+}
