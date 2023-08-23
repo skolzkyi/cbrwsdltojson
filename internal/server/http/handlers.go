@@ -244,3 +244,8 @@ func (s *Server) ROISfixXML(w http.ResponseWriter, r *http.Request) {
 	newRequest := datastructures.ROISfixXML{}
 	s.universalMethodHandler(w, r, &newRequest, s.app.ROISfixXML)
 }
+
+func (s *Server) RuoniaSVXML(w http.ResponseWriter, r *http.Request) {
+	newRequest := datastructures.RuoniaSVXML{}
+	s.universalMethodHandler(w, r, &newRequest, s.app.RuoniaSVXML)
+}
