@@ -1653,9 +1653,74 @@ func initTestDataSwapInfoSellUSDVolXML(t *testing.T) AppTestTable {
 	return testDataSwapInfoSellUSDVolXML
 }
 
+// SwapInfoSellUSDXML.
+func initTestDataSwapInfoSellUSDXML(t *testing.T) AppTestTable {
+	t.Helper()
+	testDataSwapInfoSellUSDXML := AppTestTable{
+		MethodName: "SwapInfoSellUSDXML",
+		Method:     (*app.App).SwapInfoSellUSDXML,
+	}
+	testSwapInfoSellUSDXMLResult := datastructures.SwapInfoSellUSDXMLResult{
+		SSU: make([]datastructures.SwapInfoSellUSDXMLResultElem, 2),
+	}
+	testSwapInfoSellUSDXMLElem := datastructures.SwapInfoSellUSDXMLResultElem{
+		DateBuy:  time.Date(2022, time.February, 25, 0, 0, 0, 0, time.UTC),
+		DateSell: time.Date(2022, time.February, 28, 0, 0, 0, 0, time.UTC),
+		DateSPOT: time.Date(2022, time.March, 1, 0, 0, 0, 0, time.UTC),
+		BaseRate: "87.115400",
+		SD:       "0.016500",
+		TIR:      "8.5000",
+		Stavka:   "1.5500",
+		Limit:    "2.0000",
+		Type:     1,
+	}
+	testSwapInfoSellUSDXMLResult.SSU[0] = testSwapInfoSellUSDXMLElem
+	testSwapInfoSellUSDXMLElem = datastructures.SwapInfoSellUSDXMLResultElem{
+		DateBuy:  time.Date(2022, time.February, 25, 0, 0, 0, 0, time.UTC),
+		DateSell: time.Date(2022, time.February, 25, 0, 0, 0, 0, time.UTC),
+		DateSPOT: time.Date(2022, time.February, 28, 0, 0, 0, 0, time.UTC),
+		BaseRate: "87.115400",
+		SD:       "0.049600",
+		TIR:      "8.5000",
+		Stavka:   "1.5500",
+		Limit:    "5.0000",
+		Type:     0,
+	}
+	testSwapInfoSellUSDXMLResult.SSU[1] = testSwapInfoSellUSDXMLElem
+	testCases := make([]AppTestCase, 2)
+	testCases[0] = AppTestCase{
+		Name: "Positive",
+		Input: &datastructures.SwapInfoSellUSDXML{
+			FromDate: "2022-02-25",
+			ToDate:   "2022-02-28",
+		},
+		Output: testSwapInfoSellUSDXMLResult,
+		Error:  nil,
+	}
+
+	testCases[1] = AppTestCase{
+		Name: "Negative",
+		Input: &datastructures.SwapInfoSellUSDXML{
+			FromDate: "022-14-22",
+			ToDate:   "2022-02-28",
+		},
+		Output: datastructures.SwapInfoSellUSDXMLResult{},
+		Error:  customsoap.ErrContextWSReqExpired,
+	}
+	standartTestCacheCases := createStandartTestCacheCases(t, &datastructures.SwapInfoSellUSDXML{
+		FromDate: "2022-02-25",
+		ToDate:   "2022-02-28",
+	}, testSwapInfoSellUSDXMLResult)
+
+	testDataSwapInfoSellUSDXML.TestCases = testCases
+	testDataSwapInfoSellUSDXML.TestCases = append(testDataSwapInfoSellUSDXML.TestCases, standartTestCacheCases...)
+
+	return testDataSwapInfoSellUSDXML
+}
+
 func TestAllAppCases(t *testing.T) { //nolint:gocognit, nolintlint, gocyclo, funlen
 	acTable := AllCasesTable{}
-	acTable.CasesByMethod = make([]AppTestTable, 27)
+	acTable.CasesByMethod = make([]AppTestTable, 28)
 	acTable.CasesByMethod[0] = initTestDataGetCursOnDateXML(t)
 	acTable.CasesByMethod[1] = initTestDataBiCurBaseXML(t)
 	acTable.CasesByMethod[2] = initTestDataBliquidityXML(t)
@@ -1683,6 +1748,7 @@ func TestAllAppCases(t *testing.T) { //nolint:gocognit, nolintlint, gocyclo, fun
 	acTable.CasesByMethod[24] = initTestDataSwapDayTotalXML(t)
 	acTable.CasesByMethod[25] = initTestDataSwapDynamicXML(t)
 	acTable.CasesByMethod[26] = initTestDataSwapInfoSellUSDVolXML(t)
+	acTable.CasesByMethod[27] = initTestDataSwapInfoSellUSDXML(t)
 	t.Parallel()
 	for _, curMethodTable := range acTable.CasesByMethod {
 		curMethodTable := curMethodTable

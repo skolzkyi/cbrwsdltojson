@@ -333,6 +333,15 @@ func (srsm *SoapRequestSenderMock) SoapCall(_ context.Context, action string, in
 			return []byte(`<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><soap:Body><SwapInfoSellUSDVolXMLResponse xmlns="http://web.cbr.ru/"><SwapInfoSellUSDVolXMLResult><SwapInfoSellUSDVol xmlns=""><SSUV><DT>2022-02-25T00:00:00Z</DT><TODTOMrubvol>435577.0</TODTOMrubvol><TODTOMusdvol>5000.0</TODTOMusdvol><TOMSPTrubvol>128974.3</TOMSPTrubvol><TOMSPTusdvol>1480.5</TOMSPTusdvol></SSUV><SSUV><DT>2022-02-24T00:00:00Z</DT><TODTOMrubvol>403236.5</TODTOMrubvol><TODTOMusdvol>5000.0</TODTOMusdvol><TOMSPTrubvol>32299.2</TOMSPTrubvol><TOMSPTusdvol>400.5</TOMSPTusdvol></SSUV></SwapInfoSellUSDVol></SwapInfoSellUSDVolXMLResult></SwapInfoSellUSDVolXMLResponse></soap:Body></soap:Envelope>`), nil
 		}
 		return nil, customsoap.ErrContextWSReqExpired
+	case "SwapInfoSellUSDXML":
+		inputData, ok := input.(datastructures.SwapInfoSellUSDXML)
+		if !ok {
+			return nil, ErrAssertion
+		}
+		if inputData.FromDate == "2022-02-25" && inputData.ToDate == "2022-02-28" { // nolint: goconst, nolintlint
+			return []byte(`<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><soap:Body><SwapInfoSellUSDXMLResponse xmlns="http://web.cbr.ru/"><SwapInfoSellUSDXMLResult><swapinfosellusd xmlns=""><SSU><DateBuy>2022-02-25T00:00:00Z</DateBuy><DateSell>2022-02-28T00:00:00Z</DateSell><DateSPOT>2022-03-01T00:00:00Z</DateSPOT><Type>1</Type><BaseRate>87.115400</BaseRate><SD>0.016500</SD><TIR>8.5000</TIR><Stavka>1.5500</Stavka><limit>2.0000</limit></SSU><SSU><DateBuy>2022-02-25T00:00:00Z</DateBuy><DateSell>2022-02-25T00:00:00Z</DateSell><DateSPOT>2022-02-28T00:00:00Z</DateSPOT><Type>0</Type><BaseRate>87.115400</BaseRate><SD>0.049600</SD><TIR>8.5000</TIR><Stavka>1.5500</Stavka><limit>5.0000</limit></SSU></swapinfosellusd></SwapInfoSellUSDXMLResult></SwapInfoSellUSDXMLResponse></soap:Body></soap:Envelope>`), nil
+		}
+		return nil, customsoap.ErrContextWSReqExpired
 	default:
 		return nil, errors.New("SoapRequestSenderMock: unsupported action")
 	}

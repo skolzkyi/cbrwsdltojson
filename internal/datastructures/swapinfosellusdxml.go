@@ -40,10 +40,10 @@ type SwapInfoSellUSDXMLResultElem struct {
 	DateBuy  time.Time `xml:"DateBuy" json:"DateBuy"`
 	DateSell time.Time `xml:"DateSell" json:"DateSell"`
 	DateSPOT time.Time `xml:"DateSPOT" json:"DateSPOT"`
+	Type     int       `xml:"Type" json:"Type"`
 	BaseRate string    `xml:"BaseRate" json:"BaseRate"`
 	SD       string    `xml:"SD" json:"SD"`
 	TIR      string    `xml:"TIR" json:"TIR"`
 	Stavka   string    `xml:"Stavka" json:"Stavka"`
 	Limit    string    `xml:"limit" json:"limit"`
-	Type     int       `xml:"Type" json:"Type"`
 }
