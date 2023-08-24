@@ -101,6 +101,8 @@ func initAllDatastructuresTestTable(t *testing.T) AllDatastructuresTestTable {
 	AllDTTable = append(AllDTTable, curDatastructuresTestTable)
 	curDatastructuresTestTable = initTestCasesSwapInfoSellUSDVolXML(t)
 	AllDTTable = append(AllDTTable, curDatastructuresTestTable)
+	curDatastructuresTestTable = initTestCasesSwapInfoSellUSDXML(t)
+	AllDTTable = append(AllDTTable, curDatastructuresTestTable)
 	return AllDTTable
 }
 
@@ -3479,6 +3481,151 @@ func initTestCasesSwapInfoSellUSDVolXML(t *testing.T) DatastructuresTestTable { 
 		DSAssert, ok := Datastructure.(datastructures.SwapInfoSellUSDVolXMLResult)
 		if !ok {
 			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:SwapInfoSellUSDVolXMLResult")
+		}
+		marshXMLres, err := xml.Marshal(DSAssert)
+		require.NoError(t, err)
+		require.Equal(t, XMLMarshalControl, string(marshXMLres))
+	}
+	newCase.ValidateControlTestFunc = func(_ *testing.T, _ interface{}, _ error) {}
+	DatastructuresTest.OutputDataCases[0] = newCase
+	return DatastructuresTest
+}
+
+func initTestCasesSwapInfoSellUSDXML(t *testing.T) DatastructuresTestTable { // nolint:funlen, nolintlint
+	t.Helper()
+	DatastructuresTest := DatastructuresTestTable{}
+	DatastructuresTest.MethodName = "SwapInfoSellUSDXML"
+	DatastructuresTest.InputDataCases = make([]DatastructuresTestCase, 4)
+	DatastructuresTest.OutputDataCases = make([]DatastructuresTestCase, 1)
+	var newCase DatastructuresTestCase
+	newCase = DatastructuresTestCase{
+		Name:              "XMLMarshalControlIn",
+		DataStructureType: "SwapInfoSellUSDXML",
+		Datastructure: datastructures.SwapInfoSellUSDXML{
+			FromDate: "2022-02-25",
+			ToDate:   "2022-02-28",
+			XMLNs:    "http://web.cbr.ru/",
+		},
+		NeedXMLMarshal:    true,
+		XMLMarshalControl: `<SwapInfoSellUSDXML xmlns="http://web.cbr.ru/"><fromDate>2022-02-25</fromDate><ToDate>2022-02-28</ToDate></SwapInfoSellUSDXML>`,
+	}
+	newCase.MarshalXMLTestFunc = func(t *testing.T, Datastructure interface{}, XMLMarshalControl string) {
+		t.Helper()
+		DSAssert, ok := Datastructure.(datastructures.SwapInfoSellUSDXML)
+		if !ok {
+			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:SwapInfoSellUSDXML")
+		}
+		marshXMLres, err := xml.Marshal(DSAssert)
+		require.NoError(t, err)
+		require.Equal(t, XMLMarshalControl, string(marshXMLres))
+	}
+	newCase.ValidateControlTestFunc = func(_ *testing.T, _ interface{}, _ error) {}
+	DatastructuresTest.InputDataCases[0] = newCase
+	newCase = DatastructuresTestCase{
+		Name:              "ValidateControlNegativeBadRawData",
+		DataStructureType: "SwapInfoSellUSDXML",
+		Datastructure: datastructures.SwapInfoSellUSDXML{
+			FromDate: "022-14-23",
+			ToDate:   "2022-02-28",
+			XMLNs:    "http://web.cbr.ru/",
+		},
+		NeedValidate:    true,
+		ValidateControl: datastructures.ErrBadRawData,
+	}
+	newCase.MarshalXMLTestFunc = func(_ *testing.T, _ interface{}, _ string) {}
+	newCase.ValidateControlTestFunc = func(t *testing.T, Datastructure interface{}, ValidateControl error) {
+		t.Helper()
+		DSAssert, ok := Datastructure.(datastructures.SwapInfoSellUSDXML)
+		if !ok {
+			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:SwapInfoSellUSDXML")
+		}
+		err := DSAssert.Validate()
+		require.Equal(t, ValidateControl, err)
+	}
+	DatastructuresTest.InputDataCases[1] = newCase
+	newCase = DatastructuresTestCase{
+		Name:              "ValidateControlNegativeFromDateAfterToDate",
+		DataStructureType: "SwapInfoSellUSDXML",
+		Datastructure: datastructures.SwapInfoSellUSDXML{
+			FromDate: "2022-02-28",
+			ToDate:   "2022-02-25",
+			XMLNs:    "http://web.cbr.ru/",
+		},
+		NeedValidate:    true,
+		ValidateControl: datastructures.ErrBadInputDateData,
+	}
+	newCase.MarshalXMLTestFunc = func(_ *testing.T, _ interface{}, _ string) {}
+	newCase.ValidateControlTestFunc = func(t *testing.T, Datastructure interface{}, ValidateControl error) {
+		t.Helper()
+		DSAssert, ok := Datastructure.(datastructures.SwapInfoSellUSDXML)
+		if !ok {
+			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:SwapInfoSellUSDXML")
+		}
+		err := DSAssert.Validate()
+		require.Equal(t, ValidateControl, err)
+	}
+	DatastructuresTest.InputDataCases[2] = newCase
+	newCase = DatastructuresTestCase{
+		Name:              "ValidateControlPositive",
+		DataStructureType: "SwapInfoSellUSDXML",
+		Datastructure: datastructures.SwapInfoSellUSDXML{
+			FromDate: "2022-02-25",
+			ToDate:   "2022-02-28",
+			XMLNs:    "http://web.cbr.ru/",
+		},
+		NeedValidate:    true,
+		ValidateControl: nil,
+	}
+	newCase.MarshalXMLTestFunc = func(_ *testing.T, _ interface{}, _ string) {}
+	newCase.ValidateControlTestFunc = func(t *testing.T, Datastructure interface{}, ValidateControl error) {
+		t.Helper()
+		DSAssert, ok := Datastructure.(datastructures.SwapInfoSellUSDXML)
+		if !ok {
+			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:SwapInfoSellUSDXML")
+		}
+		err := DSAssert.Validate()
+		require.Equal(t, ValidateControl, err)
+	}
+	DatastructuresTest.InputDataCases[3] = newCase
+	testSwapInfoSellUSDXMLResult := datastructures.SwapInfoSellUSDXMLResult{
+		SSU: make([]datastructures.SwapInfoSellUSDXMLResultElem, 2),
+	}
+	testSwapInfoSellUSDXMLElem := datastructures.SwapInfoSellUSDXMLResultElem{
+		DateBuy:  time.Date(2022, time.February, 25, 0, 0, 0, 0, time.UTC),
+		DateSell: time.Date(2022, time.February, 28, 0, 0, 0, 0, time.UTC),
+		DateSPOT: time.Date(2022, time.March, 1, 0, 0, 0, 0, time.UTC),
+		BaseRate: "87.115400",
+		SD:       "0.016500",
+		TIR:      "8.5000",
+		Stavka:   "1.5500",
+		Limit:    "2.0000",
+		Type:     1,
+	}
+	testSwapInfoSellUSDXMLResult.SSU[0] = testSwapInfoSellUSDXMLElem
+	testSwapInfoSellUSDXMLElem = datastructures.SwapInfoSellUSDXMLResultElem{
+		DateBuy:  time.Date(2022, time.February, 25, 0, 0, 0, 0, time.UTC),
+		DateSell: time.Date(2022, time.February, 25, 0, 0, 0, 0, time.UTC),
+		DateSPOT: time.Date(2022, time.February, 28, 0, 0, 0, 0, time.UTC),
+		BaseRate: "87.115400",
+		SD:       "0.049600",
+		TIR:      "8.5000",
+		Stavka:   "1.5500",
+		Limit:    "5.0000",
+		Type:     0,
+	}
+	testSwapInfoSellUSDXMLResult.SSU[1] = testSwapInfoSellUSDXMLElem
+	newCase = DatastructuresTestCase{
+		Name:              "XMLMarshalControlOut",
+		DataStructureType: "SwapInfoSellUSDXML",
+		Datastructure:     testSwapInfoSellUSDXMLResult,
+		NeedXMLMarshal:    true,
+		XMLMarshalControl: `<SwapInfoSellUSDXMLResult><SSU><DateBuy>2022-02-25T00:00:00Z</DateBuy><DateSell>2022-02-28T00:00:00Z</DateSell><DateSPOT>2022-03-01T00:00:00Z</DateSPOT><Type>1</Type><BaseRate>87.115400</BaseRate><SD>0.016500</SD><TIR>8.5000</TIR><Stavka>1.5500</Stavka><limit>2.0000</limit></SSU><SSU><DateBuy>2022-02-25T00:00:00Z</DateBuy><DateSell>2022-02-25T00:00:00Z</DateSell><DateSPOT>2022-02-28T00:00:00Z</DateSPOT><Type>0</Type><BaseRate>87.115400</BaseRate><SD>0.049600</SD><TIR>8.5000</TIR><Stavka>1.5500</Stavka><limit>5.0000</limit></SSU></SwapInfoSellUSDXMLResult>`,
+	}
+	newCase.MarshalXMLTestFunc = func(t *testing.T, Datastructure interface{}, XMLMarshalControl string) {
+		t.Helper()
+		DSAssert, ok := Datastructure.(datastructures.SwapInfoSellUSDXMLResult)
+		if !ok {
+			require.Fail(t, "fail type assertion in MarshalXMLTestFunc:SwapInfoSellUSDXMLResult")
 		}
 		marshXMLres, err := xml.Marshal(DSAssert)
 		require.NoError(t, err)
