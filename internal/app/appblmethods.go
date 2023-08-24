@@ -1457,3 +1457,52 @@ func (a *App) SwapInfoSellVolXML(ctx context.Context, input interface{}, rawBody
 	}
 	return response, nil
 }
+
+func (a *App) SwapInfoSellXML(ctx context.Context, input interface{}, rawBody string) (interface{}, error) {
+	var err error
+	var response datastructures.SwapInfoSellXMLResult
+	select {
+	case <-ctx.Done():
+		err = ErrContextWSReqExpired
+		a.logger.Error(err.Error())
+		return response, err
+	default:
+		SOAPMethod := "SwapInfoSellXML"
+		startNodeName := "SwapInfoSell"
+		if a.permittedRequests.PermittedRequestMapLength() > 0 {
+			if a.permittedRequests.IsPermittedRequestInMap(SOAPMethod) {
+				return datastructures.SwapInfoSellXMLResult{}, ErrMethodProhibited
+			}
+		}
+
+		cachedData, ok := a.GetDataInCacheIfExisting(SOAPMethod, rawBody)
+		if ok {
+			response, ok = cachedData.(datastructures.SwapInfoSellXMLResult)
+			if !ok {
+				err = ErrAssertionAfterGetCacheData
+				a.logger.Error(err.Error())
+			} else {
+				return response, nil
+			}
+		}
+
+		inputAsserted, ok := input.(*datastructures.SwapInfoSellXML)
+		if !ok {
+			err = ErrAssertionOfInputData
+			a.logger.Error(err.Error())
+			return response, err
+		}
+		err = a.ProcessRequest(ctx, SOAPMethod, startNodeName, *inputAsserted, &response)
+		if err != nil {
+			a.logger.Error(err.Error())
+			return response, err
+		}
+
+		err = a.AddOrUpdateDataInCache(SOAPMethod, input, response)
+		if err != nil {
+			a.logger.Error(err.Error())
+			return response, err
+		}
+	}
+	return response, nil
+}

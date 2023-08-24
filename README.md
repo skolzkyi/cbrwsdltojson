@@ -200,3 +200,9 @@
         <li>response: {"SSUV":[{"DT":"2023-05-10T00:00:00+03:00","Currency":2,"type":0,"VOL_FC":"1113.5","VOL_RUB":"12512.6"},{"DT":"2023-05-05T00:00:00+03:00","Currency":2,"type":0,"VOL_FC":"4583.7","VOL_RUB":"51606.0"}]}</li>
     </ul>
    </details>
+   <details><summary><b>SwapInfoSellXML</b></summary>
+    <ul>
+        <li>request: {"FromDate":"2023-06-20","ToDate":"2023-06-21"}</li>
+        <li>response: {"SSU":[{"Currency":2,"DateBuy":"2023-06-21T00:00:00+03:00","DateSell":"2023-06-21T00:00:00+03:00","DateSPOT":"2023-06-26T00:00:00+03:00","Type":0,"BaseRate":"11.764246","SD":"0.003375","TIR":"6.5000","Stavka":"4.3440","limit":"10.0000"},{"Currency":2,"DateBuy":"2023-06-20T00:00:00+03:00","DateSell":"2023-06-20T00:00:00+03:00","DateSPOT":"2023-06-21T00:00:00+03:00","Type":0,"BaseRate":"11.730496","SD":"0.000626","TIR":"6.5000","Stavka":"4.4890","limit":"10.0000"}]}</li>
+    </ul>
+   </details>
