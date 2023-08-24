@@ -176,3 +176,9 @@
         <li>response: {"SDT":[{"DT":"2022-02-28T00:00:00+03:00","Swap":"0.0"},{"DT":"2022-02-25T00:00:00+03:00","Swap":"24120.4"}]}</li>
     </ul>
    </details>
+   <details><summary><b>SwapDynamicXML</b></summary>
+    <ul>
+        <li>request: {"FromDate":"2022-02-25","ToDate":"2022-02-28"}</li>
+        <li>response: {"Swap":[{"DateBuy":"2022-02-25T00:00:00+03:00","DateSell":"2022-02-28T00:00:00+03:00","BaseRate":"96.8252","SD":"0.0882","TIR":"10.5000","Stavka":"-0.576000","Currency":1},{"DateBuy":"2022-02-25T00:00:00+03:00","DateSell":"2022-02-28T00:00:00+03:00","BaseRate":"87.1154","SD":"0.0748","TIR":"10.5000","Stavka":"0.050000","Currency":0}]}</li>
+    </ul>
+   </details>
