@@ -36,6 +36,7 @@ func (s *Server) routes() *http.ServeMux {
 	mux.HandleFunc("/SwapDayTotalXML", loggingMiddleware(s.SwapDayTotalXML, s.logg))
 	mux.HandleFunc("/SwapDynamicXML", loggingMiddleware(s.SwapDynamicXML, s.logg))
 	mux.HandleFunc("/SwapInfoSellUSDVolXML", loggingMiddleware(s.SwapInfoSellUSDVolXML, s.logg))
+	mux.HandleFunc("/SwapInfoSellUSDXML", loggingMiddleware(s.SwapInfoSellUSDXML, s.logg))
 
 	return mux
 }
