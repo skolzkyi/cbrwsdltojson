@@ -1535,9 +1535,70 @@ func initTestDataSwapDayTotalXML(t *testing.T) AppTestTable {
 	return testDataSwapDayTotalXML
 }
 
+// SwapDynamicXML.
+func initTestDataSwapDynamicXML(t *testing.T) AppTestTable {
+	t.Helper()
+	testDataSwapDynamicXML := AppTestTable{
+		MethodName: "SwapDynamicXML",
+		Method:     (*app.App).SwapDynamicXML,
+	}
+	testSwapDynamicXMLResult := datastructures.SwapDynamicXMLResult{
+		Swap: make([]datastructures.SwapDynamicXMLResultElem, 2),
+	}
+	testSwapDynamicXMLXMLElem := datastructures.SwapDynamicXMLResultElem{
+		DateBuy:  time.Date(2022, time.February, 25, 0, 0, 0, 0, time.UTC),
+		DateSell: time.Date(2022, time.February, 28, 0, 0, 0, 0, time.UTC),
+		BaseRate: "96.8252",
+		SD:       "0.0882",
+		TIR:      "10.5000",
+		Stavka:   "-0.576000",
+		Currency: 1,
+	}
+	testSwapDynamicXMLResult.Swap[0] = testSwapDynamicXMLXMLElem
+	testSwapDynamicXMLXMLElem = datastructures.SwapDynamicXMLResultElem{
+		DateBuy:  time.Date(2022, time.February, 25, 0, 0, 0, 0, time.UTC),
+		DateSell: time.Date(2022, time.February, 28, 0, 0, 0, 0, time.UTC),
+		BaseRate: "87.1154",
+		SD:       "0.0748",
+		TIR:      "10.5000",
+		Stavka:   "0.050000",
+		Currency: 0,
+	}
+	testSwapDynamicXMLResult.Swap[1] = testSwapDynamicXMLXMLElem
+	testCases := make([]AppTestCase, 2)
+	testCases[0] = AppTestCase{
+		Name: "Positive",
+		Input: &datastructures.SwapDynamicXML{
+			FromDate: "2022-02-25",
+			ToDate:   "2022-02-28",
+		},
+		Output: testSwapDynamicXMLResult,
+		Error:  nil,
+	}
+
+	testCases[1] = AppTestCase{
+		Name: "Negative",
+		Input: &datastructures.SwapDynamicXML{
+			FromDate: "022-14-22",
+			ToDate:   "2022-02-28",
+		},
+		Output: datastructures.SwapDynamicXMLResult{},
+		Error:  customsoap.ErrContextWSReqExpired,
+	}
+	standartTestCacheCases := createStandartTestCacheCases(t, &datastructures.SwapDynamicXML{
+		FromDate: "2022-02-25",
+		ToDate:   "2022-02-28",
+	}, testSwapDynamicXMLResult)
+
+	testDataSwapDynamicXML.TestCases = testCases
+	testDataSwapDynamicXML.TestCases = append(testDataSwapDynamicXML.TestCases, standartTestCacheCases...)
+
+	return testDataSwapDynamicXML
+}
+
 func TestAllAppCases(t *testing.T) { //nolint:gocognit, nolintlint, gocyclo, funlen
 	acTable := AllCasesTable{}
-	acTable.CasesByMethod = make([]AppTestTable, 25)
+	acTable.CasesByMethod = make([]AppTestTable, 26)
 	acTable.CasesByMethod[0] = initTestDataGetCursOnDateXML(t)
 	acTable.CasesByMethod[1] = initTestDataBiCurBaseXML(t)
 	acTable.CasesByMethod[2] = initTestDataBliquidityXML(t)
@@ -1563,6 +1624,7 @@ func TestAllAppCases(t *testing.T) { //nolint:gocognit, nolintlint, gocyclo, fun
 	acTable.CasesByMethod[22] = initTestDataRuoniaXML(t)
 	acTable.CasesByMethod[23] = initTestDataSaldoXML(t)
 	acTable.CasesByMethod[24] = initTestDataSwapDayTotalXML(t)
+	acTable.CasesByMethod[25] = initTestDataSwapDynamicXML(t)
 	t.Parallel()
 	for _, curMethodTable := range acTable.CasesByMethod {
 		curMethodTable := curMethodTable
