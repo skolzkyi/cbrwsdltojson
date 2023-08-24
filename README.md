@@ -188,3 +188,9 @@
         <li>response: {"SSUV":[{"DT":"2022-02-25T00:00:00+03:00","TODTOMrubvol":"435577.0","TODTOMusdvol":"5000.0","TOMSPTrubvol":"128974.3","TOMSPTusdvol":"1480.5"},{"DT":"2022-02-24T00:00:00+03:00","TODTOMrubvol":"403236.5","TODTOMusdvol":"5000.0","TOMSPTrubvol":"32299.2","TOMSPTusdvol":"400.5"}]}</li>
     </ul>
    </details>
+   <details><summary><b>SwapInfoSellUSDXML</b></summary>
+    <ul>
+        <li>request: {"FromDate":"2022-02-25","ToDate":"2022-02-28"}</li>
+        <li>response: {"SSU":[{"DateBuy":"2022-02-25T00:00:00+03:00","DateSell":"2022-02-28T00:00:00+03:00","DateSPOT":"2022-03-01T00:00:00+03:00","Type":1,"BaseRate":"87.115400","SD":"0.016500","TIR":"8.5000","Stavka":"1.5500","limit":"2.0000"},{"DateBuy":"2022-02-25T00:00:00+03:00","DateSell":"2022-02-25T00:00:00+03:00","DateSPOT":"2022-02-28T00:00:00+03:00","Type":0,"BaseRate":"87.115400","SD":"0.049600","TIR":"8.5000","Stavka":"1.5500","limit":"5.0000"}]}</li>
+    </ul>
+   </details>
