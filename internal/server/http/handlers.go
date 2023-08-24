@@ -264,3 +264,8 @@ func (s *Server) SwapDayTotalXML(w http.ResponseWriter, r *http.Request) {
 	newRequest := datastructures.SwapDayTotalXML{}
 	s.universalMethodHandler(w, r, &newRequest, s.app.SwapDayTotalXML)
 }
+
+func (s *Server) SwapDynamicXML(w http.ResponseWriter, r *http.Request) {
+	newRequest := datastructures.SwapDynamicXML{}
+	s.universalMethodHandler(w, r, &newRequest, s.app.SwapDynamicXML)
+}
