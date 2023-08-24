@@ -206,3 +206,9 @@
         <li>response: {"SSU":[{"Currency":2,"DateBuy":"2023-06-21T00:00:00+03:00","DateSell":"2023-06-21T00:00:00+03:00","DateSPOT":"2023-06-26T00:00:00+03:00","Type":0,"BaseRate":"11.764246","SD":"0.003375","TIR":"6.5000","Stavka":"4.3440","limit":"10.0000"},{"Currency":2,"DateBuy":"2023-06-20T00:00:00+03:00","DateSell":"2023-06-20T00:00:00+03:00","DateSPOT":"2023-06-21T00:00:00+03:00","Type":0,"BaseRate":"11.730496","SD":"0.000626","TIR":"6.5000","Stavka":"4.4890","limit":"10.0000"}]}</li>
     </ul>
    </details>
+    <details><summary><b>SwapMonthTotalXML</b></summary>
+    <ul>
+        <li>request: {"FromDate":"2022-02-11","ToDate":"2022-02-24"}</li>
+        <li>response: {"SMT":[{"D0":"2022-02-11T00:00:00+03:00","RUB":"41208.1","USD":"553.3"},{"D0":"2022-02-24T00:00:00+03:00","RUB":"24113.5","USD":"299.0"}]}</li>
+    </ul>
+   </details>

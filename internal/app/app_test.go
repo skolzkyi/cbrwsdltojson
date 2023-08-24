@@ -1842,9 +1842,62 @@ func initTestDataSwapInfoSellXML(t *testing.T) AppTestTable {
 	return testDataSwapInfoSellXML
 }
 
+// SwapMonthTotalXML.
+func initTestDataSwapMonthTotalXML(t *testing.T) AppTestTable {
+	t.Helper()
+	testDataSwapMonthTotalXML := AppTestTable{
+		MethodName: "SwapMonthTotalXML",
+		Method:     (*app.App).SwapMonthTotalXML,
+	}
+	testSwapMonthTotalXMLResult := datastructures.SwapMonthTotalXMLResult{
+		SMT: make([]datastructures.SwapMonthTotalXMLResultElem, 2),
+	}
+	testSwapMonthTotalXMLElem := datastructures.SwapMonthTotalXMLResultElem{
+		D0:  time.Date(2022, time.February, 11, 0, 0, 0, 0, time.UTC),
+		RUB: "41208.1",
+		USD: "553.3",
+	}
+	testSwapMonthTotalXMLResult.SMT[0] = testSwapMonthTotalXMLElem
+	testSwapMonthTotalXMLElem = datastructures.SwapMonthTotalXMLResultElem{
+		D0:  time.Date(2022, time.February, 24, 0, 0, 0, 0, time.UTC),
+		RUB: "24113.5",
+		USD: "299.0",
+	}
+	testSwapMonthTotalXMLResult.SMT[1] = testSwapMonthTotalXMLElem
+	testCases := make([]AppTestCase, 2)
+	testCases[0] = AppTestCase{
+		Name: "Positive",
+		Input: &datastructures.SwapMonthTotalXML{
+			FromDate: "2022-02-11",
+			ToDate:   "2022-02-24",
+		},
+		Output: testSwapMonthTotalXMLResult,
+		Error:  nil,
+	}
+
+	testCases[1] = AppTestCase{
+		Name: "Negative",
+		Input: &datastructures.SwapMonthTotalXML{
+			FromDate: "022-14-22",
+			ToDate:   "2022-02-24",
+		},
+		Output: datastructures.SwapMonthTotalXMLResult{},
+		Error:  customsoap.ErrContextWSReqExpired,
+	}
+	standartTestCacheCases := createStandartTestCacheCases(t, &datastructures.SwapMonthTotalXML{
+		FromDate: "2022-02-11",
+		ToDate:   "2022-02-24",
+	}, testSwapMonthTotalXMLResult)
+
+	testDataSwapMonthTotalXML.TestCases = testCases
+	testDataSwapMonthTotalXML.TestCases = append(testDataSwapMonthTotalXML.TestCases, standartTestCacheCases...)
+
+	return testDataSwapMonthTotalXML
+}
+
 func TestAllAppCases(t *testing.T) { //nolint:gocognit, nolintlint, gocyclo, funlen
 	acTable := AllCasesTable{}
-	acTable.CasesByMethod = make([]AppTestTable, 30)
+	acTable.CasesByMethod = make([]AppTestTable, 31)
 	acTable.CasesByMethod[0] = initTestDataGetCursOnDateXML(t)
 	acTable.CasesByMethod[1] = initTestDataBiCurBaseXML(t)
 	acTable.CasesByMethod[2] = initTestDataBliquidityXML(t)
@@ -1875,6 +1928,7 @@ func TestAllAppCases(t *testing.T) { //nolint:gocognit, nolintlint, gocyclo, fun
 	acTable.CasesByMethod[27] = initTestDataSwapInfoSellUSDXML(t)
 	acTable.CasesByMethod[28] = initTestDataSwapInfoSellVolXML(t)
 	acTable.CasesByMethod[29] = initTestDataSwapInfoSellXML(t)
+	acTable.CasesByMethod[30] = initTestDataSwapMonthTotalXML(t)
 	t.Parallel()
 	for _, curMethodTable := range acTable.CasesByMethod {
 		curMethodTable := curMethodTable

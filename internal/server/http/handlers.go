@@ -289,3 +289,8 @@ func (s *Server) SwapInfoSellXML(w http.ResponseWriter, r *http.Request) {
 	newRequest := datastructures.SwapInfoSellXML{}
 	s.universalMethodHandler(w, r, &newRequest, s.app.SwapInfoSellXML)
 }
+
+func (s *Server) SwapMonthTotalXML(w http.ResponseWriter, r *http.Request) {
+	newRequest := datastructures.SwapMonthTotalXML{}
+	s.universalMethodHandler(w, r, &newRequest, s.app.SwapMonthTotalXML)
+}
