@@ -342,6 +342,15 @@ func (srsm *SoapRequestSenderMock) SoapCall(_ context.Context, action string, in
 			return []byte(`<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><soap:Body><SwapInfoSellUSDXMLResponse xmlns="http://web.cbr.ru/"><SwapInfoSellUSDXMLResult><swapinfosellusd xmlns=""><SSU><DateBuy>2022-02-25T00:00:00Z</DateBuy><DateSell>2022-02-28T00:00:00Z</DateSell><DateSPOT>2022-03-01T00:00:00Z</DateSPOT><Type>1</Type><BaseRate>87.115400</BaseRate><SD>0.016500</SD><TIR>8.5000</TIR><Stavka>1.5500</Stavka><limit>2.0000</limit></SSU><SSU><DateBuy>2022-02-25T00:00:00Z</DateBuy><DateSell>2022-02-25T00:00:00Z</DateSell><DateSPOT>2022-02-28T00:00:00Z</DateSPOT><Type>0</Type><BaseRate>87.115400</BaseRate><SD>0.049600</SD><TIR>8.5000</TIR><Stavka>1.5500</Stavka><limit>5.0000</limit></SSU></swapinfosellusd></SwapInfoSellUSDXMLResult></SwapInfoSellUSDXMLResponse></soap:Body></soap:Envelope>`), nil
 		}
 		return nil, customsoap.ErrContextWSReqExpired
+	case "SwapInfoSellVolXML":
+		inputData, ok := input.(datastructures.SwapInfoSellVolXML)
+		if !ok {
+			return nil, ErrAssertion
+		}
+		if inputData.FromDate == "2023-05-05" && inputData.ToDate == "2023-05-10" { // nolint: goconst, nolintlint
+			return []byte(`<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><soap:Body><SwapInfoSellVolXMLResponse xmlns="http://web.cbr.ru/"><SwapInfoSellVolXMLResult><SwapInfoSellVol xmlns=""><SSUV><DT>2023-05-10T00:00:00Z</DT><Currency>2</Currency><type>0</type><VOL_FC>1113.5</VOL_FC><VOL_RUB>12512.6</VOL_RUB></SSUV><SSUV><DT>2023-05-05T00:00:00Z</DT><Currency>2</Currency><type>0</type><VOL_FC>4583.7</VOL_FC><VOL_RUB>51606.0</VOL_RUB></SSUV></SwapInfoSellVol></SwapInfoSellVolXMLResult></SwapInfoSellVolXMLResponse></soap:Body></soap:Envelope>`), nil
+		}
+		return nil, customsoap.ErrContextWSReqExpired
 	default:
 		return nil, errors.New("SoapRequestSenderMock: unsupported action")
 	}

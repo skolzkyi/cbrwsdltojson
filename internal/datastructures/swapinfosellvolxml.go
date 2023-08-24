@@ -40,6 +40,6 @@ type SwapInfoSellVolXMLResultElem struct {
 	DT       time.Time `xml:"DT" json:"DT"`
 	Currency int       `xml:"Currency" json:"Currency"`
 	Type     int       `xml:"type" json:"type"`
-	VOL_FC   string    `xml:"VOL_FC" json:"VOL_FC"`
-	VOL_RUB  string    `xml:"VOL_RUB" json:"VOL_RUB"`
+	VOL_FC   string    `xml:"VOL_FC" json:"VOL_FC"`   //nolint:revive, stylecheck, nolintlint
+	VOL_RUB  string    `xml:"VOL_RUB" json:"VOL_RUB"` //nolint:revive, stylecheck, nolintlint
 }
