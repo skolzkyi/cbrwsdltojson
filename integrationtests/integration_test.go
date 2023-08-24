@@ -291,6 +291,14 @@ func (atc *AllTestCases) Init() {
 		Mode:          0,
 	}
 	atc.Cases = append(atc.Cases, curCase)
+	curCase = TestCase{
+		Method:        "SwapMonthTotalXML",
+		Handler:       "/SwapMonthTotalXML",
+		Request:       `{"FromDate":"2022-02-11","ToDate":"2022-02-24"}`,
+		OutputControl: `{"SMT":[{"D0":"2022-02-11T00:00:00+03:00","RUB":"41208.1","USD":"553.3"},{"D0":"2022-02-24T00:00:00+03:00","RUB":"24113.5","USD":"299.0"}]}`,
+		Mode:          0,
+	}
+	atc.Cases = append(atc.Cases, curCase)
 }
 
 func XMLToStructDecoder(t *testing.T, data []byte, startNodeName string, pointerToStruct interface{}) {

@@ -360,6 +360,15 @@ func (srsm *SoapRequestSenderMock) SoapCall(_ context.Context, action string, in
 			return []byte(`<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><soap:Body><SwapInfoSellXMLResponse xmlns="http://web.cbr.ru/"><SwapInfoSellXMLResult><SwapInfoSell xmlns=""><SSU><Currency>2</Currency><DateBuy>2023-06-21T00:00:00Z</DateBuy><DateSell>2023-06-21T00:00:00Z</DateSell><DateSPOT>2023-06-26T00:00:00Z</DateSPOT><Type>0</Type><BaseRate>11.764246</BaseRate><SD>0.003375</SD><TIR>6.5000</TIR><Stavka>4.3440</Stavka><limit>10.0000</limit></SSU><SSU><Currency>2</Currency><DateBuy>2023-06-20T00:00:00Z</DateBuy><DateSell>2023-06-20T00:00:00Z</DateSell><DateSPOT>2023-06-21T00:00:00Z</DateSPOT><Type>0</Type><BaseRate>11.730496</BaseRate><SD>0.000626</SD><TIR>6.5000</TIR><Stavka>4.4890</Stavka><limit>10.0000</limit></SSU></SwapInfoSell></SwapInfoSellXMLResult></SwapInfoSellXMLResponse></soap:Body></soap:Envelope>`), nil
 		}
 		return nil, customsoap.ErrContextWSReqExpired
+	case "SwapMonthTotalXML":
+		inputData, ok := input.(datastructures.SwapMonthTotalXML)
+		if !ok {
+			return nil, ErrAssertion
+		}
+		if inputData.FromDate == "2022-02-11" && inputData.ToDate == "2022-02-24" { // nolint: goconst, nolintlint
+			return []byte(`<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><soap:Body><SwapMonthTotalXMLResponse xmlns="http://web.cbr.ru/"><SwapMonthTotalXMLResult><SwapMonthTotal xmlns=""><SMT><D0>2022-02-11T00:00:00Z</D0><RUB>41208.1</RUB><USD>553.3</USD></SMT><SMT><D0>2022-02-24T00:00:00Z</D0><RUB>24113.5</RUB><USD>299.0</USD></SMT></SwapMonthTotal></SwapMonthTotalXMLResult></SwapMonthTotalXMLResponse></soap:Body></soap:Envelope`), nil
+		}
+		return nil, customsoap.ErrContextWSReqExpired
 	default:
 		return nil, errors.New("SoapRequestSenderMock: unsupported action")
 	}
