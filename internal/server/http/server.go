@@ -73,6 +73,7 @@ type Application interface {
 	SwapDynamicXML(ctx context.Context, input interface{}, rawBody string) (interface{}, error)
 	SwapInfoSellUSDVolXML(ctx context.Context, input interface{}, rawBody string) (interface{}, error)
 	SwapInfoSellUSDXML(ctx context.Context, input interface{}, rawBody string) (interface{}, error)
+	SwapInfoSellVolXML(ctx context.Context, input interface{}, rawBody string) (interface{}, error)
 }
 
 func NewServer(logger Logger, app Application, config Config) *Server {
