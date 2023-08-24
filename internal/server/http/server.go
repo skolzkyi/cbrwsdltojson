@@ -75,6 +75,7 @@ type Application interface {
 	SwapInfoSellUSDXML(ctx context.Context, input interface{}, rawBody string) (interface{}, error)
 	SwapInfoSellVolXML(ctx context.Context, input interface{}, rawBody string) (interface{}, error)
 	SwapInfoSellXML(ctx context.Context, input interface{}, rawBody string) (interface{}, error)
+	SwapMonthTotalXML(ctx context.Context, input interface{}, rawBody string) (interface{}, error)
 }
 
 func NewServer(logger Logger, app Application, config Config) *Server {
