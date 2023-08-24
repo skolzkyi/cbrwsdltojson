@@ -269,3 +269,8 @@ func (s *Server) SwapDynamicXML(w http.ResponseWriter, r *http.Request) {
 	newRequest := datastructures.SwapDynamicXML{}
 	s.universalMethodHandler(w, r, &newRequest, s.app.SwapDynamicXML)
 }
+
+func (s *Server) SwapInfoSellUSDVolXML(w http.ResponseWriter, r *http.Request) {
+	newRequest := datastructures.SwapInfoSellUSDVolXML{}
+	s.universalMethodHandler(w, r, &newRequest, s.app.SwapInfoSellUSDVolXML)
+}

@@ -71,6 +71,7 @@ type Application interface {
 	SaldoXML(ctx context.Context, input interface{}, rawBody string) (interface{}, error)
 	SwapDayTotalXML(ctx context.Context, input interface{}, rawBody string) (interface{}, error)
 	SwapDynamicXML(ctx context.Context, input interface{}, rawBody string) (interface{}, error)
+	SwapInfoSellUSDVolXML(ctx context.Context, input interface{}, rawBody string) (interface{}, error)
 }
 
 func NewServer(logger Logger, app Application, config Config) *Server {
