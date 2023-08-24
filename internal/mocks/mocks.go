@@ -311,7 +311,7 @@ func (srsm *SoapRequestSenderMock) SoapCall(_ context.Context, action string, in
 		if !ok {
 			return nil, ErrAssertion
 		}
-		if inputData.FromDate == "2022-02-25" && inputData.ToDate == "2022-02-28" {
+		if inputData.FromDate == "2022-02-25" && inputData.ToDate == "2022-02-28" { // nolint: goconst, nolintlint
 			return []byte(`<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><soap:Body><SwapDayTotalXMLResponse xmlns="http://web.cbr.ru/"><SwapDayTotalXMLResult><SwapDayTotal xmlns=""><SDT><DT>2022-02-28T00:00:00Z</DT><Swap>0.0</Swap></SDT><SDT><DT>2022-02-25T00:00:00Z</DT><Swap>24120.4</Swap></SDT></SwapDayTotal></SwapDayTotalXMLResult></SwapDayTotalXMLResponse></soap:Body></soap:Envelope>`), nil
 		}
 		return nil, customsoap.ErrContextWSReqExpired
@@ -320,8 +320,17 @@ func (srsm *SoapRequestSenderMock) SoapCall(_ context.Context, action string, in
 		if !ok {
 			return nil, ErrAssertion
 		}
-		if inputData.FromDate == "2022-02-25" && inputData.ToDate == "2022-02-28" {
+		if inputData.FromDate == "2022-02-25" && inputData.ToDate == "2022-02-28" { // nolint: goconst, nolintlint
 			return []byte(`<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><soap:Body><SwapDynamicXMLResponse xmlns="http://web.cbr.ru/"><SwapDynamicXMLResult><SwapDynamic xmlns=""><Swap><DateBuy>2022-02-25T00:00:00Z</DateBuy><DateSell>2022-02-28T00:00:00Z</DateSell><BaseRate>96.8252</BaseRate><SD>0.0882</SD><TIR>10.5000</TIR><Stavka>-0.576000</Stavka><Currency>1</Currency></Swap><Swap><DateBuy>2022-02-25T00:00:00Z</DateBuy><DateSell>2022-02-28T00:00:00Z</DateSell><BaseRate>87.1154</BaseRate><SD>0.0748</SD><TIR>10.5000</TIR><Stavka>0.050000</Stavka><Currency>0</Currency></Swap></SwapDynamic></SwapDynamicXMLResult></SwapDynamicXMLResponse></soap:Body></soap:Envelope>`), nil
+		}
+		return nil, customsoap.ErrContextWSReqExpired
+	case "SwapInfoSellUSDVolXML":
+		inputData, ok := input.(datastructures.SwapInfoSellUSDVolXML)
+		if !ok {
+			return nil, ErrAssertion
+		}
+		if inputData.FromDate == "2022-02-24" && inputData.ToDate == "2022-02-28" { // nolint: goconst, nolintlint
+			return []byte(`<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><soap:Body><SwapInfoSellUSDVolXMLResponse xmlns="http://web.cbr.ru/"><SwapInfoSellUSDVolXMLResult><SwapInfoSellUSDVol xmlns=""><SSUV><DT>2022-02-25T00:00:00Z</DT><TODTOMrubvol>435577.0</TODTOMrubvol><TODTOMusdvol>5000.0</TODTOMusdvol><TOMSPTrubvol>128974.3</TOMSPTrubvol><TOMSPTusdvol>1480.5</TOMSPTusdvol></SSUV><SSUV><DT>2022-02-24T00:00:00Z</DT><TODTOMrubvol>403236.5</TODTOMrubvol><TODTOMusdvol>5000.0</TODTOMusdvol><TOMSPTrubvol>32299.2</TOMSPTrubvol><TOMSPTusdvol>400.5</TOMSPTusdvol></SSUV></SwapInfoSellUSDVol></SwapInfoSellUSDVolXMLResult></SwapInfoSellUSDVolXMLResponse></soap:Body></soap:Envelope>`), nil
 		}
 		return nil, customsoap.ErrContextWSReqExpired
 	default:
