@@ -18,8 +18,12 @@ type AllDataInfoXMLResult struct {
 	MainIndicatorsVR MainIndicatorsVRElem `xml:"MainIndicatorsVR" json:"MainIndicatorsVR"`
 	KEY_RATE         KEY_RATEElem         `xml:"KEY_RATE" json:"KEY_RATE"`
 	KEY_RATE_FUTURE  KEY_RATE_FUTUREElem  `xml:"KEY_RATE_FUTURE" json:"KEY_RATE_FUTURE"`
-	REF_RATE         REF_RATEElem         `xml:"REF_RATE" json:"REF_RATE"`
+	REF_RATE         TVStElem             `xml:"REF_RATE" json:"REF_RATE"`
 	MBRStavki        MBRStavkiElem        `xml:"MBRStavki" json:"MBRStavki"`
+	Ko               KoElem               `xml:"Ko" json:"Ko"`
+	BankLikvid       BankLikvidElem       `xml:"BankLikvid" json:"BankLikvid"`
+	Nor              NorElem              `xml:"Nor" json:"Nor"`
+	Macro            MacroElem            `xml:"Macro" json:"Macro"`
 }
 
 type VoVStElem struct {
@@ -29,6 +33,19 @@ type VoVStElem struct {
 
 type VStElem struct {
 	Val string `xml:"val,attr" json:"val"`
+}
+
+type TVStElem struct {
+	Title string `xml:"Title,attr" json:"Title"`
+	Val   string `xml:"val,attr" json:"val"`
+}
+
+type TLOVOStElem struct {
+	Title   string `xml:"Title,attr" json:"Title"`
+	LUpd    string `xml:"LUpd,attr" json:"LUpd"`
+	OnDate  string `xml:"OnDate,attr" json:"OnDate"`
+	Val     string `xml:"val,attr" json:"val"`
+	Old_val string `xml:"old_val,attr" json:"old_val"` //nolint:revive, stylecheck, nolintlint
 }
 
 type MainIndicatorsVRElem struct {
@@ -207,10 +224,10 @@ type KEY_RATE_FUTUREElem struct { //nolint:revive, stylecheck, nolintlint
 	NewDate string `xml:"newdate,attr" json:"newdate"`
 }
 
-type REF_RATEElem struct { //nolint:revive, stylecheck, nolintlint
+/*type REF_RATEElem struct { //nolint:revive, stylecheck, nolintlint
 	Title string `xml:"Title,attr" json:"Title"`
 	Val   string `xml:"val,attr" json:"val"`
-}
+}*/
 
 type MBRStavkiElem struct {
 	Title               string               `xml:"Title,attr" json:"Title"`
@@ -308,6 +325,119 @@ type MaxVolMBRelem struct {
 	OnDate string `xml:"OnDate,attr" json:"OnDate"`
 	Val    string `xml:"val,attr" json:"val"`
 }
+
+type KoElem struct {
+	Title             string           `xml:"Title,attr" json:"Title"`
+	OnOvernightCredit TLOVOStElem      `xml:"OnOvernightCredit" json:"OnOvernightCredit"`
+	OnLombardCredit   TLOVOStElem      `xml:"OnLombardCredit" json:"OnLombardCredit"`
+	OnOtherCredit     TLOVOStElem      `xml:"OnOtherCredit" json:"OnOtherCredit"`
+	OnDirectRepo      OnDirectRepoElem `xml:"OnDirectRepo" json:"OnDirectRepo"`
+	UnsecLoans        TLOVOStElem      `xml:"UnsecLoans" json:"UnsecLoans"`
+}
+
+type OnDirectRepoElem struct {
+	Title     string   `xml:"Title,attr" json:"Title"`
+	OnDate    string   `xml:"OnDate,attr" json:"OnDate"`
+	OnAuction TVStElem `xml:"OnAuction" json:"OnAuction"`
+	OnFixed   TVStElem `xml:"OnFixed" json:"OnFixed"`
+}
+
+/*
+type ODRepoElem struct {
+	Title string `xml:"Title,attr" json:"Title"`
+	Val   string `xml:"val,attr" json:"val"`
+}*/
+
+type BankLikvidElem struct {
+	Title     string      `xml:"Title,attr" json:"Title"`
+	OstatKO   OstatKOElem `xml:"OstatKO" json:"OstatKO"`
+	InDCredit TLOVOStElem `xml:"InDCredit" json:"InDCredit"`
+	DepoBR    TLOVOStElem `xml:"DepoBR" json:"DepoBR"`
+	Saldo     TLOVOStElem `xml:"Saldo" json:"Saldo"`
+	VolOBR    TVStElem    `xml:"VolOBR" json:"VolOBR"`
+	VolDepo   VolDepoElem `xml:"VolDepo" json:"VolDepo"`
+}
+
+type OstatKOElem struct {
+	Title  string    `xml:"Title,attr" json:"Title"`
+	OnDate string    `xml:"OnDate,attr" json:"OnDate"`
+	LUpd   string    `xml:"LUpd,attr" json:"LUpd"`
+	Russ   VoVStElem `xml:"Russ" json:"Russ"`
+	Msk    VoVStElem `xml:"Msk" json:"Msk"`
+}
+
+/*type VolOBRElem struct {
+	Title string `xml:"Title,attr" json:"Title"`
+	Val   string `xml:"val,attr" json:"val"`
+}*/
+
+type VolDepoElem struct {
+	Title  string `xml:"Title,attr" json:"Title"`
+	OnDate string `xml:"OnDate,attr" json:"OnDate"`
+	Val    string `xml:"val,attr" json:"val"`
+}
+
+type NorElem struct {
+	Date  string   `xml:"date,attr" json:"date"`
+	Title string   `xml:"Title,attr" json:"Title"`
+	Ob_1  Ob_1Elem `xml:"Ob_1" json:"Ob_1"`
+	Ob_2  Ob_2Elem `xml:"Ob_2" json:"Ob_2"`
+	Ob_3  Ob_3Elem `xml:"Ob_3" json:"Ob_3"`
+	Kor   KorElem  `xml:"Kor" json:"Kor"`
+}
+
+type Ob_1Elem struct {
+	Title  string        `xml:"Title,attr" json:"Title"`
+	Ob_1_1 NorTLevelelem `xml:"Ob_1_1" json:"Ob_1_1"`
+	Ob_1_2 NorTLevelelem `xml:"Ob_1_2" json:"Ob_1_2"`
+	Ob_1_3 NorTLevelelem `xml:"Ob_1_3" json:"Ob_1_3"`
+}
+
+type Ob_2Elem struct {
+	Title  string        `xml:"Title,attr" json:"Title"`
+	Ob_2_1 NorTLevelelem `xml:"Ob_2_1" json:"Ob_2_1"`
+	Ob_2_2 NorTLevelelem `xml:"Ob_2_2" json:"Ob_2_2"`
+	Ob_2_3 NorTLevelelem `xml:"Ob_2_3" json:"Ob_2_3"`
+}
+
+type Ob_3Elem struct {
+	Title  string        `xml:"Title,attr" json:"Title"`
+	Ob_3_1 NorTLevelelem `xml:"Ob_3_1" json:"Ob_3_1"`
+	Ob_3_2 NorTLevelelem `xml:"Ob_3_2" json:"Ob_3_2"`
+	Ob_3_3 NorTLevelelem `xml:"Ob_3_3" json:"Ob_3_3"`
+}
+
+type NorTLevelelem struct {
+	Title            string `xml:"Title,attr" json:"Title"`
+	Val_rub          string `xml:"val_rub,attr" json:"val_rub"`
+	Val_usd          string `xml:"val_usd,attr" json:"val_usd"`
+	Val_usd_excludUC string `xml:"val_usd_excludUC,attr" json:"val_usd_excludUC"`
+}
+
+type KorElem struct {
+	Title string   `xml:"Title,attr" json:"Title"`
+	Ku_1  TVStElem `xml:"Ku_1" json:"Ku_1"`
+	Ku_2  TVStElem `xml:"Ku_2" json:"Ku_2"`
+}
+
+/*
+type KuStElem struct {
+	Title string `xml:"Title,attr" json:"Title"`
+	Val   string `xml:"val,attr" json:"val"`
+}*/
+
+type MacroElem struct {
+	Title       string   `xml:"Title,attr" json:"Title"`
+	DB          TVStElem `xml:"DB" json:"DB"`
+	DM          TVStElem `xml:"DM" json:"DM"`
+	M_rez       TVStElem `xml:"M_rez" json:"M_rez"`
+	Vol_GKO_OFZ TVStElem `xml:"Vol_GKO_OFZ" json:"Vol_GKO_OFZ"`
+}
+
+/*type MacroSubElem struct {
+	Title string `xml:"Title,attr" json:"Title"`
+	Val   string `xml:"val,attr" json:"val"`
+}*/
 
 /*
 type KeyRateElem struct {
