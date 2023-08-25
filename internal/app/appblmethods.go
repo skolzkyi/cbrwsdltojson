@@ -7,6 +7,54 @@ import (
 	datastructures "github.com/skolzkyi/cbrwsdltojson/internal/datastructures"
 )
 
+func (a *App) AllDataInfoXML(ctx context.Context) (interface{}, error) {
+	var err error
+	var response datastructures.AllDataInfoXMLResult
+	select {
+	case <-ctx.Done():
+		err = ErrContextWSReqExpired
+		a.logger.Error(err.Error())
+		return response, err
+	default:
+		SOAPMethod := "AllDataInfoXML"
+		startNodeName := "AllData"
+		if a.permittedRequests.PermittedRequestMapLength() > 0 {
+			if a.permittedRequests.IsPermittedRequestInMap(SOAPMethod) {
+				return datastructures.AllDataInfoXMLResult{}, ErrMethodProhibited
+			}
+		}
+
+		cachedData, ok := a.GetDataInCacheIfExisting(SOAPMethod, "")
+		if ok {
+			response, ok = cachedData.(datastructures.AllDataInfoXMLResult)
+			if !ok {
+				err = ErrAssertionAfterGetCacheData
+				a.logger.Error(err.Error())
+			} else {
+				return response, nil
+			}
+		}
+
+		inputAsserted := datastructures.AllDataInfoXML{}
+		inputAsserted.Init()
+
+		res, err := a.soapSender.SoapCall(ctx, SOAPMethod, inputAsserted)
+		if err != nil {
+			a.logger.Error(err.Error())
+			return response, err
+		}
+
+		err = a.XMLToStructDecoder(res, startNodeName, &response)
+		if err != nil {
+			a.logger.Error(err.Error())
+			return response, err
+		}
+
+		a.Appmemcache.AddOrUpdatePayloadInCache(SOAPMethod, response)
+	}
+	return response, nil
+}
+
 func (a *App) GetCursOnDateXML(ctx context.Context, input interface{}, rawBody string) (interface{}, error) {
 	var err error
 	var response datastructures.GetCursOnDateXMLResult
