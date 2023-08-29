@@ -143,6 +143,10 @@ func (s *Server) universalMethodHandlerWP(w http.ResponseWriter, r *http.Request
 	}
 }
 
+func (s *Server) AllDataInfoXML(w http.ResponseWriter, r *http.Request) {
+	s.universalMethodHandlerWP(w, r, s.app.AllDataInfoXML)
+}
+
 func (s *Server) GetCursOnDateXML(w http.ResponseWriter, r *http.Request) {
 	newRequest := datastructures.GetCursOnDateXML{}
 	s.universalMethodHandler(w, r, &newRequest, s.app.GetCursOnDateXML)

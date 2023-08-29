@@ -45,6 +45,8 @@ type Logger interface {
 
 type Application interface {
 	RemoveDataInMemCacheBySOAPAction(SOAPAction string)
+
+	AllDataInfoXML(ctx context.Context) (interface{}, error)
 	GetCursOnDateXML(ctx context.Context, input interface{}, rawBody string) (interface{}, error)
 	BiCurBaseXML(ctx context.Context, input interface{}, rawBody string) (interface{}, error)
 	BliquidityXML(ctx context.Context, input interface{}, rawBody string) (interface{}, error)

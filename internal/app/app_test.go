@@ -1895,9 +1895,469 @@ func initTestDataSwapMonthTotalXML(t *testing.T) AppTestTable {
 	return testDataSwapMonthTotalXML
 }
 
+// AllDataInfoXML.
+func initTestDataAllDataInfoXML(t *testing.T) AppTestTable { //nolint:gocognit, nolintlint, gocyclo, funlen
+	t.Helper()
+	testDataAllDataInfoXML := AppTestTable{
+		MethodName: "AllDataInfoXML",
+		MethodWP:   (*app.App).AllDataInfoXML,
+		IsMethodWP: true,
+	}
+	testAllDataInfoXMLResult := datastructures.AllDataInfoXMLResult{
+		MainIndicatorsVR: datastructures.MainIndicatorsVRElem{
+			Title: "Основные индикаторы финансового рынка",
+			Currency: datastructures.CurrencyElem{
+				Title: "Курсы валют",
+				LUpd:  "",
+				USD: datastructures.USDElem{
+					OnDate: "29.08.2023",
+					Curs:   "95.4717",
+				},
+				EUR: datastructures.EURElem{
+					OnDate: "29.08.2023",
+					Curs:   "103.2434",
+				},
+				CNY: datastructures.CNYElem{
+					OnDate: "29.08.2023",
+					Curs:   "13.0550",
+				},
+			},
+			Metall: datastructures.MetallElem{
+				Title:  "Драгоценные металлы",
+				LUpd:   "",
+				OnDate: "29.08.2023",
+				Gold: datastructures.VoVStElem{
+					Val:     "5879.60",
+					Old_val: "5837.5100",
+				},
+				Silver: datastructures.VoVStElem{
+					Val:     "74.24",
+					Old_val: "73.6400",
+				},
+				Platinum: datastructures.VoVStElem{
+					Val:     "2912.94",
+					Old_val: "2841.0300",
+				},
+				Palladium: datastructures.VoVStElem{
+					Val:     "3784.67",
+					Old_val: "3788.0400",
+				},
+			},
+			Inflation: datastructures.InflationElemADI{
+				Title:  "Инфляция",
+				LUpd:   "",
+				OnDate: "01.07.2023",
+				Val:    "4.30",
+			},
+			InflationTarget: datastructures.InflationTargetElem{
+				Title:  "Цель по инфляции",
+				LUpd:   "",
+				OnDate: "01.01.2017",
+				Val:    "4.0",
+			},
+			MBK: datastructures.MBKElem{
+				Title: "Ставки межбанковского кредитного рынка",
+				LUpd:  "",
+				MIBID: datastructures.MBKStructElem{
+					OnDate: "30.12.2016",
+					D1: datastructures.VoVStElem{
+						Val:     "9.79",
+						Old_val: "9.79",
+					},
+					D2_7: datastructures.VoVStElem{
+						Val:     "10.00",
+						Old_val: "10.00",
+					},
+					D8_30: datastructures.VoVStElem{
+						Val:     "9.93",
+						Old_val: "9.93",
+					},
+				},
+				MIBOR: datastructures.MBKStructElem{
+					OnDate: "30.12.2016",
+					D1: datastructures.VoVStElem{
+						Val:     "10.54",
+						Old_val: "10.54",
+					},
+					D2_7: datastructures.VoVStElem{
+						Val:     "10.67",
+						Old_val: "10.67",
+					},
+					D8_30: datastructures.VoVStElem{
+						Val:     "11.06",
+						Old_val: "11.06",
+					},
+				},
+				MIACR: datastructures.MBKStructElem{
+					OnDate: "25.08.2023",
+					D1: datastructures.VoVStElem{
+						Val:     "11.91",
+						Old_val: "11.91",
+					},
+					D2_7: datastructures.VoVStElem{
+						Val:     "12.39",
+						Old_val: "10.67",
+					},
+					D8_30: datastructures.VoVStElem{
+						Val:     "",
+						Old_val: "",
+					},
+				},
+				MIACRIG: datastructures.MBKStructElem{
+					OnDate: "25.08.2023",
+					D1: datastructures.VoVStElem{
+						Val:     "11.95",
+						Old_val: "11.95",
+					},
+					D2_7: datastructures.VoVStElem{
+						Val:     "12.39",
+						Old_val: "12.39",
+					},
+					D8_30: datastructures.VoVStElem{
+						Val:     "",
+						Old_val: "",
+					},
+				},
+			},
+			MosPrime: datastructures.MosPrimeElem{
+				Title:  "MosPrime Rate",
+				LUpd:   "",
+				OnDate: "01.03.2022",
+				D1: datastructures.VoVStElem{
+					Val:     "",
+					Old_val: "20.39",
+				},
+				M1: datastructures.VoVStElem{
+					Val:     "",
+					Old_val: "20.96",
+				},
+				M3: datastructures.VoVStElem{
+					Val:     "",
+					Old_val: "20.96",
+				},
+			},
+		},
+		KEY_RATE: datastructures.KEY_RATEElem{
+			Title: "Действующая ключевая ставка",
+			Val:   "12.00",
+			Date:  "15.08.2023",
+		},
+		KEY_RATE_FUTURE: datastructures.KEY_RATE_FUTUREElem{
+			Title:   "Новое значение ключевой ставки (справочно)",
+			Val:     "12.00",
+			NewDate: "15.08.2023",
+		},
+		REF_RATE: datastructures.TVStElem{
+			Title: "Ставка рефинансирования (Значение соответствует значению ключевой ставки Банка России)",
+			Val:   "12.00",
+		},
+		MBRStavki: datastructures.MBRStavkiElem{
+			Title: "Параметры операций Банка России",
+			Overnight_rate: datastructures.Overnight_rateElem{
+				Title: "Ставка по кредиту overnight",
+				LUpd:  "15.08.2023 11:14:15",
+				Val1: datastructures.ValORElem{
+					Date: "15.08.2023",
+					Val:  "13.0",
+				},
+				Val2: datastructures.ValORElem{
+					Date: "",
+					Val:  "8",
+				},
+			},
+			FixedLomb: datastructures.FixedLombElem{
+				Title: "Фиксированные cтавки по ломбардным кредитам",
+				LUpd:  "",
+				D30: datastructures.FLElem{
+					Date: "28.04.2014",
+					Val:  "8.50",
+				},
+				D7: datastructures.FLElem{
+					Date: "28.04.2014",
+					Val:  "8.50",
+				},
+				D1: datastructures.FLElem{
+					Date: "15.08.2023",
+					Val:  "13.00",
+				},
+			},
+			DepoRates: datastructures.DepoRatesElem{
+				Title:  "Ставки по депозитным операциям",
+				LUpd:   "29.08.2023 1:01:09",
+				OnDate: "29.08.2023",
+				TomNext: datastructures.VoVStElem{
+					Val:     "",
+					Old_val: "",
+				},
+				SpotNext: datastructures.VoVStElem{
+					Val:     "",
+					Old_val: "",
+				},
+				W1: datastructures.VoVStElem{
+					Val:     "MIACR_B",
+					Old_val: "",
+				},
+				W1_SPOT: datastructures.VoVStElem{
+					Val:     "",
+					Old_val: "",
+				},
+				CallDeposit: datastructures.VoVStElem{
+					Val:     "",
+					Old_val: "",
+				},
+			},
+			SWAP: datastructures.SWAPElem{
+				Title: "Своп-разница по валютному свопу",
+				USD_RUB: datastructures.SWAPCurElem{
+					LUpd:    "",
+					Val:     "",
+					Old_val: "0.0748",
+				},
+				EUR_RUB: datastructures.SWAPCurElem{
+					LUpd:    "",
+					Val:     "",
+					Old_val: "0.0882",
+				},
+			},
+			FixedRepoRate: datastructures.FixedRepoRateElem{
+				Title: "Фиксированные cтавки по операциям прямого РЕПО",
+				D1: datastructures.VStElem{
+					Val: "13",
+				},
+				D7: datastructures.VStElem{
+					Val: "13",
+				},
+			},
+			MinimalRepoRates: datastructures.MinimalRepoRatesElem{
+				Title:  "Параметры аукционов прямого РЕПО - Минимальные процентные ставки",
+				LUpd:   "",
+				OnDate: "15.08.2023",
+				D1: datastructures.VStElem{
+					Val: "12",
+				},
+				D7: datastructures.VStElem{
+					Val: "12",
+				},
+			},
+			MaxVolRepoOnAuction: datastructures.MaxVolMBRelem{
+				Title:  "Максимальный объем средств, предоставляемых на первом аукционе прямого РЕПО",
+				LUpd:   "",
+				OnDate: "28.09.2015",
+				Val:    "230",
+			},
+			MaxVolSwap: datastructures.MaxVolMBRelem{
+				Title:  "Максимальный объем средств, предоставляемых по операциям 'валютный своп",
+				LUpd:   "",
+				OnDate: "20.09.2016",
+				Val:    "620",
+			},
+		},
+		Ko: datastructures.KoElem{
+			Title: "Требования Банка России к кредитным организациям",
+			OnOvernightCredit: datastructures.TLOVOStElem{
+				Title:   "По кредитам overnight",
+				LUpd:    "29.08.2023 9:18:46",
+				OnDate:  "29.08.2023",
+				Val:     "0.0",
+				Old_val: "0.0",
+			},
+			OnLombardCredit: datastructures.TLOVOStElem{
+				Title:   "По ломбардным кредитам",
+				LUpd:    "29.08.2023 9:18:46",
+				OnDate:  "29.08.2023",
+				Val:     "14348.7",
+				Old_val: "15348.7",
+			},
+			OnOtherCredit: datastructures.TLOVOStElem{
+				Title:   "По другим кредитам",
+				LUpd:    "29.08.2023 9:18:46",
+				OnDate:  "29.08.2023",
+				Val:     "1744136.5",
+				Old_val: "874720.8",
+			},
+			OnDirectRepo: datastructures.OnDirectRepoElem{
+				Title:  "По операциям прямого РЕПО",
+				OnDate: "29.08.2023",
+				OnAuction: datastructures.TVStElem{
+					Title: "на аукционной основе",
+					Val:   "1307685",
+				},
+				OnFixed: datastructures.TVStElem{
+					Title: "по фиксированной ставке",
+					Val:   "601",
+				},
+			},
+			UnsecLoans: datastructures.TLOVOStElem{
+				Title:   "По кредитам без обеспечения",
+				LUpd:    "",
+				OnDate:  "31.12.2010",
+				Val:     "0",
+				Old_val: "0",
+			},
+		},
+		BankLikvid: datastructures.BankLikvidElem{
+			Title: "Показатели банковской ликвидности",
+			OstatKO: datastructures.OstatKOElem{
+				Title:  "Сведения об остатках средств на корреспондентских счетах кредитных организаций",
+				LUpd:   "29.08.2023 9:04:24",
+				OnDate: "29.08.2023",
+				Russ: datastructures.VoVStElem{
+					Val:     "4769.8000",
+					Old_val: "4356.7000",
+				},
+				Msk: datastructures.VoVStElem{
+					Val:     "4530.5000",
+					Old_val: "4123.9000",
+				},
+			},
+			InDCredit: datastructures.TLOVOStElem{
+				Title:   "Объем предоставленных внутридневных кредитов",
+				LUpd:    "29.08.2023 9:18:46",
+				OnDate:  "28.08.2023",
+				Val:     "1486.62",
+				Old_val: "334.55",
+			},
+			DepoBR: datastructures.TLOVOStElem{
+				Title:   "Депозиты банков в Банке России",
+				LUpd:    "29.08.2023 9:20:51",
+				OnDate:  "29.08.2023",
+				Val:     "2368.1896",
+				Old_val: "2362.4110",
+			},
+			Saldo: datastructures.TLOVOStElem{
+				Title:   "Сальдо операций Банка России по предоставлению /абсорбированию ликвидности",
+				LUpd:    "29.08.2023 9:56:14",
+				OnDate:  "29.08.2023",
+				Val:     "-167.2",
+				Old_val: "591.7",
+			},
+			VolOBR: datastructures.TVStElem{
+				Title: "Объем рынка ОБР",
+				Val:   "0",
+			},
+			VolDepo: datastructures.VolDepoElem{
+				Title:  "Объем средств федерального бюджета, размещенных на депозитах коммерческих банков",
+				OnDate: "05.03.2018",
+				Val:    "0",
+			},
+		},
+		Nor: datastructures.NorElem{
+			Date:  "28.06.2023",
+			Title: "Нормативы обязательных резервов",
+			Ob_1: datastructures.Ob_1Elem{
+				Title: "по обязательствам перед юридическими лицами – нерезидентами",
+				Ob_1_1: datastructures.NorTLevelelem{
+					Title:            "для банков с универсальной лицензией",
+					Val_rub:          "4.50",
+					Val_usd:          "8.50",
+					Val_usd_excludUC: "6.00",
+				},
+				Ob_1_2: datastructures.NorTLevelelem{
+					Title:            "для небанковских кредитных организаций",
+					Val_rub:          "4.50",
+					Val_usd:          "8.50",
+					Val_usd_excludUC: "6.00",
+				},
+				Ob_1_3: datastructures.NorTLevelelem{
+					Title:            "для банков с базовой лицензией",
+					Val_rub:          "1.00",
+					Val_usd:          "8.50",
+					Val_usd_excludUC: "6.00",
+				},
+			},
+			Ob_2: datastructures.Ob_2Elem{
+				Title: "",
+				Ob_2_1: datastructures.NorTLevelelem{
+					Title:            "для банков с универсальной лицензией",
+					Val_rub:          "4.50",
+					Val_usd:          "8.50",
+					Val_usd_excludUC: "6.00",
+				},
+				Ob_2_2: datastructures.NorTLevelelem{
+					Title:            "для небанковских кредитных организаций",
+					Val_rub:          "4.50",
+					Val_usd:          "8.50",
+					Val_usd_excludUC: "6.00",
+				},
+				Ob_2_3: datastructures.NorTLevelelem{
+					Title:            "для банков с базовой лицензией",
+					Val_rub:          "1.00",
+					Val_usd:          "8.50",
+					Val_usd_excludUC: "6.00",
+				},
+			},
+			Ob_3: datastructures.Ob_3Elem{
+				Title: "",
+				Ob_3_1: datastructures.NorTLevelelem{
+					Title:            "для банков с универсальной лицензией",
+					Val_rub:          "4.50",
+					Val_usd:          "8.50",
+					Val_usd_excludUC: "6.00",
+				},
+				Ob_3_2: datastructures.NorTLevelelem{
+					Title:            "для небанковских кредитных организаций",
+					Val_rub:          "4.50",
+					Val_usd:          "8.50",
+					Val_usd_excludUC: "6.00",
+				},
+				Ob_3_3: datastructures.NorTLevelelem{
+					Title:            "для банков с базовой лицензией",
+					Val_rub:          "1.00",
+					Val_usd:          "8.50",
+					Val_usd_excludUC: "6.00",
+				},
+			},
+			Kor: datastructures.KorElem{
+				Title: "Коэффициент усреднения обязательных резервов",
+				Ku_1: datastructures.TVStElem{
+					Title: "для банков с универсальной лицензией, банков с базовой лицензией",
+					Val:   "0.9",
+				},
+				Ku_2: datastructures.TVStElem{
+					Title: "для небанковских кредитных организаций",
+					Val:   "1.0",
+				},
+			},
+		},
+		Macro: datastructures.MacroElem{
+			Title: "Макроэкономические индикаторы",
+			DB: datastructures.TVStElem{
+				Title: "Денежная база",
+				Val:   "11084.8",
+			},
+			DM: datastructures.TVStElem{
+				Title: "Денежная масса (M2)",
+				Val:   "36917.8",
+			},
+			M_rez: datastructures.M_rezElem{
+				Title: "Международные резервы",
+				Val:   "579.5",
+				Date:  "18.08.2023",
+			},
+			Vol_GKO_OFZ: datastructures.TVStElem{
+				Title: "Объем рынка ГКО-ОФЗ",
+				Val:   "6741.11",
+			},
+		},
+	}
+	testCases := make([]AppTestCase, 1)
+	testCases[0] = AppTestCase{
+		Name:   "Positive",
+		Input:  &datastructures.AllDataInfoXML{},
+		Output: testAllDataInfoXMLResult,
+		Error:  nil,
+	}
+
+	standartTestCacheCases := createStandartTestCacheCases(t, &datastructures.AllDataInfoXML{}, testAllDataInfoXMLResult)
+	testDataAllDataInfoXML.TestCases = testCases
+	testDataAllDataInfoXML.TestCases = append(testDataAllDataInfoXML.TestCases, standartTestCacheCases...)
+
+	return testDataAllDataInfoXML
+}
+
 func TestAllAppCases(t *testing.T) { //nolint:gocognit, nolintlint, gocyclo, funlen
 	acTable := AllCasesTable{}
-	acTable.CasesByMethod = make([]AppTestTable, 31)
+	acTable.CasesByMethod = make([]AppTestTable, 32)
 	acTable.CasesByMethod[0] = initTestDataGetCursOnDateXML(t)
 	acTable.CasesByMethod[1] = initTestDataBiCurBaseXML(t)
 	acTable.CasesByMethod[2] = initTestDataBliquidityXML(t)
@@ -1929,6 +2389,7 @@ func TestAllAppCases(t *testing.T) { //nolint:gocognit, nolintlint, gocyclo, fun
 	acTable.CasesByMethod[28] = initTestDataSwapInfoSellVolXML(t)
 	acTable.CasesByMethod[29] = initTestDataSwapInfoSellXML(t)
 	acTable.CasesByMethod[30] = initTestDataSwapMonthTotalXML(t)
+	acTable.CasesByMethod[31] = initTestDataAllDataInfoXML(t)
 	t.Parallel()
 	for _, curMethodTable := range acTable.CasesByMethod {
 		curMethodTable := curMethodTable
