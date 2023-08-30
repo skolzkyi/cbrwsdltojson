@@ -29,10 +29,16 @@ var (
 )
 
 func apiErrHandler(err error, w *http.ResponseWriter) {
+	var errMessage string
 	if err != nil {
 		W := *w
-		errMessage := helpers.StringBuild(http.StatusText(http.StatusInternalServerError), " (", err.Error(), ")")
-		http.Error(W, errMessage, http.StatusInternalServerError)
+		if errors.Is(err, datastructures.ErrBadInputDateData) || errors.Is(err, datastructures.ErrBadRawData) {
+			errMessage = helpers.StringBuild(http.StatusText(http.StatusBadRequest), " (", err.Error(), ")")
+			http.Error(W, errMessage, http.StatusBadRequest)
+		} else {
+			errMessage = helpers.StringBuild(http.StatusText(http.StatusInternalServerError), " (", err.Error(), ")")
+			http.Error(W, errMessage, http.StatusInternalServerError)
+		}
 	}
 }
 
