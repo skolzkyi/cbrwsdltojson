@@ -30,6 +30,7 @@ type Config interface {
 	GetServerShutdownTimeout() time.Duration
 	GetCBRWSDLTimeout() time.Duration
 	GetInfoExpirTime() time.Duration
+	GetInfoClearTimeDelta() time.Duration
 	GetCBRWSDLAddress() string
 	GetLoggingOn() bool
 	GetPermittedRequests() map[string]struct{}
@@ -45,6 +46,7 @@ type Logger interface {
 
 type Application interface {
 	RemoveDataInMemCacheBySOAPAction(SOAPAction string)
+	StartCacheCleaner(ctx context.Context)
 
 	AllDataInfoXML(ctx context.Context) (interface{}, error)
 	GetCursOnDateXML(ctx context.Context, input interface{}, rawBody string) (interface{}, error)
@@ -104,6 +106,7 @@ func (s *Server) Start(ctx context.Context) error {
 			return err
 		}
 	}
+	s.app.StartCacheCleaner(ctx)
 	<-ctx.Done()
 	return err
 }

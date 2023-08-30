@@ -53,6 +53,16 @@ func (mc *MemCache) GetCacheDataInCache(tag string) (CacheInfo, bool) {
 	return mc.cache[tag], ok
 }
 
+func (mc *MemCache) RemoveAllPayloadInCacheByTimeStamp(controlTime time.Time) {
+	mc.mu.Lock()
+	defer mc.mu.Unlock()
+	for key, data := range mc.cache {
+		if data.InfoDTStamp.Before(controlTime) {
+			delete(mc.cache, key)
+		}
+	}
+}
+
 func (mc *MemCache) PrintAllCacheKeys() {
 	mc.mu.RLock()
 	defer mc.mu.RUnlock()

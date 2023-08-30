@@ -47,6 +47,7 @@ type Config interface {
 	GetServerShutdownTimeout() time.Duration
 	GetCBRWSDLTimeout() time.Duration
 	GetInfoExpirTime() time.Duration
+	GetInfoClearTimeDelta() time.Duration
 	GetCBRWSDLAddress() string
 	GetLoggingOn() bool
 	GetPermittedRequests() map[string]struct{}
@@ -60,6 +61,7 @@ type AppMemCache interface { //nolint: revive
 	Init()
 	AddOrUpdatePayloadInCache(tag string, payload interface{}) bool
 	RemovePayloadInCache(tag string)
+	RemoveAllPayloadInCacheByTimeStamp(controlTime time.Time)
 	GetCacheDataInCache(tag string) (memcache.CacheInfo, bool)
 	PrintAllCacheKeys()
 }
@@ -180,4 +182,25 @@ func (a *App) AddOrUpdateDataInCache(SOAPMethod string, request interface{}, res
 
 func (a *App) RemoveDataInMemCacheBySOAPAction(tag string) {
 	a.Appmemcache.RemovePayloadInCache(tag)
+}
+
+func (a *App) StartCacheCleaner(ctx context.Context) {
+	a.logger.Info("CacheCleaner start")
+	InfoExpirTime := a.config.GetInfoExpirTime()
+	InfoClearTimeDelta := a.config.GetInfoClearTimeDelta()
+	timer := time.AfterFunc(InfoExpirTime, func() {
+		ticker := time.NewTicker(InfoClearTimeDelta)
+		for {
+			select {
+			case <-ctx.Done():
+				a.logger.Info("CacheCleaner stop")
+				break
+			case <-ticker.C:
+				curTime := time.Now().Add(-1 * InfoExpirTime)
+				a.Appmemcache.RemoveAllPayloadInCacheByTimeStamp(curTime)
+				a.logger.Info("CacheCleaner clean cash")
+			}
+		}
+	})
+	defer timer.Stop()
 }
