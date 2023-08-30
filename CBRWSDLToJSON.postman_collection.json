@@ -1,0 +1,1090 @@
+{
+	"info": {
+		"_postman_id": "68be28b2-62f5-487d-8f30-40c2b3959893",
+		"name": "CBRWSDLToJSON",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "12368971"
+	},
+	"item": [
+		{
+			"name": "GetCursOnDate",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"OnDate\":\"2023-06-22\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "127.0.0.1:4000/GetCursOnDateXML"
+			},
+			"response": []
+		},
+		{
+			"name": "GetMethodDataWithoutCache_GetCursOnDateXML",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"OnDate\":\"2023-06-22\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "127.0.0.1:4000/GetMethodDataWithoutCache/GetCursOnDateXML"
+			},
+			"response": []
+		},
+		{
+			"name": "BiCurBaseXML",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"FromDate\":\"2023-06-22\",\n\"ToDate\":\"2023-06-23\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "127.0.0.1:4000/BiCurBaseXML"
+			},
+			"response": []
+		},
+		{
+			"name": "GetMethodDataWithoutCache_BiCurBaseXML",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"FromDate\":\"2023-06-22\",\n \"ToDate\":\"2023-06-23\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "127.0.0.1:4000/GetMethodDataWithoutCache/BiCurBaseXML"
+			},
+			"response": []
+		},
+		{
+			"name": "BliquidityXML",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"FromDate\":\"2023-06-22\",\n\"ToDate\":\"2023-06-23\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "127.0.0.1:4000/BliquidityXML"
+			},
+			"response": []
+		},
+		{
+			"name": "GetMethodDataWithoutCache_BliquidityXML",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"FromDate\":\"2023-06-22\",\n\"ToDate\":\"2023-06-23\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "127.0.0.1:4000/GetMethodDataWithoutCache/BliquidityXML"
+			},
+			"response": []
+		},
+		{
+			"name": "DepoDynamicXML",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"FromDate\":\"2023-06-22\",\n\"ToDate\":\"2023-06-23\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "127.0.0.1:4000/DepoDynamicXML"
+			},
+			"response": []
+		},
+		{
+			"name": "GetMethodDataWithoutCache_DepoDynamicXML",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"FromDate\":\"2023-06-22\",\n\"ToDate\":\"2023-06-23\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "127.0.0.1:4000/GetMethodDataWithoutCache/DepoDynamicXML"
+			},
+			"response": []
+		},
+		{
+			"name": "DragMetDynamicXML",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"FromDate\":\"2023-06-22\",\n\"ToDate\":\"2023-06-23\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "127.0.0.1:4000/DragMetDynamicXML"
+			},
+			"response": []
+		},
+		{
+			"name": "GetMethodDataWithoutCache_DragMetDynamicXML",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"FromDate\":\"2023-06-22\",\n\"ToDate\":\"2023-06-23\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "127.0.0.1:4000/GetMethodDataWithoutCache/DragMetDynamicXML"
+			},
+			"response": []
+		},
+		{
+			"name": "DVXML",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"FromDate\":\"2023-06-22\",\n\"ToDate\":\"2023-06-23\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "127.0.0.1:4000/DVXML"
+			},
+			"response": []
+		},
+		{
+			"name": "GetMethodDataWithoutCache_DVXML",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"FromDate\":\"2023-06-22\",\n\"ToDate\":\"2023-06-23\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "127.0.0.1:4000/GetMethodDataWithoutCache/DVXML"
+			},
+			"response": []
+		},
+		{
+			"name": "EnumReutersValutesXML",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": "127.0.0.1:4000/EnumReutersValutesXML"
+			},
+			"response": []
+		},
+		{
+			"name": "GetMethodDataWithoutCache_EnumReutersValutesXML",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": "127.0.0.1:4000/GetMethodDataWithoutCache/EnumReutersValutesXML"
+			},
+			"response": []
+		},
+		{
+			"name": "EnumValutesXML",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"Seld\":\"false\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "127.0.0.1:4000/EnumValutesXML"
+			},
+			"response": []
+		},
+		{
+			"name": "GetMethodDataWithoutCache_EnumValutesXML",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"Seld\":false}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "127.0.0.1:4000/GetMethodDataWithoutCache/EnumValutesXML"
+			},
+			"response": []
+		},
+		{
+			"name": "KeyRateXML",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"FromDate\":\"2023-06-22\",\n\"ToDate\":\"2023-06-23\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "127.0.0.1:4000/KeyRateXML"
+			},
+			"response": []
+		},
+		{
+			"name": "GetMethodDataWithoutCache_KeyRateXML",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"FromDate\":\"2023-06-22\",\n\"ToDate\":\"2023-06-23\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "127.0.0.1:4000/GetMethodDataWithoutCache/KeyRateXML"
+			},
+			"response": []
+		},
+		{
+			"name": "MainInfoXML",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": "127.0.0.1:4000/MainInfoXML"
+			},
+			"response": []
+		},
+		{
+			"name": "GetMethodDataWithoutCache_MainInfoXML",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": "127.0.0.1:4000/GetMethodDataWithoutCache/MainInfoXML"
+			},
+			"response": []
+		},
+		{
+			"name": "mrrf7DXML",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"FromDate\":\"2023-06-15\",\n\"ToDate\":\"2023-06-23\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "127.0.0.1:4000/mrrf7DXML"
+			},
+			"response": []
+		},
+		{
+			"name": "GetMethodDataWithoutCache_mrrf7DXML",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"FromDate\":\"2023-06-22\",\n\"ToDate\":\"2023-06-23\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "127.0.0.1:4000/GetMethodDataWithoutCache/mrrf7DXML"
+			},
+			"response": []
+		},
+		{
+			"name": "mrrfXML",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"FromDate\":\"2023-05-01\",\n\"ToDate\":\"2023-06-23\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "127.0.0.1:4000/mrrfXML"
+			},
+			"response": []
+		},
+		{
+			"name": "GetMethodDataWithoutCache_mrrfXML",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"FromDate\":\"2023-05-01\",\n\"ToDate\":\"2023-06-23\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "127.0.0.1:4000/GetMethodDataWithoutCache/mrrfXML"
+			},
+			"response": []
+		},
+		{
+			"name": "NewsInfoXML",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"FromDate\":\"2023-06-22\",\n\"ToDate\":\"2023-06-23\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "127.0.0.1:4000/NewsInfoXML"
+			},
+			"response": []
+		},
+		{
+			"name": "GetMethodDataWithoutCache_NewsInfoXML",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"FromDate\":\"2023-06-22\",\n\"ToDate\":\"2023-06-23\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "127.0.0.1:4000/GetMethodDataWithoutCache/NewsInfoXML"
+			},
+			"response": []
+		},
+		{
+			"name": "OmodInfoXML",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": "127.0.0.1:4000/OmodInfoXML"
+			},
+			"response": []
+		},
+		{
+			"name": "GetMethodDataWithoutCache_OmodInfoXML",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": "127.0.0.1:4000/GetMethodDataWithoutCache/OmodInfoXML"
+			},
+			"response": []
+		},
+		{
+			"name": "OstatDepoNewXML",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"FromDate\":\"2023-06-22\",\n\"ToDate\":\"2023-06-23\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "127.0.0.1:4000/OstatDepoNewXML"
+			},
+			"response": []
+		},
+		{
+			"name": "GetMethodDataWithoutCache_OstatDepoNewXML",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"FromDate\":\"2023-06-22\",\n\"ToDate\":\"2023-06-23\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "127.0.0.1:4000/GetMethodDataWithoutCache/OstatDepoNewXML"
+			},
+			"response": []
+		},
+		{
+			"name": "OstatDepoXML",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"FromDate\":\"2022-12-29\",\n\"ToDate\":\"2022-12-30\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "127.0.0.1:4000/OstatDepoXML"
+			},
+			"response": []
+		},
+		{
+			"name": "GetMethodDataWithoutCache_OstatDepoXML",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"FromDate\":\"2022-12-29\",\n\"ToDate\":\"2022-12-30\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "127.0.0.1:4000/GetMethodDataWithoutCache/OstatDepoXML"
+			},
+			"response": []
+		},
+		{
+			"name": "OstatDynamicXML",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"FromDate\":\"2023-06-22\",\n\"ToDate\":\"2023-06-23\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "127.0.0.1:4000/OstatDynamicXML"
+			},
+			"response": []
+		},
+		{
+			"name": "GetMethodDataWithoutCache_OstatDynamicXML",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"FromDate\":\"2023-06-22\",\n\"ToDate\":\"2023-06-23\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "127.0.0.1:4000/GetMethodDataWithoutCache/OstatDynamicXML"
+			},
+			"response": []
+		},
+		{
+			"name": "OvernightXML",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"FromDate\":\"2023-07-22\",\n\"ToDate\":\"2023-08-16\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "127.0.0.1:4000/OvernightXML"
+			},
+			"response": []
+		},
+		{
+			"name": "GetMethodDataWithoutCache_OvernightXML",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"FromDate\":\"2023-07-22\",\n\"ToDate\":\"2023-08-16\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "127.0.0.1:4000/GetMethodDataWithoutCache/OvernightXML"
+			},
+			"response": []
+		},
+		{
+			"name": "RepoDebtXML",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"FromDate\":\"2023-06-22\",\n\"ToDate\":\"2023-06-23\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "127.0.0.1:4000/RepoDebtXML"
+			},
+			"response": []
+		},
+		{
+			"name": "GetMethodDataWithoutCache_RepoDebtXML",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"FromDate\":\"2023-06-22\",\n\"ToDate\":\"2023-06-23\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "127.0.0.1:4000/GetMethodDataWithoutCache/RepoDebtXML"
+			},
+			"response": []
+		},
+		{
+			"name": "RepoDebtUSDXML",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"FromDate\":\"2023-06-22\",\n\"ToDate\":\"2023-06-23\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "127.0.0.1:4000/RepoDebtUSDXML"
+			},
+			"response": []
+		},
+		{
+			"name": "GetMethodDataWithoutCache_RepoDebtUSDXML",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"FromDate\":\"2023-06-22\",\n\"ToDate\":\"2023-06-23\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "127.0.0.1:4000/GetMethodDataWithoutCache/RepoDebtUSDXML"
+			},
+			"response": []
+		},
+		{
+			"name": "ROISfixXML",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"FromDate\":\"2022-02-27\",\n\"ToDate\":\"2023-03-02\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "127.0.0.1:4000/ROISfixXML"
+			},
+			"response": []
+		},
+		{
+			"name": "GetMethodDataWithoutCache_ROISfixXML",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"FromDate\":\"2022-02-27\",\n\"ToDate\":\"2023-03-02\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "127.0.0.1:4000/GetMethodDataWithoutCache/ROISfixXML"
+			},
+			"response": []
+		},
+		{
+			"name": "RuoniaSVXML",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"FromDate\":\"2023-06-22\",\n\"ToDate\":\"2023-06-23\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "127.0.0.1:4000/RuoniaSVXML"
+			},
+			"response": []
+		},
+		{
+			"name": "GetMethodDataWithoutCache_RuoniaSVXML",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"FromDate\":\"2023-06-22\",\n\"ToDate\":\"2023-06-23\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "127.0.0.1:4000/GetMethodDataWithoutCache/RuoniaSVXML"
+			},
+			"response": []
+		},
+		{
+			"name": "RuoniaXML",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"FromDate\":\"2023-06-22\",\n\"ToDate\":\"2023-06-23\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "127.0.0.1:4000/RuoniaXML"
+			},
+			"response": []
+		},
+		{
+			"name": "GetMethodDataWithoutCache_RuoniaXML",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"FromDate\":\"2023-06-22\",\n\"ToDate\":\"2023-06-23\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "127.0.0.1:4000/GetMethodDataWithoutCache/RuoniaXML"
+			},
+			"response": []
+		},
+		{
+			"name": "SaldoXML",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"FromDate\":\"2023-06-22\",\n\"ToDate\":\"2023-06-23\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "127.0.0.1:4000/SaldoXML"
+			},
+			"response": []
+		},
+		{
+			"name": "GetMethodDataWithoutCache_SaldoXML",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"FromDate\":\"2023-06-22\",\n\"ToDate\":\"2023-06-23\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "127.0.0.1:4000/GetMethodDataWithoutCache/SaldoXML"
+			},
+			"response": []
+		},
+		{
+			"name": "SwapDayTotalXML",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"FromDate\":\"2022-02-25\",\n\"ToDate\":\"2023-02-28\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "127.0.0.1:4000/SwapDayTotalXML"
+			},
+			"response": []
+		},
+		{
+			"name": "GetMethodDataWithoutCache_SwapDayTotalXML",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"FromDate\":\"2022-02-25\",\n\"ToDate\":\"2023-02-28\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "127.0.0.1:4000/GetMethodDataWithoutCache/SwapDayTotalXML"
+			},
+			"response": []
+		},
+		{
+			"name": "SwapDynamicXML",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"FromDate\":\"2022-02-25\",\n\"ToDate\":\"2023-02-28\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "127.0.0.1:4000/SwapDynamicXML"
+			},
+			"response": []
+		},
+		{
+			"name": "GetMethodDataWithoutCache_SwapDynamicXML",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"FromDate\":\"2022-02-25\",\n\"ToDate\":\"2023-02-28\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "127.0.0.1:4000/GetMethodDataWithoutCache/SwapDynamicXML"
+			},
+			"response": []
+		},
+		{
+			"name": "SwapInfoSellUSDVolXML",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"FromDate\":\"2022-02-24\",\n\"ToDate\":\"2023-02-28\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "127.0.0.1:4000/SwapDynamicXML"
+			},
+			"response": []
+		},
+		{
+			"name": "GetMethodDataWithoutCache_SwapInfoSellUSDVolXML",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"FromDate\":\"2022-02-24\",\n\"ToDate\":\"2023-02-28\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "127.0.0.1:4000/GetMethodDataWithoutCache/SwapInfoSellUSDVolXML"
+			},
+			"response": []
+		},
+		{
+			"name": "SwapInfoSellUSDXML",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"FromDate\":\"2022-02-25\",\n\"ToDate\":\"2023-02-28\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "127.0.0.1:4000/SwapInfoSellUSDXML"
+			},
+			"response": []
+		},
+		{
+			"name": "GetMethodDataWithoutCache_SwapInfoSellUSDXML",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"FromDate\":\"2022-02-25\",\n\"ToDate\":\"2023-02-28\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "127.0.0.1:4000/GetMethodDataWithoutCache/SwapInfoSellUSDXML"
+			},
+			"response": []
+		},
+		{
+			"name": "SwapInfoSellVolXML",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"FromDate\":\"2023-05-05\",\n\"ToDate\":\"2023-05-10\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "127.0.0.1:4000/SwapInfoSellVolXML"
+			},
+			"response": []
+		},
+		{
+			"name": "GetMethodDataWithoutCache_SwapInfoSellVolXML",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"FromDate\":\"2023-05-05\",\n\"ToDate\":\"2023-05-10\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "127.0.0.1:4000/GetMethodDataWithoutCache/SwapInfoSellVolXML"
+			},
+			"response": []
+		},
+		{
+			"name": "SwapInfoSellXML",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"FromDate\":\"2023-06-20\",\n\"ToDate\":\"2023-06-21\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "127.0.0.1:4000/SwapInfoSellXML"
+			},
+			"response": []
+		},
+		{
+			"name": "GetMethodDataWithoutCache_SwapInfoSellXML",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"FromDate\":\"2023-06-20\",\n\"ToDate\":\"2023-06-21\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "127.0.0.1:4000/GetMethodDataWithoutCache/SwapInfoSellXML"
+			},
+			"response": []
+		},
+		{
+			"name": "SwapMonthTotalXML",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"FromDate\":\"2022-02-11\",\n\"ToDate\":\"2022-02-24\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "127.0.0.1:4000/SwapMonthTotalXML"
+			},
+			"response": []
+		},
+		{
+			"name": "GetMethodDataWithoutCache_SwapMonthTotalXML",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"FromDate\":\"2022-02-11\",\n\"ToDate\":\"2022-02-24\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "127.0.0.1:4000/GetMethodDataWithoutCache/SwapMonthTotalXML"
+			},
+			"response": []
+		},
+		{
+			"name": "AllDataInfoXML",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": "127.0.0.1:4000/AllDataInfoXML"
+			},
+			"response": []
+		},
+		{
+			"name": "GetMethodDataWithoutCache_AllDataInfoXML",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": "127.0.0.1:4000/GetMethodDataWithoutCache/AllDataInfoXML"
+			},
+			"response": []
+		}
+	]
+}
