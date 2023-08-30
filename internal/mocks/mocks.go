@@ -47,6 +47,10 @@ func (config *ConfigMock) GetInfoExpirTime() time.Duration {
 	return time.Second
 }
 
+func (config *ConfigMock) GetInfoClearTimeDelta() time.Duration {
+	return 3 * time.Second
+}
+
 func (config *ConfigMock) GetCBRWSDLAddress() string {
 	return ""
 }
