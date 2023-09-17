@@ -11,6 +11,20 @@ services:
     restart: always
     ports:
       - "4000:4000"
+      - "8082:8082"
+    expose:
+    - "8082"
+    networks:
+    - default_network
+  prometheus:
+    image: prom/prometheus:v2.47.0
+    volumes:
+      - ../prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "19090:9090"
+    depends_on:
+      cbrwsdltojson:
+        condition: service_started
     networks:
     - default_network
 networks:

@@ -22,6 +22,8 @@ func loggingMiddleware(next http.HandlerFunc, log Logger) http.HandlerFunc {
 			zap.String("Request User-Agent", r.Header.Get("User-Agent")),
 		).Info("http middleware log")
 
+		observeRequest(w.Header().Get("Status"), time.Since(t)) // TODO get code correct
+
 		errHeader := w.Header().Get("ErrCustom")
 		if errHeader != "" {
 			log.Error("Error middleware logging: " + errHeader)
