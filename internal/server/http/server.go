@@ -16,7 +16,8 @@ var ErrAssertionGetFullRequestTimeout = errors.New("error of data assertion on g
 
 type Server struct {
 	serv              *http.Server
-	metrics           *http.Server
+	metricsServ       *http.Server
+	metrics           Metrics
 	logg              Logger
 	app               Application
 	Config            Config
@@ -89,12 +90,13 @@ func NewServer(logger Logger, app Application, config Config) *Server {
 	server.app = app
 	server.Config = config
 	server.fullRequestTimeot.Store(config.GetCBRWSDLTimeout())
+	server.metrics = CreateMetrics()
 	server.serv = &http.Server{
 		Addr:              config.GetServerURL(),
 		Handler:           server.routes(),
 		ReadHeaderTimeout: 2 * time.Second,
 	}
-	server.metrics = &http.Server{
+	server.metricsServ = &http.Server{
 		Addr:              "cbrwsdltojson:8082", //todo get with config
 		Handler:           GetMetricksServeMux(),
 		ReadHeaderTimeout: 2 * time.Second,
@@ -114,15 +116,15 @@ func (s *Server) Start(ctx context.Context) error {
 			}
 		}
 	}()
+	s.app.StartCacheCleaner(ctx)
 	s.logg.Info("metrics server is running...")
-	err := s.metrics.ListenAndServe()
+	err := s.metricsServ.ListenAndServe()
 	if err != nil {
 		if !errors.Is(err, http.ErrServerClosed) {
 			s.logg.Error("metrics server start error: " + err.Error())
 			return err
 		}
 	}
-	s.app.StartCacheCleaner(ctx)
 	<-ctx.Done()
 	return err
 }
@@ -133,7 +135,7 @@ func (s *Server) Stop(ctx context.Context) error {
 		s.logg.Error("server shutdown error: " + err.Error())
 		return err
 	}
-	err = s.metrics.Shutdown(ctx)
+	err = s.metricsServ.Shutdown(ctx)
 	if err != nil {
 		s.logg.Error("metrics server shutdown error: " + err.Error())
 		return err

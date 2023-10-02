@@ -35,10 +35,13 @@ func apiErrHandler(err error, w *http.ResponseWriter) {
 		if errors.Is(err, datastructures.ErrBadInputDateData) || errors.Is(err, datastructures.ErrBadRawData) {
 			errMessage = helpers.StringBuild(http.StatusText(http.StatusBadRequest), " (", err.Error(), ")")
 			http.Error(W, errMessage, http.StatusBadRequest)
+			W.Header().Add("Status", "400")
 		} else {
 			errMessage = helpers.StringBuild(http.StatusText(http.StatusInternalServerError), " (", err.Error(), ")")
 			http.Error(W, errMessage, http.StatusInternalServerError)
+			W.Header().Add("Status", "500")
 		}
+		W.Header().Add("ErrCustom", err.Error())
 	}
 }
 
@@ -109,6 +112,7 @@ func (s *Server) universalMethodHandler(w http.ResponseWriter, r *http.Request, 
 			apiErrHandler(err, &w)
 			return
 		}
+		w.Header().Add("Status", "200")
 		return
 
 	default:
@@ -141,6 +145,7 @@ func (s *Server) universalMethodHandlerWP(w http.ResponseWriter, r *http.Request
 			apiErrHandler(err, &w)
 			return
 		}
+		w.Header().Add("Status", "200")
 		return
 
 	default:
