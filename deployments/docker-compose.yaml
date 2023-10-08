@@ -20,10 +20,30 @@ services:
     image: prom/prometheus:v2.47.0
     volumes:
       - ../prometheus.yml:/etc/prometheus/prometheus.yml
+    restart: always
     ports:
       - "19090:9090"
     depends_on:
       cbrwsdltojson:
+        condition: service_started
+    networks:
+    - default_network
+  grafana:
+    image: grafana/grafana:6.7.2
+    volumes:
+    - type: bind
+      source: ../grafana
+      target: /var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin1
+      - GF_USERS_ALLOW_SIGN_UP=false
+    # - GRAFANA_PLUGINS_ENABLED=false
+    restart: always
+    ports:
+      - "3111:3000"
+    depends_on:
+      prometheus:
         condition: service_started
     networks:
     - default_network
