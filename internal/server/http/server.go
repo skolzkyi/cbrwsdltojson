@@ -97,7 +97,7 @@ func NewServer(logger Logger, app Application, config Config) *Server {
 		ReadHeaderTimeout: 2 * time.Second,
 	}
 	server.metricsServ = &http.Server{
-		Addr:              "cbrwsdltojson:8082", //todo get with config
+		Addr:              "cbrwsdltojson:8082", // todo get with config
 		Handler:           GetMetricksServeMux(),
 		ReadHeaderTimeout: 2 * time.Second,
 	}
@@ -112,7 +112,7 @@ func (s *Server) Start(ctx context.Context) error {
 		if err != nil {
 			if !errors.Is(err, http.ErrServerClosed) {
 				s.logg.Error("server start error: " + err.Error())
-				//return err
+				// return err
 			}
 		}
 	}()
