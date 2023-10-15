@@ -683,7 +683,7 @@ func initTestDataMainInfoXML(t *testing.T) AppTestTable {
 		GoldBaks: datastructures.GoldBaksElem{
 			Title:    "Международные резервы",
 			Date:     "28.07.2023",
-			GoldBaks: 594,
+			GoldBaks: "594",
 		},
 	}
 	testCases := make([]AppTestCase, 1)
