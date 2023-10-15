@@ -1200,7 +1200,7 @@ func initTestCasesMainInfoXML(t *testing.T) DatastructuresTestTable { // nolint:
 		GoldBaks: datastructures.GoldBaksElem{
 			Title:    "Международные резервы",
 			Date:     "28.07.2023",
-			GoldBaks: 594,
+			GoldBaks: "594",
 		},
 	}
 

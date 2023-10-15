@@ -42,5 +42,5 @@ type Stavka_refElem struct { //nolint:revive, stylecheck
 type GoldBaksElem struct {
 	Title    string `xml:"Title,attr" json:"Title"`
 	Date     string `xml:"Date,attr" json:"Date"`
-	GoldBaks int32  `xml:",chardata" json:"GoldBaks"`
+	GoldBaks string `xml:",chardata" json:"GoldBaks"`
 }
