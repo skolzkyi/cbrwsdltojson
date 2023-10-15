@@ -10,7 +10,7 @@ import (
 )
 
 type Metrics struct {
-	//RequestsTotal    *prometheus.CounterVec
+	// RequestsTotal    *prometheus.CounterVec
 	RequestsDuration *prometheus.SummaryVec
 }
 
@@ -23,7 +23,7 @@ func GetMetricksServeMux() *http.ServeMux {
 
 func CreateMetrics() Metrics {
 	metricks := Metrics{}
-	//metricks.RequestsTotal= promauto.NewCounterVec()
+	// metricks.RequestsTotal= promauto.NewCounterVec()
 	metricks.RequestsDuration = promauto.NewSummaryVec(prometheus.SummaryOpts{
 		Namespace:  "cbrwsdltojson",
 		Subsystem:  "http",
